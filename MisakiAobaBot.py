@@ -35,7 +35,7 @@ import os
 
 bot_name='@MisakiAobaBot'
 if debug_mode is True:
-    token='690274765:AAFxDyslvSkuVbPJXUAjWm2u6iy92bBB-JU'
+    token= os.environ['TEST_TELEGRAM_TOKEN']
     # this is a test bot token
 if debug_mode is False:
     token = os.environ['TELEGRAM_TOKEN']
