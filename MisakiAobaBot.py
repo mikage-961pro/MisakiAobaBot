@@ -7,6 +7,7 @@ help-由青羽小姐提供您幫助
 rule-本群規則瀏覽
 state-群狀態
 config-設定
+tbgame-765プロゲーム部入口，進去跟大家玩桌遊吧
 nanto-なんとぉ！
 """
 
@@ -20,13 +21,13 @@ nanto-なんとぉ！
 """
 
 #debug mode
-debug_mode=True
+debug_mode=False
 
 ################################################
 #                   Global                     #
 ################################################
 # import
-from telegram import (Bot, Chat, ReplyKeyboardMarkup, ReplyKeyboardRemove, ParseMode)
+from telegram import (Bot, Chat, Sticker, ReplyKeyboardMarkup, ReplyKeyboardRemove, ParseMode)
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import logging
 import time
@@ -38,6 +39,7 @@ if debug_mode is True:
     # this is a test bot token
 else:
     token = os.environ['TELEGRAM_TOKEN']
+    # token will taken by heroku
 
 #global words
 
@@ -55,6 +57,7 @@ word_help = """
 /rule - 本群規則瀏覽
 /state - 群狀態
 /config - 設定
+/tbgame - 765プロゲーム部入口，進去跟大家玩桌遊吧
 /nanto - なんとぉ！
 """
 word_rule = """
@@ -81,10 +84,12 @@ word_rule = """
 
 <b>〖最後〗</b>
 　　輕鬆地討論吧～！
-
-<b>〖遊戲分群〗</b>
-　　<a href="https://t.me/joinchat/IFtWTxKG_KG-500YZBBnDA">〔點此進入〕</a>
 """
+
+word_tbgame="""
+<a href="https://t.me/joinchat/IFtWTxKG_KG-500YZBBnDA">〔765プロゲーム部♞〕</a>
+"""
+
 word_nanto_1="""
 今日のログインボーナスはこちらです♪
 明日はこちらがもらえますからね！
@@ -108,6 +113,13 @@ word_test="""
 <pre>pre-formatted fixed-width code block</pre>
 """
 
+word_state="""
+版本：Alpha.0.2
+開發者：Dephilia（蝶芙）
+telegramID:@Dephilia
+<a href="https://www.plurk.com/Dephillia">〔噗浪〕</a>
+"""
+
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
@@ -127,6 +139,11 @@ def help(bot, update):
     """Send a message when the command /help is issued."""
     bot.send_message(chat_id=update.message.chat_id, text=word_help)
 
+def tbgame(bot, update):
+    """Send a message when the command /tbgame is issued."""
+    bot.send_message(chat_id=update.message.chat_id, text=word_tbgame, 
+                  parse_mode=ParseMode.HTML)
+
 def rule(bot, update):
     """Send a message when the command /rule is issued."""
     bot.send_message(chat_id=update.message.chat_id, text=word_rule, 
@@ -136,7 +153,7 @@ def state(bot, update):
     """Send a message when the command /state is issued."""
     bot.send_message(chat_id=update.message.chat_id,
     text='目前室內人數：{}'.format(str(bot.get_chat_members_count(update.message.chat.id)))+'\n'+
-    "版本：Alpha.0.1")
+    word_state,parse_mode=ParseMode.HTML)
 
 def config(bot, update):
     """Send a message when the command /config is issued."""
@@ -148,18 +165,22 @@ def nanto(bot, update):
     time.sleep(1)
     bot.send_message(chat_id=update.message.chat_id, text=word_nanto_2)
     time.sleep(0.5)
-    bot.send_message(chat_id=update.message.chat_id, text=word_nanto_3)
+    bot.send_sticker(chat_id=update.message.chat_id, sticker="CAADBQADGgADT1ZbIFSw_UAI28HiAg")
+    # id=nanto sticker
+    #bot.send_message(chat_id=update.message.chat_id, text=word_nanto_3)
     time.sleep(2)
     bot.send_message(chat_id=update.message.chat_id, text=word_nanto_4)
 
-def welcome(bot, update):
+def aisatu(bot, update):
     if update.message.new_chat_members!=None:
-        new_chat_members=update.message.new_chat_members
-    for u in new_chat_members:
-        text='野生的'+u.first_name+'出現了'
-        bot.send_message(chat_id=update.message.chat_id,text=text)
+        for u in update.message.new_chat_members:
+            text='$usernameようこそ事務所へ！\n輸入/help可以尋求幫助'
+            text = text.replace('$username',u.first_name.encode('utf-8'))
+            bot.send_message(chat_id=update.message.chat_id,text=text)
+
     if update.message.left_chat_member!=None:
-        text=update.message.left_chat_member.first_name+'，別再回來了！'
+        text='まだ会いましょう！$usernameさん！'
+        text = text.replace('$username',update.message.left_chat_member.first_name.encode('utf-8'))
         bot.send_message(chat_id=update.message.chat_id,text=text)
 
 def test(bot, update):
@@ -169,11 +190,11 @@ def test(bot, update):
 
 def echo(bot, update):
     """Echo the user message."""
-    global lastnum
-    lastnum += int(update.message.text)
-    update.message.reply_text(lastnum)
+    bot.send_message(chat_id=update.message.chat_id, text=update.message.sticker.file_id)
 
-
+def echo2(bot, update):
+    """Echo the user message."""
+    bot.send_message(chat_id=update.message.chat_id, text=update.message.text)
 
 def error(bot, update, error):
     """Log Errors caused by Updates."""
@@ -195,13 +216,16 @@ def main():
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("rule", rule))
     dp.add_handler(CommandHandler("help", help))
+    dp.add_handler(CommandHandler("tbgame", tbgame))
     dp.add_handler(CommandHandler("state", state))
     dp.add_handler(CommandHandler("config", config))
     dp.add_handler(CommandHandler("nanto", nanto))
     dp.add_handler(CommandHandler("test", test))
 
-    # on noncommand i.e message - echo the message on Telegram
-    #dp.add_handler(MessageHandler(Filters.text, echo))
+    # sticker id echo
+    #dp.add_handler(MessageHandler(Filters.sticker, echo))
+    #dp.add_handler(MessageHandler(Filters.text, echo2))
+    dp.add_handler(MessageHandler(Filters.all, aisatu))
 
     # log all errors
     dp.add_error_handler(error)
