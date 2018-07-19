@@ -37,7 +37,7 @@ bot_name='@MisakiAobaBot'
 if debug_mode is True:
     token='690274765:AAFxDyslvSkuVbPJXUAjWm2u6iy92bBB-JU'
     # this is a test bot token
-else:
+if debug_mode is False:
     token = os.environ['TELEGRAM_TOKEN']
     # token will taken by heroku
 
