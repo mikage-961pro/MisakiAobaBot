@@ -156,7 +156,7 @@ def state(bot, update):
 
 def config(bot, update,args):
     """Send a message when the command /config is issued."""
-	text=' '.join(args)
+    text=' '.join(args)
     
     if text is not ' ':
         bot.send_message(chat_id=update.message.chat_id, text='言いたいことがあるんだよ')
