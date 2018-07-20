@@ -239,7 +239,8 @@ def error(bot, update, error):
     logger.warning('Update "%s" caused error "%s"', update, error)
 
 def unknown(bot, update):
-	bot.send_message(chat_id=update.message.chat_id, text="すみません、よく分かりません。")
+    if update.message.text.find('MisakiAobaBot')!=-1:
+        bot.send_message(chat_id=update.message.chat_id, text="すみません、よく分かりません。")
 
 ################################################
 #                   main                       #
