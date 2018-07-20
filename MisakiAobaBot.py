@@ -257,9 +257,9 @@ def notiger(bot, update):
     word_notiger="""
     <pre>    ジャンプをしない！
     ミックスしない！
-    クラップしない！
-    叫ばない！マナーを守ろう
-    ｲｪｯﾀｲｶﾞｰ！ﾀｲｶﾞｰ!ﾌｧｲﾔｰ!ｻｲﾊﾞｰ!ﾌｧｲﾊﾞｰ!ﾀﾞｲﾊﾞｰ!ﾊﾞｲﾊﾞｰ!ｼﾞｬｰｼﾞｬｰ!!</pre>
+    クラップしない！～叫ばない！
+    マナーを守ろう ｲｪｯﾀｲｶﾞｰ！
+    ﾀｲｶﾞｰ!ﾌｧｲﾔｰ!ｻｲﾊﾞｰ!ﾌｧｲﾊﾞｰ!ﾀﾞｲﾊﾞｰ!ﾊﾞｲﾊﾞｰ!ｼﾞｬｰｼﾞｬｰ!!</pre>
     """
     bot.send_message(chat_id=update.message.chat_id, text=word_notiger, 
                   parse_mode=ParseMode.HTML)
