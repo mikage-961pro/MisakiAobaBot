@@ -175,13 +175,27 @@ def title(bot,update,args):
 	title = ' '.join(args)
 	adminlist=update.message.chat.get_administrators()
 	is_admin=False
+	
+	me=bot.get_me()
+	bot_auth=False
+	
 	for i in adminlist:
 		if update.message.from_user.id==i.user.id:
 			is_admin=True
+			
+	for b in adminlist:
+			if me.id==b.user.id:
+				bot_auth=True
+	
 	if is_admin==True:
-		bot.set_chat_title(chat_id=update.message.chat_id, title=title)
+		if bot_auth==True:
+			bot.set_chat_title(chat_id=update.message.chat_id, title=title)
+			bot.send_message(chat_id=update.message.chat_id,text='できました！！')
+		else:
+			bot.send_message(chat_id=update.message.chat_id,text='失敗しました、能力不足ですね')
+		
 	else:
-		bot.send_message(chat_id=update.message.chat_id,text='Not enough rights to change chat title')
+		bot.send_message(chat_id=update.message.chat_id,text='申し訳ございませんが、このコマンドは、管理者しか使いません\nOops!Only admin can change title.')
 
 #mention that bot need to be an admin of sgroup
 #should change automatically and get title from DB,though JOBquece
