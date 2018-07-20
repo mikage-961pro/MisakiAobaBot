@@ -39,6 +39,8 @@ bot_name='@MisakiAobaBot'
 token = os.environ['TELEGRAM_TOKEN']
 # token will taken by heroku
 # Please use test token when dev
+# WARNING!!! Please use quarter space instead of tab
+# This will cause fatal error
 
 # global words
 
@@ -100,7 +102,7 @@ word_nanto_3="""
 なんとっー！
 """
 word_nanto_4="""
-ただいま、スペシャルログインボーナスを开催中です♪
+ただいま、スペシャルログインボーナスを開催中です♪
 明日もログインすると、きっといいことがあると思いますよぉ～。えへへぇ♪
 """
 
@@ -156,8 +158,36 @@ def state(bot, update):
 
 def config(bot, update,args):
     """Send a message when the command /config is issued."""
-	text=' '.join(args)
-    bot.send_message(chat_id=update.message.chat_id, text=text+"本功能目前沒有毛用")
+    word_1="""
+    <pre>    言いたいことがあるんだよ
+    やっぱり$nameはかわいいよ
+    すきすき大好き、やっぱ好き</pre>
+    """
+    word_2="""
+    <pre>    やっと見つけたお姫様
+    俺が生まれてきた理由
+    それはお前に出会うため</pre>
+    """
+    word_3="""
+    <pre>    俺と一緒に人生歩もう
+    世界で一番愛してる
+    
+    ア・イ・シ・テ・ル</pre>
+    """
+    word_1=word_1.replace('$name',' '.join(args))
+    t=' '.join(args)
+    
+    if t is not ' ':
+        bot.send_message(chat_id=update.message.chat_id, text=word_1,
+        parse_mode=ParseMode.HTML)
+        time.sleep(9)
+        bot.send_message(chat_id=update.message.chat_id, text=word_2,
+        parse_mode=ParseMode.HTML)
+        time.sleep(9)
+        bot.send_message(chat_id=update.message.chat_id, text=word_3,
+        parse_mode=ParseMode.HTML)
+    else:
+        bot.send_message(chat_id=update.message.chat_id, text="本功能目前沒有毛用")
 
 def nanto(bot, update):
     """Send a message when the command /nanto is issued."""
@@ -253,10 +283,17 @@ def main():
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
 
-	#job
-	t = time(17, 20, 00, 0)#may receive from db
+    """
+    time function is not callable on server
+    please fix it
+    
+	# job
+    # t = time(17, 20, 00, 0)
+    # may receive from db
 	
-	job_m=updater.job_queue.run_daily(mission_callback,t)
+    # job_m=updater.job_queue.run_daily(mission_callback,t)
+    """
+
 	
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start))
@@ -272,7 +309,7 @@ def main():
     # sticker id echo
     #dp.add_handler(MessageHandler(Filters.sticker, echo))
     #dp.add_handler(MessageHandler(Filters.text, echo2))
-	dp.add_handler(MessageHandler(Filters.command, unknown))
+    dp.add_handler(MessageHandler(Filters.command, unknown))
     dp.add_handler(MessageHandler(Filters.all, aisatu))
 	
     # log all errors
