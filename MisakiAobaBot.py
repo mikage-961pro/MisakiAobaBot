@@ -170,6 +170,14 @@ def nanto(bot, update):
     #bot.send_message(chat_id=update.message.chat_id, text=word_nanto_3)
     time.sleep(2)
     bot.send_message(chat_id=update.message.chat_id, text=word_nanto_4)
+	
+def title(bot,update,args):
+	title = ' '.join(args)
+	bot.set_chat_title(chat_id=update.message.chat_id, title=title)
+
+#mention that bot need to be an admin of sgroup
+#should change automatically and get title from DB,though JOBquece
+#function for test
 
 def aisatu(bot, update):
     if update.message.new_chat_members!=None:
@@ -223,6 +231,7 @@ def main():
     dp.add_handler(CommandHandler("config", config))
     dp.add_handler(CommandHandler("nanto", nanto))
     dp.add_handler(CommandHandler("test", test))
+	dp.add_handler(CommandHandler('title',title,pass_args=True))
 
     # sticker id echo
     #dp.add_handler(MessageHandler(Filters.sticker, echo))
