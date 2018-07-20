@@ -39,6 +39,8 @@ bot_name='@MisakiAobaBot'
 token = os.environ['TELEGRAM_TOKEN']
 # token will taken by heroku
 # Please use test token when dev
+# WARNING!!! Please use quarter space instead of tab
+# This will cause fatal error
 
 # global words
 
@@ -273,10 +275,11 @@ def main():
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
 
-	#job
-	t = time(17, 20, 00, 0)#may receive from db
+	# job
+    t = time(17, 20, 00, 0)
+    # may receive from db
 	
-	job_m=updater.job_queue.run_daily(mission_callback,t)
+    job_m=updater.job_queue.run_daily(mission_callback,t)
 	
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start))
@@ -292,7 +295,7 @@ def main():
     # sticker id echo
     #dp.add_handler(MessageHandler(Filters.sticker, echo))
     #dp.add_handler(MessageHandler(Filters.text, echo2))
-	dp.add_handler(MessageHandler(Filters.command, unknown))
+    dp.add_handler(MessageHandler(Filters.command, unknown))
     dp.add_handler(MessageHandler(Filters.all, aisatu))
 	
     # log all errors
