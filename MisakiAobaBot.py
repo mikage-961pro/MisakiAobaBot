@@ -232,6 +232,8 @@ def error(bot, update, error):
     """Log Errors caused by Updates."""
     logger.warning('Update "%s" caused error "%s"', update, error)
 
+def unknown(bot, update):
+	bot.send_message(chat_id=update.message.chat_id, text="すみません、よく分かりません。")
 
 ################################################
 #                   main                       #
@@ -258,11 +260,13 @@ def main():
     # sticker id echo
     #dp.add_handler(MessageHandler(Filters.sticker, echo))
     #dp.add_handler(MessageHandler(Filters.text, echo2))
+	dp.add_handler(MessageHandler(Filters.command, unknown))
     dp.add_handler(MessageHandler(Filters.all, aisatu))
-
+	
     # log all errors
     dp.add_error_handler(error)
-
+	
+	
     # Start the Bot
     updater.start_polling()
 
