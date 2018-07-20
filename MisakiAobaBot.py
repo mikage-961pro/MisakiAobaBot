@@ -173,7 +173,15 @@ def nanto(bot, update):
 	
 def title(bot,update,args):
 	title = ' '.join(args)
-	bot.set_chat_title(chat_id=update.message.chat_id, title=title)
+	adminlist=update.message.chat.get_administrators()
+	is_admin=False
+	for i in adminlist:
+		if update.message.from_user.id==i.user.id and i.can_change_info==True:
+			is_admin=True
+	if is_admin==True:
+		bot.set_chat_title(chat_id=update.message.chat_id, title=title)
+	else:
+		bot.send_message(chat_id=update.message.chat_id,text='Not enough rights to change chat title')
 
 #mention that bot need to be an admin of sgroup
 #should change automatically and get title from DB,though JOBquece
