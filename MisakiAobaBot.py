@@ -170,18 +170,28 @@ def nanto(bot, update):
     #bot.send_message(chat_id=update.message.chat_id, text=word_nanto_3)
     time.sleep(2)
     bot.send_message(chat_id=update.message.chat_id, text=word_nanto_4)
+	
+def title(bot,update,args):
+	title = ' '.join(args)
+	bot.set_chat_title(chat_id=update.message.chat_id, title=title)
+
+#mention that bot need to be an admin of sgroup
+#should change automatically and get title from DB,though JOBquece
+#function for test
 
 def aisatu(bot, update):
     if update.message.new_chat_members!=None:
         for u in update.message.new_chat_members:
-            text='$usernameようこそ事務所へ！\n輸入/help可以尋求幫助'
-            text = text.replace('$username',u.first_name.encode('utf-8'))
-            bot.send_message(chat_id=update.message.chat_id,text=text)
+			if u.is_bot==False:
+				text='$usernameさん、ようこそ事務所へ！\n輸入/help可以尋求幫助'
+				text = text.replace('$username',u.first_name.encode('utf-8'))
+				bot.send_message(chat_id=update.message.chat_id,text=text)
 
     if update.message.left_chat_member!=None:
-        text='まだ会いましょう！$usernameさん！'
-        text = text.replace('$username',update.message.left_chat_member.first_name.encode('utf-8'))
-        bot.send_message(chat_id=update.message.chat_id,text=text)
+		if update.message.left_chat_member.is_bot==False:
+			text='まだ会いましょう！$usernameさん！'
+			text = text.replace('$username',update.message.left_chat_member.first_name.encode('utf-8'))
+			bot.send_message(chat_id=update.message.chat_id,text=text)
 
 def test(bot, update):
     """Send a message when the command /test is issued."""
@@ -221,6 +231,7 @@ def main():
     dp.add_handler(CommandHandler("config", config))
     dp.add_handler(CommandHandler("nanto", nanto))
     dp.add_handler(CommandHandler("test", test))
+	dp.add_handler(CommandHandler('title',title,pass_args=True))
 
     # sticker id echo
     #dp.add_handler(MessageHandler(Filters.sticker, echo))
