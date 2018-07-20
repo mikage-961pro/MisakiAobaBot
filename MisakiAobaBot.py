@@ -161,24 +161,14 @@ def config(bot, update,args):
     text=' '.join(args)
     
     if text is not ' ':
-        bot.send_message(chat_id=update.message.chat_id, text='言いたいことがあるんだよ')
-        time.sleep(3)
-        bot.send_message(chat_id=update.message.chat_id, text="やっぱり"+text+"はかわいいよ")
-        time.sleep(3)
-        bot.send_message(chat_id=update.message.chat_id, text='すきすき大好き、やっぱ好き')
-        time.sleep(3)
-        bot.send_message(chat_id=update.message.chat_id, text='やっと見つけたお姫様')
-        time.sleep(3)
-        bot.send_message(chat_id=update.message.chat_id, text='俺が生まれてきた理由')
-        time.sleep(3)
-        bot.send_message(chat_id=update.message.chat_id, text='それはお前に出会うため')
-        time.sleep(3)
-        bot.send_message(chat_id=update.message.chat_id, text='俺と一緒に人生歩もう')
-        time.sleep(3)
-        bot.send_message(chat_id=update.message.chat_id, text='世界で一番愛してる')
-        time.sleep(3)
-        bot.send_message(chat_id=update.message.chat_id, text='ア・イ・シ・テ・ル')
-        time.sleep(3)
+        bot.send_message(chat_id=update.message.chat_id, text='言いたいことがあるんだよ'
+        +'\n'+"やっぱり"+text+"はかわいいよ"+'\n'+'すきすき大好き、やっぱ好き')
+        time.sleep(9)
+        bot.send_message(chat_id=update.message.chat_id, text='やっと見つけたお姫様'
+        +'\n'+'俺が生まれてきた理由'+'\n'+'それはお前に出会うため')
+        time.sleep(9)
+        bot.send_message(chat_id=update.message.chat_id, text='俺と一緒に人生歩もう'
+        +'\n'+'世界で一番愛してる'+'\n'+'\n'+'ア・イ・シ・テ・ル')
     else:
         bot.send_message(chat_id=update.message.chat_id, text="本功能目前沒有毛用")
 
