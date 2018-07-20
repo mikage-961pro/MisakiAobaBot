@@ -281,18 +281,13 @@ def main():
     updater = Updater(token)
 
     # Get the dispatcher to register handlers
-    dp = updater.dispatcher
-
-    """
-    time function is not callable on server
-    please fix it
     
-	# job
-    # t = time(17, 20, 00, 0)
-    # may receive from db
-	
-    # job_m=updater.job_queue.run_daily(mission_callback,t)
-    """
+	#jobs
+	#t may give by db later
+	dp = updater.dispatcher
+	t = time(23, 30, 00, 0)-timedelta(hours=9)
+	job_m=updater.job_queue.run_daily(mission_callback,t)
+ 
 
 	
     # on different commands - answer in Telegram
