@@ -24,9 +24,6 @@ nanto-なんとぉ！
 自動改群名
 """
 
-#debug mode
-debug_mode=False
-
 ################################################
 #                   Global                     #
 ################################################
@@ -38,14 +35,11 @@ import time
 import os
 
 bot_name='@MisakiAobaBot'
-if debug_mode is True:
-    token= os.environ['TEST_TELEGRAM_TOKEN']
-    # this is a test bot token
-if debug_mode is False:
-    token = os.environ['TELEGRAM_TOKEN']
-    # token will taken by heroku
+token = os.environ['TELEGRAM_TOKEN']
+# token will taken by heroku
+# Please use test token when dev
 
-#global words
+# global words
 
 word_start = """青羽美咲です！宜しくお願い致します！
 尋求幫助 - /help
@@ -136,7 +130,7 @@ logger = logging.getLogger(__name__)
 def start(bot, update):
     """Send a message when the command /start is issued."""
     bot.send_message(chat_id=update.message.chat_id, text=word_start,
-                  parse_mode=ParseMode.HTML)
+                    parse_mode=ParseMode.HTML)
     #update.message.reply_text(word_start)
 
 def help(bot, update):
@@ -146,12 +140,12 @@ def help(bot, update):
 def tbgame(bot, update):
     """Send a message when the command /tbgame is issued."""
     bot.send_message(chat_id=update.message.chat_id, text=word_tbgame, 
-                  parse_mode=ParseMode.HTML)
+                    parse_mode=ParseMode.HTML)
 
 def rule(bot, update):
     """Send a message when the command /rule is issued."""
     bot.send_message(chat_id=update.message.chat_id, text=word_rule, 
-                  parse_mode=ParseMode.HTML)
+                    parse_mode=ParseMode.HTML)
 
 def state(bot, update):
     """Send a message when the command /state is issued."""
@@ -175,7 +169,7 @@ def nanto(bot, update):
     time.sleep(2)
     bot.send_message(chat_id=update.message.chat_id, text=word_nanto_4)
     
-def title(bot,update,args):
+def title(bot, update, args):
     title = ' '.join(args)
     bot.set_chat_title(chat_id=update.message.chat_id, title=title)
 
@@ -184,14 +178,14 @@ def title(bot,update,args):
 #function for test
 
 def aisatu(bot, update):
-    if update.message.new_chat_members!=None:
+    if update.message.new_chat_members != None:
         for u in update.message.new_chat_members:
             if u.is_bot == False:
                 text='$usernameさん、ようこそ事務所へ！\n輸入 /help 可以尋求幫助'
                 text = text.replace('$username',u.first_name.encode('utf-8'))
                 bot.send_message(chat_id=update.message.chat_id,text=text)
 
-    if update.message.left_chat_member!=None:
+    if update.message.left_chat_member != None:
         if update.message.left_chat_member.is_bot == False:
             text='まだ会いましょう！$usernameさん！'
             text = text.replace('$username',update.message.left_chat_member.first_name.encode('utf-8'))
