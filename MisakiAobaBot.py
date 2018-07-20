@@ -176,7 +176,7 @@ def title(bot,update,args):
 	adminlist=update.message.chat.get_administrators()
 	is_admin=False
 	for i in adminlist:
-		if update.message.from_user.id==i.user.id and i.can_change_info==True:
+		if update.message.from_user.id==i.user.id:
 			is_admin=True
 	if is_admin==True:
 		bot.set_chat_title(chat_id=update.message.chat_id, title=title)
