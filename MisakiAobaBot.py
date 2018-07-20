@@ -156,9 +156,10 @@ def state(bot, update):
     text='目前室內人數：{}'.format(str(bot.get_chat_members_count(update.message.chat.id)))+'\n'+
     word_state,parse_mode=ParseMode.HTML)
 
-def config(bot, update):
+def config(bot, update,args):
     """Send a message when the command /config is issued."""
-    bot.send_message(chat_id=update.message.chat_id, text="本功能目前沒有毛用")
+	text=' '.join(args)
+    bot.send_message(chat_id=update.message.chat_id, text=text+"本功能目前沒有毛用")
 
 def nanto(bot, update):
     """Send a message when the command /nanto is issued."""
@@ -262,7 +263,7 @@ def main():
     dp.add_handler(CommandHandler("help", help))
     dp.add_handler(CommandHandler("tbgame", tbgame))
     dp.add_handler(CommandHandler("state", state))
-    dp.add_handler(CommandHandler("config", config))
+    dp.add_handler(CommandHandler("config", config,pass_args=True))
     dp.add_handler(CommandHandler("nanto", nanto))
     dp.add_handler(CommandHandler("test", test))
 	dp.add_handler(CommandHandler('title',title,pass_args=True))
