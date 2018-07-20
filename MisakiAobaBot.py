@@ -252,6 +252,18 @@ def test(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=word_test, 
                   parse_mode=ParseMode.HTML)
 
+def notiger(bot, update):
+    """Send a message when the command /notiger is issued."""
+    word_notiger="""
+    <pre>    ジャンプをしない！
+    ミックスしない！
+    クラップしない！
+    叫ばない！マナーを守ろう
+    ｲｪｯﾀｲｶﾞｰ！ﾀｲｶﾞｰ!ﾌｧｲﾔｰ!ｻｲﾊﾞｰ!ﾌｧｲﾊﾞｰ!ﾀﾞｲﾊﾞｰ!ﾊﾞｲﾊﾞｰ!ｼﾞｬｰｼﾞｬｰ!!</pre>
+    """
+    bot.send_message(chat_id=update.message.chat_id, text=word_notiger, 
+                  parse_mode=ParseMode.HTML)
+
 def mission_callback(bot,job):
 	#somaction
 	bot.send_message(chat_id='-313454366',text='做每日')
@@ -303,6 +315,7 @@ def main():
     dp.add_handler(CommandHandler("config", config,pass_args=True))
     dp.add_handler(CommandHandler("nanto", nanto))
     dp.add_handler(CommandHandler("test", test))
+    dp.add_handler(CommandHandler("notiger", notiger))
     # dp.add_handler(CommandHandler("title", title, pass_args=True))
 
     # sticker id echo
