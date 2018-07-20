@@ -159,18 +159,19 @@ def state(bot, update):
 def config(bot, update,args):
     """Send a message when the command /config is issued."""
     word_1="""
-    <pre>言いたいことがあるんだよ
+    <pre>    言いたいことがあるんだよ
     やっぱり$nameはかわいいよ
     すきすき大好き、やっぱ好き</pre>
     """
     word_2="""
-    <pre>やっと見つけたお姫様
+    <pre>    やっと見つけたお姫様
     俺が生まれてきた理由
     それはお前に出会うため</pre>
     """
     word_3="""
-    <pre>俺と一緒に人生歩もう
+    <pre>    俺と一緒に人生歩もう
     世界で一番愛してる
+    
     ア・イ・シ・テ・ル</pre>
     """
     word_1=word_1.replace('$name',' '.join(args))
