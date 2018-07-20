@@ -174,14 +174,16 @@ def nanto(bot, update):
 def aisatu(bot, update):
     if update.message.new_chat_members!=None:
         for u in update.message.new_chat_members:
-            text='$usernameさん、ようこそ事務所へ！\n輸入/help可以尋求幫助'
-            text = text.replace('$username',u.first_name.encode('utf-8'))
-            bot.send_message(chat_id=update.message.chat_id,text=text)
+			if u.is_bot==False:
+				text='$usernameさん、ようこそ事務所へ！\n輸入/help可以尋求幫助'
+				text = text.replace('$username',u.first_name.encode('utf-8'))
+				bot.send_message(chat_id=update.message.chat_id,text=text)
 
     if update.message.left_chat_member!=None:
-        text='まだ会いましょう！$usernameさん！'
-        text = text.replace('$username',update.message.left_chat_member.first_name.encode('utf-8'))
-        bot.send_message(chat_id=update.message.chat_id,text=text)
+		if update.message.left_chat_member.is_bot==False:
+			text='まだ会いましょう！$usernameさん！'
+			text = text.replace('$username',update.message.left_chat_member.first_name.encode('utf-8'))
+			bot.send_message(chat_id=update.message.chat_id,text=text)
 
 def test(bot, update):
     """Send a message when the command /test is issued."""
