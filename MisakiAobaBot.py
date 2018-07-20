@@ -29,7 +29,8 @@ nanto-なんとぉ！
 ################################################
 # import
 from telegram import (Bot, Chat, Sticker, ReplyKeyboardMarkup, ReplyKeyboardRemove, ParseMode)
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters,JobQueue
+from datetime import datetime,time,tzinfo,timedelta
 import logging
 import time
 import os
@@ -153,9 +154,10 @@ def state(bot, update):
     text='目前室內人數：{}'.format(str(bot.get_chat_members_count(update.message.chat.id)))+'\n'+
     word_state,parse_mode=ParseMode.HTML)
 
-def config(bot, update):
+def config(bot, update,args):
     """Send a message when the command /config is issued."""
-    bot.send_message(chat_id=update.message.chat_id, text="本功能目前沒有毛用")
+	text=' '.join(args)
+    bot.send_message(chat_id=update.message.chat_id, text=text+"本功能目前沒有毛用")
 
 def nanto(bot, update):
     """Send a message when the command /nanto is issued."""
@@ -168,10 +170,32 @@ def nanto(bot, update):
     #bot.send_message(chat_id=update.message.chat_id, text=word_nanto_3)
     time.sleep(2)
     bot.send_message(chat_id=update.message.chat_id, text=word_nanto_4)
-    
-def title(bot, update, args):
-    title = ' '.join(args)
-    bot.set_chat_title(chat_id=update.message.chat_id, title=title)
+
+def title(bot,update,args):
+	title = ' '.join(args)
+	adminlist=update.message.chat.get_administrators()
+	is_admin=False
+	
+	me=bot.get_me()
+	bot_auth=False
+	
+	for i in adminlist:
+		if update.message.from_user.id==i.user.id:
+			is_admin=True
+			
+	for b in adminlist:
+			if me.id==b.user.id:
+				bot_auth=True
+	
+	if is_admin==True:
+		if bot_auth==True:
+			bot.set_chat_title(chat_id=update.message.chat_id, title=title)
+			bot.send_message(chat_id=update.message.chat_id,text='できました！！')
+		else:
+			bot.send_message(chat_id=update.message.chat_id,text='失敗しました、能力不足ですね')
+		
+	else:
+		bot.send_message(chat_id=update.message.chat_id,text='申し訳ございませんが、このコマンドは、管理者しか使いません\nOops!Only admin can change title.')
 
 #mention that bot need to be an admin of sgroup
 #should change automatically and get title from DB,though JOBquece
@@ -198,6 +222,10 @@ def test(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=word_test, 
                   parse_mode=ParseMode.HTML)
 
+def mission_callback(bot,job):
+	#somaction
+	bot.send_message(chat_id='-313454366',text='做每日')
+				  
 def echo(bot, update):
     """Echo the user message."""
     bot.send_message(chat_id=update.message.chat_id, text=update.message.sticker.file_id)
@@ -210,6 +238,8 @@ def error(bot, update, error):
     """Log Errors caused by Updates."""
     logger.warning('Update "%s" caused error "%s"', update, error)
 
+def unknown(bot, update):
+	bot.send_message(chat_id=update.message.chat_id, text="すみません、よく分かりません。")
 
 ################################################
 #                   main                       #
@@ -222,13 +252,18 @@ def main():
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
 
+	#job
+	t = time(17, 20, 00, 0)#may receive from db
+	
+	job_m=updater.job_queue.run_daily(mission_callback,t)
+	
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("rule", rule))
     dp.add_handler(CommandHandler("help", help))
     dp.add_handler(CommandHandler("tbgame", tbgame))
     dp.add_handler(CommandHandler("state", state))
-    dp.add_handler(CommandHandler("config", config))
+    dp.add_handler(CommandHandler("config", config,pass_args=True))
     dp.add_handler(CommandHandler("nanto", nanto))
     dp.add_handler(CommandHandler("test", test))
     # dp.add_handler(CommandHandler("title", title, pass_args=True))
@@ -236,11 +271,13 @@ def main():
     # sticker id echo
     #dp.add_handler(MessageHandler(Filters.sticker, echo))
     #dp.add_handler(MessageHandler(Filters.text, echo2))
+	dp.add_handler(MessageHandler(Filters.command, unknown))
     dp.add_handler(MessageHandler(Filters.all, aisatu))
-
+	
     # log all errors
     dp.add_error_handler(error)
-
+	
+	
     # Start the Bot
     updater.start_polling()
 
