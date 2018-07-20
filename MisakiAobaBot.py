@@ -14,14 +14,15 @@ nanto-なんとぉ！
 #dev
 """
 〖開發目標〗
-伺服器
-入群通知
-提醒功能
-自由設定文字
-"""
+！使用者指令與自主函式分隔(使用者指令 vs timer(自動控制用))
+！群組對話與個人對話分隔(determin chat_id>0)
 
-#debug mode
-debug_mode=False
+提醒功能
+自由設定文字（config）
+語言設定
+資料庫設定
+自動改群名
+"""
 
 ################################################
 #                   Global                     #
@@ -35,14 +36,11 @@ import time
 import os
 
 bot_name='@MisakiAobaBot'
-if debug_mode is True:
-    token= os.environ['TEST_TELEGRAM_TOKEN']
-    # this is a test bot token
-if debug_mode is False:
-    token = os.environ['TELEGRAM_TOKEN']
-    # token will taken by heroku
+token = os.environ['TELEGRAM_TOKEN']
+# token will taken by heroku
+# Please use test token when dev
 
-#global words
+# global words
 
 word_start = """青羽美咲です！宜しくお願い致します！
 尋求幫助 - /help
@@ -133,7 +131,7 @@ logger = logging.getLogger(__name__)
 def start(bot, update):
     """Send a message when the command /start is issued."""
     bot.send_message(chat_id=update.message.chat_id, text=word_start,
-                  parse_mode=ParseMode.HTML)
+                    parse_mode=ParseMode.HTML)
     #update.message.reply_text(word_start)
 
 def help(bot, update):
@@ -143,12 +141,12 @@ def help(bot, update):
 def tbgame(bot, update):
     """Send a message when the command /tbgame is issued."""
     bot.send_message(chat_id=update.message.chat_id, text=word_tbgame, 
-                  parse_mode=ParseMode.HTML)
+                    parse_mode=ParseMode.HTML)
 
 def rule(bot, update):
     """Send a message when the command /rule is issued."""
     bot.send_message(chat_id=update.message.chat_id, text=word_rule, 
-                  parse_mode=ParseMode.HTML)
+                    parse_mode=ParseMode.HTML)
 
 def state(bot, update):
     """Send a message when the command /state is issued."""
@@ -172,7 +170,7 @@ def nanto(bot, update):
     #bot.send_message(chat_id=update.message.chat_id, text=word_nanto_3)
     time.sleep(2)
     bot.send_message(chat_id=update.message.chat_id, text=word_nanto_4)
-	
+
 def title(bot,update,args):
 	title = ' '.join(args)
 	adminlist=update.message.chat.get_administrators()
@@ -204,18 +202,20 @@ def title(bot,update,args):
 #function for test
 
 def aisatu(bot, update):
-    if update.message.new_chat_members!=None:
+    if update.message.new_chat_members != None:
         for u in update.message.new_chat_members:
-			if u.is_bot==False:
-				text='$usernameさん、ようこそ事務所へ！\n輸入/help可以尋求幫助'
-				text = text.replace('$username',u.first_name.encode('utf-8'))
-				bot.send_message(chat_id=update.message.chat_id,text=text)
+            if u.is_bot == False:
+                text='$usernameさん、ようこそ事務所へ！\n輸入 /help 可以尋求幫助'
+                # text = text.replace('$username',u.first_name.encode('utf-8'))
+                text = text.replace('$username',u.first_name)
+                bot.send_message(chat_id=update.message.chat_id,text=text)
 
-    if update.message.left_chat_member!=None:
-		if update.message.left_chat_member.is_bot==False:
-			text='まだ会いましょう！$usernameさん！'
-			text = text.replace('$username',update.message.left_chat_member.first_name.encode('utf-8'))
-			bot.send_message(chat_id=update.message.chat_id,text=text)
+    if update.message.left_chat_member != None:
+        if update.message.left_chat_member.is_bot == False:
+            text='まだ会いましょう！$usernameさん！'
+            # text = text.replace('$username',update.message.left_chat_member.first_name.encode('utf-8'))
+            text = text.replace('$username',update.message.left_chat_member.first_name)
+            bot.send_message(chat_id=update.message.chat_id,text=text)
 
 def test(bot, update):
     """Send a message when the command /test is issued."""
@@ -266,7 +266,7 @@ def main():
     dp.add_handler(CommandHandler("config", config,pass_args=True))
     dp.add_handler(CommandHandler("nanto", nanto))
     dp.add_handler(CommandHandler("test", test))
-	dp.add_handler(CommandHandler('title',title,pass_args=True))
+    # dp.add_handler(CommandHandler("title", title, pass_args=True))
 
     # sticker id echo
     #dp.add_handler(MessageHandler(Filters.sticker, echo))
