@@ -158,17 +158,33 @@ def state(bot, update):
 
 def config(bot, update,args):
     """Send a message when the command /config is issued."""
-    text=' '.join(args)
+    word_1="""
+    <pre>言いたいことがあるんだよ
+    やっぱり$nameはかわいいよ
+    すきすき大好き、やっぱ好き</pre>
+    """
+    word_2="""
+    <pre>やっと見つけたお姫様
+    俺が生まれてきた理由
+    それはお前に出会うため</pre>
+    """
+    word_3="""
+    <pre>俺と一緒に人生歩もう
+    世界で一番愛してる
+    ア・イ・シ・テ・ル</pre>
+    """
+    word_1=word_1.replace('$name',' '.join(args))
+    t=' '.join(args)
     
-    if text is not ' ':
-        bot.send_message(chat_id=update.message.chat_id, text='言いたいことがあるんだよ'
-        +'\n'+"やっぱり"+text+"はかわいいよ"+'\n'+'すきすき大好き、やっぱ好き')
+    if t is not ' ':
+        bot.send_message(chat_id=update.message.chat_id, text=word_1,
+        parse_mode=ParseMode.HTML)
         time.sleep(9)
-        bot.send_message(chat_id=update.message.chat_id, text='やっと見つけたお姫様'
-        +'\n'+'俺が生まれてきた理由'+'\n'+'それはお前に出会うため')
+        bot.send_message(chat_id=update.message.chat_id, text=word_2,
+        parse_mode=ParseMode.HTML)
         time.sleep(9)
-        bot.send_message(chat_id=update.message.chat_id, text='俺と一緒に人生歩もう'
-        +'\n'+'世界で一番愛してる'+'\n'+'\n'+'ア・イ・シ・テ・ル')
+        bot.send_message(chat_id=update.message.chat_id, text=word_3,
+        parse_mode=ParseMode.HTML)
     else:
         bot.send_message(chat_id=update.message.chat_id, text="本功能目前沒有毛用")
 
