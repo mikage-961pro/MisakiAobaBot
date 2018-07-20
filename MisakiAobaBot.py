@@ -176,6 +176,7 @@ def nanto(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=word_nanto_4)
 	
 def title(bot,update,args):
+    # time.sleep(2)
 	title = ' '.join(args)
 	bot.set_chat_title(chat_id=update.message.chat_id, title=title)
 
@@ -187,7 +188,7 @@ def aisatu(bot, update):
     if update.message.new_chat_members!=None:
         for u in update.message.new_chat_members:
 			if u.is_bot==False:
-				text='$usernameさん、ようこそ事務所へ！\n輸入/help可以尋求幫助'
+				text='$usernameさん、ようこそ事務所へ！\n輸入 /help 可以尋求幫助'
 				text = text.replace('$username',u.first_name.encode('utf-8'))
 				bot.send_message(chat_id=update.message.chat_id,text=text)
 
@@ -235,7 +236,7 @@ def main():
     dp.add_handler(CommandHandler("config", config))
     dp.add_handler(CommandHandler("nanto", nanto))
     dp.add_handler(CommandHandler("test", test))
-	dp.add_handler(CommandHandler('title',title,pass_args=True))
+	# dp.add_handler(CommandHandler("title", title, pass_args=True))
 
     # sticker id echo
     #dp.add_handler(MessageHandler(Filters.sticker, echo))
