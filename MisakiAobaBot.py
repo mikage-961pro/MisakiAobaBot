@@ -28,7 +28,8 @@ debug_mode=False
 ################################################
 # import
 from telegram import (Bot, Chat, Sticker, ReplyKeyboardMarkup, ReplyKeyboardRemove, ParseMode)
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters,JobQueue
+from datetime import datetime,time,tzinfo,timedelta
 import logging
 import time
 import os
@@ -170,24 +171,60 @@ def nanto(bot, update):
     #bot.send_message(chat_id=update.message.chat_id, text=word_nanto_3)
     time.sleep(2)
     bot.send_message(chat_id=update.message.chat_id, text=word_nanto_4)
+	
+def title(bot,update,args):
+	title = ' '.join(args)
+	adminlist=update.message.chat.get_administrators()
+	is_admin=False
+	
+	me=bot.get_me()
+	bot_auth=False
+	
+	for i in adminlist:
+		if update.message.from_user.id==i.user.id:
+			is_admin=True
+			
+	for b in adminlist:
+			if me.id==b.user.id:
+				bot_auth=True
+	
+	if is_admin==True:
+		if bot_auth==True:
+			bot.set_chat_title(chat_id=update.message.chat_id, title=title)
+			bot.send_message(chat_id=update.message.chat_id,text='できました！！')
+		else:
+			bot.send_message(chat_id=update.message.chat_id,text='失敗しました、能力不足ですね')
+		
+	else:
+		bot.send_message(chat_id=update.message.chat_id,text='申し訳ございませんが、このコマンドは、管理者しか使いません\nOops!Only admin can change title.')
+
+#mention that bot need to be an admin of sgroup
+#should change automatically and get title from DB,though JOBquece
+#function for test
 
 def aisatu(bot, update):
     if update.message.new_chat_members!=None:
         for u in update.message.new_chat_members:
-            text='$usernameさん、ようこそ事務所へ！\n輸入/help可以尋求幫助'
-            text = text.replace('$username',u.first_name.encode('utf-8'))
-            bot.send_message(chat_id=update.message.chat_id,text=text)
+			if u.is_bot==False:
+				text='$usernameさん、ようこそ事務所へ！\n輸入/help可以尋求幫助'
+				text = text.replace('$username',u.first_name.encode('utf-8'))
+				bot.send_message(chat_id=update.message.chat_id,text=text)
 
     if update.message.left_chat_member!=None:
-        text='まだ会いましょう！$usernameさん！'
-        text = text.replace('$username',update.message.left_chat_member.first_name.encode('utf-8'))
-        bot.send_message(chat_id=update.message.chat_id,text=text)
+		if update.message.left_chat_member.is_bot==False:
+			text='まだ会いましょう！$usernameさん！'
+			text = text.replace('$username',update.message.left_chat_member.first_name.encode('utf-8'))
+			bot.send_message(chat_id=update.message.chat_id,text=text)
 
 def test(bot, update):
     """Send a message when the command /test is issued."""
     bot.send_message(chat_id=update.message.chat_id, text=word_test, 
                   parse_mode=ParseMode.HTML)
 
+def mission_callback(bot,job):
+	#somaction
+	bot.send_message(chat_id='-313454366',text='做每日')
+				  
 def echo(bot, update):
     """Echo the user message."""
     bot.send_message(chat_id=update.message.chat_id, text=update.message.sticker.file_id)
@@ -200,6 +237,8 @@ def error(bot, update, error):
     """Log Errors caused by Updates."""
     logger.warning('Update "%s" caused error "%s"', update, error)
 
+def unknown(bot, update):
+	bot.send_message(chat_id=update.message.chat_id, text="すみません、よく分かりません。")
 
 ################################################
 #                   main                       #
@@ -212,6 +251,11 @@ def main():
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
 
+	#job
+	t = time(17, 20, 00, 0)#may receive from db
+	
+	job_m=updater.job_queue.run_daily(mission_callback,t)
+	
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("rule", rule))
@@ -221,15 +265,18 @@ def main():
     dp.add_handler(CommandHandler("config", config))
     dp.add_handler(CommandHandler("nanto", nanto))
     dp.add_handler(CommandHandler("test", test))
+	dp.add_handler(CommandHandler('title',title,pass_args=True))
 
     # sticker id echo
     #dp.add_handler(MessageHandler(Filters.sticker, echo))
     #dp.add_handler(MessageHandler(Filters.text, echo2))
+	dp.add_handler(MessageHandler(Filters.command, unknown))
     dp.add_handler(MessageHandler(Filters.all, aisatu))
-
+	
     # log all errors
     dp.add_error_handler(error)
-
+	
+	
     # Start the Bot
     updater.start_polling()
 
