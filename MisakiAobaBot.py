@@ -182,13 +182,15 @@ def aisatu(bot, update):
         for u in update.message.new_chat_members:
             if u.is_bot == False:
                 text='$usernameさん、ようこそ事務所へ！\n輸入 /help 可以尋求幫助'
-                text = text.replace('$username',u.first_name.encode('utf-8'))
+                # text = text.replace('$username',u.first_name.encode('utf-8'))
+                text = text.replace('$username',u.first_name)
                 bot.send_message(chat_id=update.message.chat_id,text=text)
 
     if update.message.left_chat_member != None:
         if update.message.left_chat_member.is_bot == False:
             text='まだ会いましょう！$usernameさん！'
-            text = text.replace('$username',update.message.left_chat_member.first_name.encode('utf-8'))
+            # text = text.replace('$username',update.message.left_chat_member.first_name.encode('utf-8'))
+            text = text.replace('$username',update.message.left_chat_member.first_name)
             bot.send_message(chat_id=update.message.chat_id,text=text)
 
 def test(bot, update):
