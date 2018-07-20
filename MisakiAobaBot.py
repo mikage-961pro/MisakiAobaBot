@@ -28,7 +28,8 @@ debug_mode=False
 ################################################
 # import
 from telegram import (Bot, Chat, Sticker, ReplyKeyboardMarkup, ReplyKeyboardRemove, ParseMode)
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters,JobQueue
+from datetime import datetime,time,tzinfo,timedelta
 import logging
 import time
 import os
@@ -220,6 +221,10 @@ def test(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=word_test, 
                   parse_mode=ParseMode.HTML)
 
+def mission_callback(bot,job):
+	#somaction
+	bot.send_message(chat_id='-313454366',text='做每日')
+				  
 def echo(bot, update):
     """Echo the user message."""
     bot.send_message(chat_id=update.message.chat_id, text=update.message.sticker.file_id)
@@ -246,6 +251,11 @@ def main():
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
 
+	#job
+	t = time(17, 20, 00, 0)#may receive from db
+	
+	job_m=updater.job_queue.run_daily(mission_callback,t)
+	
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("rule", rule))
