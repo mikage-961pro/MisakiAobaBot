@@ -100,7 +100,7 @@ word_nanto_3="""
 なんとっー！
 """
 word_nanto_4="""
-ただいま、スペシャルログインボーナスを开催中です♪
+ただいま、スペシャルログインボーナスを開催中です♪
 明日もログインすると、きっといいことがあると思いますよぉ～。えへへぇ♪
 """
 
@@ -157,7 +157,28 @@ def state(bot, update):
 def config(bot, update,args):
     """Send a message when the command /config is issued."""
 	text=' '.join(args)
-    bot.send_message(chat_id=update.message.chat_id, text=text+"本功能目前沒有毛用")
+    
+    if text is not ' ':
+        bot.send_message(chat_id=update.message.chat_id, text='言いたいことがあるんだよ')
+        time.sleep(1)
+        bot.send_message(chat_id=update.message.chat_id, text="やっぱり"+text+"はかわいいよ")
+        time.sleep(1)
+        bot.send_message(chat_id=update.message.chat_id, text='すきすき大好き、やっぱ好き')
+        time.sleep(1)
+        bot.send_message(chat_id=update.message.chat_id, text='やっと見つけたお姫様')
+        time.sleep(1)
+        bot.send_message(chat_id=update.message.chat_id, text='俺が生まれてきた理由')
+        time.sleep(1)
+        bot.send_message(chat_id=update.message.chat_id, text='それはお前に出会うため')
+        time.sleep(1)
+        bot.send_message(chat_id=update.message.chat_id, text='俺と一緒に人生歩もう')
+        time.sleep(1)
+        bot.send_message(chat_id=update.message.chat_id, text='世界で一番愛してる')
+        time.sleep(1)
+        bot.send_message(chat_id=update.message.chat_id, text='ア・イ・シ・テ・ル')
+        time.sleep(1)
+    else:
+        bot.send_message(chat_id=update.message.chat_id, text="本功能目前沒有毛用")
 
 def nanto(bot, update):
     """Send a message when the command /nanto is issued."""
