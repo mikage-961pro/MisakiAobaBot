@@ -34,9 +34,12 @@ from datetime import datetime,time,tzinfo,timedelta
 import logging
 import time
 import os
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 
 bot_name='@MisakiAobaBot'
 token = os.environ['TELEGRAM_TOKEN']
+spreadsheet_key=os.environ['SPREAD']
 # token will taken by heroku
 # Please use test token when dev
 # WARNING!!! Please use quarter space instead of tab
@@ -127,6 +130,29 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 logger = logging.getLogger(__name__)
 
+################################################
+#                   tool kits                  #
+################################################
+def c_tz(datetime,tz)
+    t=datetime+timedelta(hours=tz)#轉換時區 tz為加減小時
+    return t#datetime object
+scope = ['https://spreadsheets.google.com/feeds']
+creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
+#got from google api
+#attach mine for example
+#try to set in environ values but got fail
+client = gspread.authorize(creds)
+sheet = client.open_by_key(spreadsheet_key).sheet1
+#key of spread sheet
+def get_cell(key_word,sheet):
+    try:
+        cell=sheet.find(key_word)
+    except:#not find
+        return None
+    else:
+        return cell
+#def set_cell(value,cell,sheet):
+#    sheet.update_cell(cell.row,cell.col,value)
 ################################################
 #                   command                    #
 ################################################
@@ -285,7 +311,7 @@ def main():
 	#jobs
 	#t may give by db later
 	dp = updater.dispatcher
-	t = time(23, 30, 00, 0)-timedelta(hours=9)
+	t = datetime(23, 30, 00, 0)-timedelta(hours=9)
 	job_m=updater.job_queue.run_daily(mission_callback,t)
  
 
