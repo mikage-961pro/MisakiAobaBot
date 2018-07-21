@@ -133,7 +133,7 @@ logger = logging.getLogger(__name__)
 ################################################
 #                   tool kits                  #
 ################################################
-def c_tz(datetime,tz)
+def c_tz(datetime,tz):
     t=datetime+timedelta(hours=tz)#轉換時區 tz為加減小時
     return t#datetime object
 scope = ['https://spreadsheets.google.com/feeds']
@@ -324,12 +324,7 @@ def main():
     #jobs
     #t may give by db later
     dp = updater.dispatcher
-<<<<<<< HEAD
-    """
-    t = deltatime.time(23, 30, 00, 0)-deltatime.timedelta(hours=9)
-=======
     t = datetime(23, 30, 00, 0)-timedelta(hours=9)
->>>>>>> 3e723c2394717bbe82064f8d358e2483bfb89560
     job_m=updater.job_queue.run_daily(mission_callback,t)
 
 
