@@ -1,6 +1,6 @@
 # coding=utf-8
 
-#BotFather-commend setting
+# BotFather-commend setting
 """
 start-我是765事務所的事務員，青羽美咲
 help-由青羽小姐提供您幫助
@@ -11,7 +11,7 @@ tbgame-765プロゲーム部入口，進去跟大家玩桌遊吧
 nanto-なんとぉ！
 """
 
-#dev
+# dev
 """
 〖開發目標〗
 ！使用者指令與自主函式分隔(使用者指令 vs timer(自動控制用))
@@ -297,7 +297,7 @@ def main():
 	#jobs
 	#t may give by db later
     dp = updater.dispatcher
-    t = time.time(23, 30, 00, 0)-timedelta(hours=9)
+    t = datetime.time(23, 30, 00, 0)-timedelta(hours=9)
     job_m=updater.job_queue.run_daily(mission_callback,t)
  
 
