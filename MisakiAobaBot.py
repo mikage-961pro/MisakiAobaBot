@@ -154,6 +154,16 @@ def get_cell(key_word,sheet):
         return cell
 #def set_cell(value,cell,sheet):
 #    sheet.update_cell(cell.row,cell.col,value)
+
+def is_admin(bot,update):
+    #bool func to check auth
+    adminlist=update.message.chat.get_administrators()
+    is_admin=False
+    for i in adminlist:
+        if update.message.from_user.id==i.user.id:
+            is_admin=True
+    return is_admin
+
 ################################################
 #                   command                    #
 ################################################
