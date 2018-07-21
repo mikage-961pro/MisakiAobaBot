@@ -297,7 +297,7 @@ def main():
 	#jobs
 	#t may give by db later
     dp = updater.dispatcher
-    t = time(23, 30, 00, 0)-timedelta(hours=9)
+    t = time.time(23, 30, 00, 0)-timedelta(hours=9)
     job_m=updater.job_queue.run_daily(mission_callback,t)
  
 
