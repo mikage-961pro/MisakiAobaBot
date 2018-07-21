@@ -30,7 +30,8 @@ nanto-なんとぉ！
 # import
 from telegram import (Bot, Chat, Sticker, ReplyKeyboardMarkup, ReplyKeyboardRemove, ParseMode)
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters,JobQueue
-from datetime import datetime,time,tzinfo,timedelta
+from datetime import datetime,tzinfo,timedelta
+from datetime import time as stime#specific time
 import logging
 import time
 import os
@@ -324,7 +325,7 @@ def main():
     #jobs
     #t may give by db later
     dp = updater.dispatcher
-    t = datetime(23, 30, 00, 0)-timedelta(hours=9)
+    t = stime(15,30)
     job_m=updater.job_queue.run_daily(mission_callback,t)
 
 
