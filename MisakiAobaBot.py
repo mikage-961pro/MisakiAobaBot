@@ -1,6 +1,6 @@
 # coding=utf-8
 
-#BotFather-commend setting
+# BotFather-commend setting
 """
 start-我是765事務所的事務員，青羽美咲
 help-由青羽小姐提供您幫助
@@ -11,7 +11,7 @@ tbgame-765プロゲーム部入口，進去跟大家玩桌遊吧
 nanto-なんとぉ！
 """
 
-#dev
+# dev
 """
 〖開發目標〗
 ！使用者指令與自主函式分隔(使用者指令 vs timer(自動控制用))
@@ -278,6 +278,18 @@ def test(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=word_test, 
                   parse_mode=ParseMode.HTML)
 
+def notiger(bot, update):
+    """Send a message when the command /notiger is issued."""
+    word_notiger="""
+    <pre>    ジャンプをしない！
+    ミックスしない！
+    クラップしない！～叫ばない！
+    マナーを守ろう ｲｪｯﾀｲｶﾞｰ！
+    ﾀｲｶﾞｰ!ﾌｧｲﾔｰ!ｻｲﾊﾞｰ!ﾌｧｲﾊﾞｰ!ﾀﾞｲﾊﾞｰ!ﾊﾞｲﾊﾞｰ!ｼﾞｬｰｼﾞｬｰ!!</pre>
+    """
+    bot.send_message(chat_id=update.message.chat_id, text=word_notiger, 
+                  parse_mode=ParseMode.HTML)
+
 def mission_callback(bot,job):
     #somaction
     bot.send_message(chat_id='-313454366',text='做每日')
@@ -308,11 +320,14 @@ def main():
 
     # Get the dispatcher to register handlers
     
+
     #jobs
     #t may give by db later
     dp = updater.dispatcher
     t = datetime(23, 30, 00, 0)-timedelta(hours=9)
     job_m=updater.job_queue.run_daily(mission_callback,t)
+
+
  
 
     
@@ -325,6 +340,7 @@ def main():
     dp.add_handler(CommandHandler("config", config,pass_args=True))
     dp.add_handler(CommandHandler("nanto", nanto))
     dp.add_handler(CommandHandler("test", test))
+    dp.add_handler(CommandHandler("notiger", notiger))
     # dp.add_handler(CommandHandler("title", title, pass_args=True))
 
     # sticker id echo
