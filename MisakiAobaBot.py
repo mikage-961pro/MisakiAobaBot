@@ -338,7 +338,7 @@ def main():
     dp.add_handler(CommandHandler("tbgame", tbgame))
     dp.add_handler(CommandHandler("state", state))
     dp.add_handler(CommandHandler("config", config,pass_args=True))
-    dp.add_handler(CommandHandler("nanto", nanto))
+    dp.add_handler(CommandHandler("nanto", nanto)
     dp.add_handler(CommandHandler("test", test))
     dp.add_handler(CommandHandler("notiger", notiger))
     # dp.add_handler(CommandHandler("title", title, pass_args=True))
