@@ -211,8 +211,7 @@ def config(bot, update,args):
     
     ア・イ・シ・テ・ル</pre>
     """
-    if not args:
-        bot.send_message(chat_id=update.message.chat_id, text="本功能目前沒有毛用")
+    
     word_1=word_1.replace('$name',' '.join(args))
     t=' '.join(args)
     
