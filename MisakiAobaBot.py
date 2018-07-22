@@ -1,6 +1,6 @@
 # coding=utf-8
 
-#BotFather-commend setting
+# BotFather-commend setting
 """
 start-我是765事務所的事務員，青羽美咲
 help-由青羽小姐提供您幫助
@@ -11,7 +11,7 @@ tbgame-765プロゲーム部入口，進去跟大家玩桌遊吧
 nanto-なんとぉ！
 """
 
-#dev
+# dev
 """
 〖開發目標〗
 ！使用者指令與自主函式分隔(使用者指令 vs timer(自動控制用))
@@ -30,13 +30,17 @@ nanto-なんとぉ！
 # import
 from telegram import (Bot, Chat, Sticker, ReplyKeyboardMarkup, ReplyKeyboardRemove, ParseMode)
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters,JobQueue
-from datetime import datetime,time,tzinfo,timedelta
+from datetime import datetime,tzinfo,timedelta
+from datetime import time as stime#specific time
 import logging
 import time
 import os
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 
 bot_name='@MisakiAobaBot'
 token = os.environ['TELEGRAM_TOKEN']
+spreadsheet_key=os.environ['SPREAD']
 # token will taken by heroku
 # Please use test token when dev
 # WARNING!!! Please use quarter space instead of tab
@@ -128,6 +132,39 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 ################################################
+#                   tool kits                  #
+################################################
+def c_tz(datetime,tz)
+    t=datetime+timedelta(hours=tz)#轉換時區 tz為加減小時
+    return t#datetime object
+scope = ['https://spreadsheets.google.com/feeds']
+creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
+#got from google api
+#attach mine for example
+#try to set in environ values but got fail
+client = gspread.authorize(creds)
+sheet = client.open_by_key(spreadsheet_key)
+#key of spread sheet
+def get_cell(key_word,worksheet):
+    try:
+        cell=worksheet.find(key_word)
+    except:#not find
+        return None
+    else:
+        return cell
+#def set_cell(value,cell,sheet):
+#    sheet.update_cell(cell.row,cell.col,value)
+
+def is_admin(bot,update):
+    #bool func to check auth
+    adminlist=update.message.chat.get_administrators()
+    is_admin=False
+    for i in adminlist:
+        if update.message.from_user.id==i.user.id:
+            is_admin=True
+    return is_admin
+
+################################################
 #                   command                    #
 ################################################
 def start(bot, update):
@@ -174,6 +211,7 @@ def config(bot, update,args):
     
     ア・イ・シ・テ・ル</pre>
     """
+    
     word_1=word_1.replace('$name',' '.join(args))
     t=' '.join(args)
     
@@ -202,34 +240,52 @@ def nanto(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=word_nanto_4)
 
 def title(bot,update,args):
-	title = ' '.join(args)
-	adminlist=update.message.chat.get_administrators()
-	is_admin=False
-	
-	me=bot.get_me()
-	bot_auth=False
-	
-	for i in adminlist:
-		if update.message.from_user.id==i.user.id:
-			is_admin=True
-			
-	for b in adminlist:
-			if me.id==b.user.id:
-				bot_auth=True
-	
-	if is_admin==True:
-		if bot_auth==True:
-			bot.set_chat_title(chat_id=update.message.chat_id, title=title)
-			bot.send_message(chat_id=update.message.chat_id,text='できました！！')
-		else:
-			bot.send_message(chat_id=update.message.chat_id,text='失敗しました、能力不足ですね')
-		
-	else:
-		bot.send_message(chat_id=update.message.chat_id,text='申し訳ございませんが、このコマンドは、管理者しか使いません\nOops!Only admin can change title.')
+    title = ' '.join(args)
+    adminlist=update.message.chat.get_administrators()
+    is_admin=False
+    
+    me=bot.get_me()
+    bot_auth=False
+    
+    for i in adminlist:
+        if update.message.from_user.id==i.user.id:
+            is_admin=True
+            
+    for b in adminlist:
+            if me.id==b.user.id:
+                bot_auth=True
+    
+    if is_admin==True:
+        if bot_auth==True:
+            bot.set_chat_title(chat_id=update.message.chat_id, title=title)
+            bot.send_message(chat_id=update.message.chat_id,text='できました！！')
+        else:
+            bot.send_message(chat_id=update.message.chat_id,text='失敗しました、能力不足ですね')
+        
+    else:
+        bot.send_message(chat_id=update.message.chat_id,text='申し訳ございませんが、このコマンドは、管理者しか使いません\nOops!Only admin can change title.')
 
 #mention that bot need to be an admin of sgroup
 #should change automatically and get title from DB,though JOBquece
 #function for test
+
+def set_remind_time(bot,update,args):
+    #do not test public cause there's no auth check yet
+    #check auth
+    #if is_admin(bot,update)==True:
+    if not args:
+        return
+    
+    text=' '.join(args)
+    l_text=text.split('%%')
+    tsheet=sheet.worksheet('name')
+    cell=get_cell(l_text[0],tsheet)
+    if cell==None:
+        tsheet.insert_row([l_text[0],l_text[1],l_text[2],update.message.from_user.id], 2)
+    else:
+        tsheet.update_cell(cell.row,cell.col+1,l_text[1])
+        tsheet.update_cell(cell.row,cell.col+2,l_text[2])
+        tsheet.update_cell(cell.row,cell.col+3,update.message.from_user.id)
 
 def aisatu(bot, update):
     if update.message.new_chat_members != None:
@@ -252,10 +308,22 @@ def test(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=word_test, 
                   parse_mode=ParseMode.HTML)
 
+def notiger(bot, update):
+    """Send a message when the command /notiger is issued."""
+    word_notiger="""
+    <pre>    ジャンプをしない！
+    ミックスしない！
+    クラップしない！～叫ばない！
+    マナーを守ろう ｲｪｯﾀｲｶﾞｰ！
+    ﾀｲｶﾞｰ!ﾌｧｲﾔｰ!ｻｲﾊﾞｰ!ﾌｧｲﾊﾞｰ!ﾀﾞｲﾊﾞｰ!ﾊﾞｲﾊﾞｰ!ｼﾞｬｰｼﾞｬｰ!!</pre>
+    """
+    bot.send_message(chat_id=update.message.chat_id, text=word_notiger, 
+                  parse_mode=ParseMode.HTML)
+
 def mission_callback(bot,job):
-	#somaction
-	bot.send_message(chat_id='-313454366',text='做每日')
-				  
+    #somaction
+    bot.send_message(chat_id='-313454366',text='做每日')
+                  
 def echo(bot, update):
     """Echo the user message."""
     bot.send_message(chat_id=update.message.chat_id, text=update.message.sticker.file_id)
@@ -281,20 +349,18 @@ def main():
     updater = Updater(token)
 
     # Get the dispatcher to register handlers
-    dp = updater.dispatcher
-
-    """
-    time function is not callable on server
-    please fix it
     
-	# job
-    # t = time(17, 20, 00, 0)
-    # may receive from db
-	
-    # job_m=updater.job_queue.run_daily(mission_callback,t)
-    """
 
-	
+    #jobs
+    #t may give by db later
+    dp = updater.dispatcher
+    t = stime(15,30)
+    job_m=updater.job_queue.run_daily(mission_callback,t)
+
+
+ 
+
+    
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("rule", rule))
@@ -302,8 +368,10 @@ def main():
     dp.add_handler(CommandHandler("tbgame", tbgame))
     dp.add_handler(CommandHandler("state", state))
     dp.add_handler(CommandHandler("config", config,pass_args=True))
+    dp.add_handler(CommandHandler("set_remind_time",set_remind_time,pass_args=True)
     dp.add_handler(CommandHandler("nanto", nanto))
     dp.add_handler(CommandHandler("test", test))
+    dp.add_handler(CommandHandler("notiger", notiger))
     # dp.add_handler(CommandHandler("title", title, pass_args=True))
 
     # sticker id echo
@@ -311,11 +379,11 @@ def main():
     #dp.add_handler(MessageHandler(Filters.text, echo2))
     dp.add_handler(MessageHandler(Filters.command, unknown))
     dp.add_handler(MessageHandler(Filters.all, aisatu))
-	
+    
     # log all errors
     dp.add_error_handler(error)
-	
-	
+    
+    
     # Start the Bot
     updater.start_polling()
 
