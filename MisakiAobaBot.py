@@ -173,7 +173,8 @@ def start(bot, update):
 
 def help(bot, update):
     """Send a message when the command /help is issued."""
-    bot.send_message(chat_id=update.message.chat_id, text=word_help)
+    bot.send_message(chat_id=update.message.chat_id, text=word_help, 
+                    parse_mode=ParseMode.HTML)
 
 def tbgame(bot, update):
     """Send a message when the command /tbgame is issued."""
@@ -324,7 +325,7 @@ def notiger(bot, update):
 
 def mission_callback(bot,job):
     # somaction
-    
+
     # 玩人狼玩到忘記每日
     bot.send_message(chat_id='-1001290696540',text='做每日')
                   
