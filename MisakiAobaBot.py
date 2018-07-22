@@ -40,7 +40,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 bot_name='@MisakiAobaBot'
 token = os.environ['TELEGRAM_TOKEN']
-spreadsheet_key=os.environ['SPREAD']
+spreadsheet_key=os.environ['SPREAD_TOKEN']
 # token will taken by heroku
 # Please use test token when dev
 # WARNING!!! Please use quarter space instead of tab
