@@ -50,11 +50,6 @@ spreadsheet_key=os.environ['SPREAD_TOKEN']
 
 word_start = """青羽美咲です！宜しくお願い致します！
 尋求幫助 - /help
-
-みんなのアカウント
-<a href="https://twitter.com/imasml_theater">〔ML〕</a>
-<a href="https://twitter.com/imassc_official">〔SC〕</a>
-<a href="https://twitter.com/imascg_stage">〔CG〕</a>
 """
 
 word_help = """
@@ -63,7 +58,16 @@ word_help = """
 /state - 群狀態
 /config - 設定
 /tbgame - 765プロゲーム部入口，進去跟大家玩桌遊吧
-/nanto - なんとぉ！
+/nanto - なんとっ！
+
+【みんなのリンク】
+<a href="https://t.me/joinchat/J-IqLA__7_O6N5_ED8jWHQ">〔765技術部〕</a>
+技術部開放對BOT的意見以及回饋
+<a href="https://t.me/joinchat/IFtWTxKu7x6vuSK8HsFgsQ">〔SC TELE討論群〕</a>
+
+<a href="https://twitter.com/imasml_theater">〔ML〕</a>
+<a href="https://twitter.com/imassc_official">〔SC〕</a>
+<a href="https://twitter.com/imascg_stage">〔CG〕</a>
 """
 word_rule = """
 　　　　<b>【台湾アイマスTelegram鯖ルール】</b>
@@ -93,6 +97,7 @@ word_rule = """
 
 word_tbgame="""
 <a href="https://t.me/joinchat/IFtWTxKG_KG-500YZBBnDA">〔765プロゲーム部♞〕</a>
+<a href="https://memories.millimas.info/game_center">〔GREEMAS小遊戲〕</a>
 """
 
 word_nanto_1="""
@@ -119,7 +124,7 @@ word_test="""
 """
 
 word_state="""
-版本：Alpha.0.2
+版本：Alpha.0.3
 開發者：Dephilia（蝶芙）
 telegramID:@Dephilia
 <a href="https://www.plurk.com/Dephillia">〔噗浪〕</a>
@@ -165,7 +170,6 @@ def start(bot, update):
     """Send a message when the command /start is issued."""
     bot.send_message(chat_id=update.message.chat_id, text=word_start,
                     parse_mode=ParseMode.HTML)
-    #update.message.reply_text(word_start)
 
 def help(bot, update):
     """Send a message when the command /help is issued."""
@@ -227,8 +231,6 @@ def nanto(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=word_nanto_2)
     time.sleep(0.5)
     bot.send_sticker(chat_id=update.message.chat_id, sticker="CAADBQADGgADT1ZbIFSw_UAI28HiAg")
-    # id=nanto sticker
-    #bot.send_message(chat_id=update.message.chat_id, text=word_nanto_3)
     time.sleep(2)
     bot.send_message(chat_id=update.message.chat_id, text=word_nanto_4)
 
@@ -321,8 +323,10 @@ def notiger(bot, update):
                   parse_mode=ParseMode.HTML)
 
 def mission_callback(bot,job):
-    #somaction
-    bot.send_message(chat_id='-313454366',text='做每日')
+    # somaction
+    
+    # 玩人狼玩到忘記每日
+    bot.send_message(chat_id='-1001290696540',text='做每日')
                   
 def echo(bot, update):
     """Echo the user message."""
@@ -345,22 +349,19 @@ def unknown(bot, update):
 ################################################
 def main():
     """Start the bot."""
-    #TOKEN
+    # ---TOKEN---
     updater = Updater(token)
 
     # Get the dispatcher to register handlers
-    
-
-    #jobs
-    #t may give by db later
     dp = updater.dispatcher
-    t = stime(15,30)
-    job_m=updater.job_queue.run_daily(mission_callback,t)
 
+    # <function start>
 
- 
+    # ---daily jobs---
+    # mission_callback every 22:30 daily
+    job_m=updater.job_queue.run_daily(mission_callback,stime(14,30))
 
-    
+    # ---Command answer---
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("rule", rule))
@@ -374,15 +375,16 @@ def main():
     dp.add_handler(CommandHandler("notiger", notiger))
     # dp.add_handler(CommandHandler("title", title, pass_args=True))
 
-    # sticker id echo
+    # ---Message answer---
     #dp.add_handler(MessageHandler(Filters.sticker, echo))
     #dp.add_handler(MessageHandler(Filters.text, echo2))
-    dp.add_handler(MessageHandler(Filters.command, unknown))
+    #dp.add_handler(MessageHandler(Filters.command, unknown))
     dp.add_handler(MessageHandler(Filters.all, aisatu))
     
+    # <function end>
+
     # log all errors
     dp.add_error_handler(error)
-    
     
     # Start the Bot
     updater.start_polling()
