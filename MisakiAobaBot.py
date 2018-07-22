@@ -367,13 +367,9 @@ def main():
     dp.add_handler(CommandHandler("help", help))
     dp.add_handler(CommandHandler("tbgame", tbgame))
     dp.add_handler(CommandHandler("state", state))
-    dp.add_handler(CommandHandler("config", config,pass_args=True))
-<<<<<<< HEAD
-    dp.add_handler(CommandHandler("nanto", nanto)
-=======
-    dp.add_handler(CommandHandler("set_remind_time",set_remind_time,pass_args=True)
+    dp.add_handler(CommandHandler("config", config, pass_args=True))
+    dp.add_handler(CommandHandler("set_remind_time", set_remind_time, pass_args=True))
     dp.add_handler(CommandHandler("nanto", nanto))
->>>>>>> f88531053c54862eff5222c356e929a997bcc0f0
     dp.add_handler(CommandHandler("test", test))
     dp.add_handler(CommandHandler("notiger", notiger))
     # dp.add_handler(CommandHandler("title", title, pass_args=True))
