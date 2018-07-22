@@ -137,13 +137,7 @@ logger = logging.getLogger(__name__)
 def c_tz(datetime,tz)
     t=datetime+timedelta(hours=tz)#轉換時區 tz為加減小時
     return t#datetime object
-scope = ['https://spreadsheets.google.com/feeds']
-creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
-#got from google api
-#attach mine for example
-#try to set in environ values but got fail
-client = gspread.authorize(creds)
-sheet = client.open_by_key(spreadsheet_key)
+
 #key of spread sheet
 def get_cell(key_word,worksheet):
     try:
@@ -215,9 +209,8 @@ def config(bot, update,args):
     word_1=word_1.replace('$name',' '.join(args))
     t=' '.join(args)
     if not args:
-		bot.send_message(chat_id=update.message.chat_id, text="本功能目前沒有毛用")
-		return
-    if t is not ' ':
+        bot.send_message(chat_id=update.message.chat_id, text="本功能目前沒有毛用")
+    else:
         bot.send_message(chat_id=update.message.chat_id, text=word_1,
         parse_mode=ParseMode.HTML)
         time.sleep(9)
@@ -226,8 +219,6 @@ def config(bot, update,args):
         time.sleep(9)
         bot.send_message(chat_id=update.message.chat_id, text=word_3,
         parse_mode=ParseMode.HTML)
-    else:
-        bot.send_message(chat_id=update.message.chat_id, text="本功能目前沒有毛用")
 
 def nanto(bot, update):
     """Send a message when the command /nanto is issued."""
@@ -275,7 +266,14 @@ def set_remind_time(bot,update,args):
     #do not test public cause there's no auth check yet
     #check auth
     #if is_admin(bot,update)==True:
-    if not args:
+    scope = ['https://spreadsheets.google.com/feeds']
+	creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
+	#got from google api
+	#attach mine for example
+	#try to set in environ values but got fail
+	client = gspread.authorize(creds)
+	sheet = client.open_by_key(spreadsheet_key)
+	if not args:
         return
     
     text=' '.join(args)
