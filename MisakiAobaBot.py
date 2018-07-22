@@ -134,7 +134,7 @@ logger = logging.getLogger(__name__)
 ################################################
 #                   tool kits                  #
 ################################################
-def c_tz(datetime,tz)
+def c_tz(datetime,tz):
     t=datetime+timedelta(hours=tz)#轉換時區 tz為加減小時
     return t#datetime object
 
