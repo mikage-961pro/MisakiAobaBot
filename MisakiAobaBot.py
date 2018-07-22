@@ -30,7 +30,8 @@ nanto-なんとぉ！
 # import
 from telegram import (Bot, Chat, Sticker, ReplyKeyboardMarkup, ReplyKeyboardRemove, ParseMode)
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters,JobQueue
-from datetime import datetime,time,tzinfo,timedelta
+from datetime import datetime,tzinfo,timedelta
+from datetime import time as stime#specific time
 import logging
 import time
 import os
@@ -136,23 +137,27 @@ logger = logging.getLogger(__name__)
 def c_tz(datetime,tz):
     t=datetime+timedelta(hours=tz)#轉換時區 tz為加減小時
     return t#datetime object
-scope = ['https://spreadsheets.google.com/feeds']
-creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
-#got from google api
-#attach mine for example
-#try to set in environ values but got fail
-client = gspread.authorize(creds)
-sheet = client.open_by_key(spreadsheet_key).sheet1
+
 #key of spread sheet
-def get_cell(key_word,sheet):
+def get_cell(key_word,worksheet):
     try:
-        cell=sheet.find(key_word)
+        cell=worksheet.find(key_word)
     except:#not find
         return None
     else:
         return cell
 #def set_cell(value,cell,sheet):
 #    sheet.update_cell(cell.row,cell.col,value)
+
+def is_admin(bot,update):
+    #bool func to check auth
+    adminlist=update.message.chat.get_administrators()
+    is_admin=False
+    for i in adminlist:
+        if update.message.from_user.id==i.user.id:
+            is_admin=True
+    return is_admin
+
 ################################################
 #                   command                    #
 ################################################
@@ -200,10 +205,12 @@ def config(bot, update,args):
     
     ア・イ・シ・テ・ル</pre>
     """
+    
     word_1=word_1.replace('$name',' '.join(args))
     t=' '.join(args)
-    
-    if t is not ' ':
+    if not args:
+        bot.send_message(chat_id=update.message.chat_id, text="本功能目前沒有毛用")
+    else:
         bot.send_message(chat_id=update.message.chat_id, text=word_1,
         parse_mode=ParseMode.HTML)
         time.sleep(9)
@@ -212,8 +219,6 @@ def config(bot, update,args):
         time.sleep(9)
         bot.send_message(chat_id=update.message.chat_id, text=word_3,
         parse_mode=ParseMode.HTML)
-    else:
-        bot.send_message(chat_id=update.message.chat_id, text="本功能目前沒有毛用")
 
 def nanto(bot, update):
     """Send a message when the command /nanto is issued."""
@@ -256,6 +261,31 @@ def title(bot,update,args):
 #mention that bot need to be an admin of sgroup
 #should change automatically and get title from DB,though JOBquece
 #function for test
+
+def set_remind_time(bot,update,args):
+    #do not test public cause there's no auth check yet
+    #check auth
+    #if is_admin(bot,update)==True:
+    scope = ['https://spreadsheets.google.com/feeds']
+    creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
+    #got from google api
+    #attach mine for example
+    #try to set in environ values but got fail
+    client = gspread.authorize(creds)
+    sheet = client.open_by_key(spreadsheet_key)
+    if not args:
+        return
+    
+    text=' '.join(args)
+    l_text=text.split('%%')
+    tsheet=sheet.worksheet('name')
+    cell=get_cell(l_text[0],tsheet)
+    if cell==None:
+        tsheet.insert_row([l_text[0],l_text[1],l_text[2],update.message.from_user.id], 2)
+    else:
+        tsheet.update_cell(cell.row,cell.col+1,l_text[1])
+        tsheet.update_cell(cell.row,cell.col+2,l_text[2])
+        tsheet.update_cell(cell.row,cell.col+3,update.message.from_user.id)
 
 def aisatu(bot, update):
     if update.message.new_chat_members != None:
@@ -324,7 +354,7 @@ def main():
     #jobs
     #t may give by db later
     dp = updater.dispatcher
-    t = datetime(23, 30, 00, 0)-timedelta(hours=9)
+    t = stime(15,30)
     job_m=updater.job_queue.run_daily(mission_callback,t)
 
 
@@ -338,6 +368,7 @@ def main():
     dp.add_handler(CommandHandler("tbgame", tbgame))
     dp.add_handler(CommandHandler("state", state))
     dp.add_handler(CommandHandler("config", config,pass_args=True))
+    dp.add_handler(CommandHandler("set_remind_time",set_remind_time,pass_args=True)
     dp.add_handler(CommandHandler("nanto", nanto))
     dp.add_handler(CommandHandler("test", test))
     dp.add_handler(CommandHandler("notiger", notiger))
