@@ -34,9 +34,12 @@ from datetime import datetime,time,tzinfo,timedelta
 import logging
 import time
 import os
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 
 bot_name='@MisakiAobaBot'
 token = os.environ['TELEGRAM_TOKEN']
+spreadsheet_key=os.environ['SPREAD']
 # token will taken by heroku
 # Please use test token when dev
 # WARNING!!! Please use quarter space instead of tab
@@ -128,6 +131,29 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 ################################################
+#                   tool kits                  #
+################################################
+def c_tz(datetime,tz):
+    t=datetime+timedelta(hours=tz)#轉換時區 tz為加減小時
+    return t#datetime object
+scope = ['https://spreadsheets.google.com/feeds']
+creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
+#got from google api
+#attach mine for example
+#try to set in environ values but got fail
+client = gspread.authorize(creds)
+sheet = client.open_by_key(spreadsheet_key).sheet1
+#key of spread sheet
+def get_cell(key_word,sheet):
+    try:
+        cell=sheet.find(key_word)
+    except:#not find
+        return None
+    else:
+        return cell
+#def set_cell(value,cell,sheet):
+#    sheet.update_cell(cell.row,cell.col,value)
+################################################
 #                   command                    #
 ################################################
 def start(bot, update):
@@ -202,30 +228,30 @@ def nanto(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=word_nanto_4)
 
 def title(bot,update,args):
-	title = ' '.join(args)
-	adminlist=update.message.chat.get_administrators()
-	is_admin=False
-	
-	me=bot.get_me()
-	bot_auth=False
-	
-	for i in adminlist:
-		if update.message.from_user.id==i.user.id:
-			is_admin=True
-			
-	for b in adminlist:
-			if me.id==b.user.id:
-				bot_auth=True
-	
-	if is_admin==True:
-		if bot_auth==True:
-			bot.set_chat_title(chat_id=update.message.chat_id, title=title)
-			bot.send_message(chat_id=update.message.chat_id,text='できました！！')
-		else:
-			bot.send_message(chat_id=update.message.chat_id,text='失敗しました、能力不足ですね')
-		
-	else:
-		bot.send_message(chat_id=update.message.chat_id,text='申し訳ございませんが、このコマンドは、管理者しか使いません\nOops!Only admin can change title.')
+    title = ' '.join(args)
+    adminlist=update.message.chat.get_administrators()
+    is_admin=False
+    
+    me=bot.get_me()
+    bot_auth=False
+    
+    for i in adminlist:
+        if update.message.from_user.id==i.user.id:
+            is_admin=True
+            
+    for b in adminlist:
+            if me.id==b.user.id:
+                bot_auth=True
+    
+    if is_admin==True:
+        if bot_auth==True:
+            bot.set_chat_title(chat_id=update.message.chat_id, title=title)
+            bot.send_message(chat_id=update.message.chat_id,text='できました！！')
+        else:
+            bot.send_message(chat_id=update.message.chat_id,text='失敗しました、能力不足ですね')
+        
+    else:
+        bot.send_message(chat_id=update.message.chat_id,text='申し訳ございませんが、このコマンドは、管理者しか使いません\nOops!Only admin can change title.')
 
 #mention that bot need to be an admin of sgroup
 #should change automatically and get title from DB,though JOBquece
@@ -265,9 +291,9 @@ def notiger(bot, update):
                   parse_mode=ParseMode.HTML)
 
 def mission_callback(bot,job):
-	#somaction
-	bot.send_message(chat_id='-313454366',text='做每日')
-				  
+    #somaction
+    bot.send_message(chat_id='-313454366',text='做每日')
+                  
 def echo(bot, update):
     """Echo the user message."""
     bot.send_message(chat_id=update.message.chat_id, text=update.message.sticker.file_id)
@@ -294,16 +320,17 @@ def main():
 
     # Get the dispatcher to register handlers
     
-	#jobs
-	#t may give by db later
+
+    #jobs
+    #t may give by db later
     dp = updater.dispatcher
-    """
-    t = time(23, 30, 00, 0)-timedelta(hours=9)
+    t = datetime(23, 30, 00, 0)-timedelta(hours=9)
     job_m=updater.job_queue.run_daily(mission_callback,t)
-    """
+
+
  
 
-	
+    
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("rule", rule))
@@ -321,11 +348,11 @@ def main():
     #dp.add_handler(MessageHandler(Filters.text, echo2))
     dp.add_handler(MessageHandler(Filters.command, unknown))
     dp.add_handler(MessageHandler(Filters.all, aisatu))
-	
+    
     # log all errors
     dp.add_error_handler(error)
-	
-	
+    
+    
     # Start the Bot
     updater.start_polling()
 
