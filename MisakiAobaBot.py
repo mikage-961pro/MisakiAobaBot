@@ -143,11 +143,11 @@ creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
 #attach mine for example
 #try to set in environ values but got fail
 client = gspread.authorize(creds)
-sheet = client.open_by_key(spreadsheet_key).sheet1
+sheet = client.open_by_key(spreadsheet_key)
 #key of spread sheet
-def get_cell(key_word,sheet):
+def get_cell(key_word,worksheet):
     try:
-        cell=sheet.find(key_word)
+        cell=worksheet.find(key_word)
     except:#not find
         return None
     else:
@@ -268,6 +268,24 @@ def title(bot,update,args):
 #should change automatically and get title from DB,though JOBquece
 #function for test
 
+def set_remind_time(bot,update,args):
+	#do not test public cause there's no auth check yet
+	#check auth
+	#if is_admin(bot,update)==True:
+	if not args:
+		return
+	
+	text=''.join(args)
+	l_text=text.split('%%')
+	tsheet=sheet.worksheet('name')
+	cell=get_cell(l_text[0],tsheet)
+	if cell==None:
+		tsheet.insert_row([l_text[0],l_text[1],l_text[2],update.message.from_user.id], 2)
+	else:
+		tsheet.update_cell(cell.row,cell.col+1,l_text[1])
+		tsheet.update_cell(cell.row,cell.col+2,l_text[2])
+		tsheet.update_cell(cell.row,cell.col+3,update.message.from_user.id)
+
 def aisatu(bot, update):
     if update.message.new_chat_members != None:
         for u in update.message.new_chat_members:
@@ -349,6 +367,7 @@ def main():
     dp.add_handler(CommandHandler("tbgame", tbgame))
     dp.add_handler(CommandHandler("state", state))
     dp.add_handler(CommandHandler("config", config,pass_args=True))
+	dp.add_handler(CommandHandler("set_remind_time",set_remind_time,pass_args=True)
     dp.add_handler(CommandHandler("nanto", nanto))
     dp.add_handler(CommandHandler("test", test))
     dp.add_handler(CommandHandler("notiger", notiger))
