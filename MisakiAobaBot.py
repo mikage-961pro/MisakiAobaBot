@@ -267,13 +267,13 @@ def set_remind_time(bot,update,args):
     #check auth
     #if is_admin(bot,update)==True:
     scope = ['https://spreadsheets.google.com/feeds']
-	creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
-	#got from google api
-	#attach mine for example
-	#try to set in environ values but got fail
-	client = gspread.authorize(creds)
-	sheet = client.open_by_key(spreadsheet_key)
-	if not args:
+    creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
+    #got from google api
+    #attach mine for example
+    #try to set in environ values but got fail
+    client = gspread.authorize(creds)
+    sheet = client.open_by_key(spreadsheet_key)
+    if not args:
         return
     
     text=' '.join(args)
