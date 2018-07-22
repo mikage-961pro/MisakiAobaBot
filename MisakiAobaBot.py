@@ -61,13 +61,12 @@ word_help = """
 /nanto - なんとっ！
 
 【みんなのリンク】
-<a href="https://t.me/joinchat/J-IqLA__7_O6N5_ED8jWHQ">〔765技術部〕</a>
+<a href="https://t.me/joinchat/IFtWTxKu7x6vuSK8HsFgsQ">〔765技術部〕</a>
 技術部開放對BOT的意見以及回饋
-<a href="https://t.me/joinchat/IFtWTxKu7x6vuSK8HsFgsQ">〔SC TELE討論群〕</a>
-
-<a href="https://twitter.com/imasml_theater">〔ML〕</a>
-<a href="https://twitter.com/imassc_official">〔SC〕</a>
-<a href="https://twitter.com/imascg_stage">〔CG〕</a>
+<a href="https://t.me/joinchat/J-IqLA__7_O6N5_ED8jWHQ">〔SC TELE討論群〕</a>
+<a href="https://twitter.com/imasml_theater">〔ML Twitter〕</a>
+<a href="https://twitter.com/imassc_official">〔SC Twitter〕</a>
+<a href="https://twitter.com/imascg_stage">〔CG Twitter〕</a>
 """
 word_rule = """
 　　　　<b>【台湾アイマスTelegram鯖ルール】</b>
