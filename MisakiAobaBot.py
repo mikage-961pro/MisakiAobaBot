@@ -213,8 +213,10 @@ def config(bot, update,args):
     """
     if not args:
         bot.send_message(chat_id=update.message.chat_id, text="本功能目前沒有毛用")
-    else:
-        word_1=word_1.replace('$name',' '.join(args))
+    word_1=word_1.replace('$name',' '.join(args))
+    t=' '.join(args)
+    
+    if t is not ' ':
         bot.send_message(chat_id=update.message.chat_id, text=word_1,
         parse_mode=ParseMode.HTML)
         time.sleep(9)
@@ -223,7 +225,8 @@ def config(bot, update,args):
         time.sleep(9)
         bot.send_message(chat_id=update.message.chat_id, text=word_3,
         parse_mode=ParseMode.HTML)
-
+    else:
+        bot.send_message(chat_id=update.message.chat_id, text="本功能目前沒有毛用")
 
 def nanto(bot, update):
     """Send a message when the command /nanto is issued."""
