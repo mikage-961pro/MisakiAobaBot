@@ -211,10 +211,10 @@ def config(bot, update,args):
     
     ア・イ・シ・テ・ル</pre>
     """
-    word_1=word_1.replace('$name',' '.join(args))
-    t=' '.join(args)
-    
-    if t is not ' ':
+    if not args:
+        bot.send_message(chat_id=update.message.chat_id, text="本功能目前沒有毛用")
+    else:
+        word_1=word_1.replace('$name',' '.join(args))
         bot.send_message(chat_id=update.message.chat_id, text=word_1,
         parse_mode=ParseMode.HTML)
         time.sleep(9)
@@ -223,8 +223,7 @@ def config(bot, update,args):
         time.sleep(9)
         bot.send_message(chat_id=update.message.chat_id, text=word_3,
         parse_mode=ParseMode.HTML)
-    else:
-        bot.send_message(chat_id=update.message.chat_id, text="本功能目前沒有毛用")
+
 
 def nanto(bot, update):
     """Send a message when the command /nanto is issued."""
@@ -269,22 +268,22 @@ def title(bot,update,args):
 #function for test
 
 def set_remind_time(bot,update,args):
-	#do not test public cause there's no auth check yet
-	#check auth
-	#if is_admin(bot,update)==True:
-	if not args:
-		return
-	
-	text=' '.join(args)
-	l_text=text.split('%%')
-	tsheet=sheet.worksheet('name')
-	cell=get_cell(l_text[0],tsheet)
-	if cell==None:
-		tsheet.insert_row([l_text[0],l_text[1],l_text[2],update.message.from_user.id], 2)
-	else:
-		tsheet.update_cell(cell.row,cell.col+1,l_text[1])
-		tsheet.update_cell(cell.row,cell.col+2,l_text[2])
-		tsheet.update_cell(cell.row,cell.col+3,update.message.from_user.id)
+    #do not test public cause there's no auth check yet
+    #check auth
+    #if is_admin(bot,update)==True:
+    if not args:
+        return
+    
+    text=' '.join(args)
+    l_text=text.split('%%')
+    tsheet=sheet.worksheet('name')
+    cell=get_cell(l_text[0],tsheet)
+    if cell==None:
+        tsheet.insert_row([l_text[0],l_text[1],l_text[2],update.message.from_user.id], 2)
+    else:
+        tsheet.update_cell(cell.row,cell.col+1,l_text[1])
+        tsheet.update_cell(cell.row,cell.col+2,l_text[2])
+        tsheet.update_cell(cell.row,cell.col+3,update.message.from_user.id)
 
 def aisatu(bot, update):
     if update.message.new_chat_members != None:
@@ -367,7 +366,7 @@ def main():
     dp.add_handler(CommandHandler("tbgame", tbgame))
     dp.add_handler(CommandHandler("state", state))
     dp.add_handler(CommandHandler("config", config,pass_args=True))
-	dp.add_handler(CommandHandler("set_remind_time",set_remind_time,pass_args=True)
+    dp.add_handler(CommandHandler("set_remind_time",set_remind_time,pass_args=True)
     dp.add_handler(CommandHandler("nanto", nanto))
     dp.add_handler(CommandHandler("test", test))
     dp.add_handler(CommandHandler("notiger", notiger))
