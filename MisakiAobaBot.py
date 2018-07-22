@@ -275,7 +275,7 @@ def set_remind_time(bot,update,args):
 	if not args:
 		return
 	
-	text=''.join(args)
+	text=' '.join(args)
 	l_text=text.split('%%')
 	tsheet=sheet.worksheet('name')
 	cell=get_cell(l_text[0],tsheet)
