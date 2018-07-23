@@ -241,7 +241,12 @@ def unknown(bot, update):
 ################################################
 def key_word_reaction(bot,update):
     test=update.message.text
-    if test.find('大佬')!=-1:
+    dalao_check=test.find('大佬')!=-1 or\
+        test.find('大老')!=-1 or\
+        test.find('dalao')!=-1 or\
+        test.find('ㄉㄚˋㄌㄠˇ')!=-1 or\
+        test.find('巨巨')!=-1
+    if dalao_check:
         bot.send_message(chat_id=update.message.chat_id,text='你才大佬！你全家都大佬！')
 def aisatu(bot, update):
     if update.message.new_chat_members != None:
