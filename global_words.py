@@ -50,8 +50,8 @@ class GLOBAL_WORDS:
     """
 
     word_tbgame="""
-    <a href="https://t.me/joinchat/IFtWTxKG_KG-500YZBBnDA">〔765プロゲーム部♞〕</a>
-    <a href="https://memories.millimas.info/game_center">〔GREEMAS小遊戲〕</a>
+<a href="https://t.me/joinchat/IFtWTxKG_KG-500YZBBnDA">〔765プロゲーム部♞〕</a>
+<a href="https://memories.millimas.info/game_center">〔GREEMAS小遊戲〕</a>
     """
 
     word_nanto_1="""
