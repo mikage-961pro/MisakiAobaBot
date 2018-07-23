@@ -239,6 +239,10 @@ def unknown(bot, update):
 ################################################
 #                not command                   #
 ################################################
+def key_word_reaction(bot,update):
+    test=update.message.text
+    if test.find('大佬')!=-1:
+        bot.send_message(chat_id=update.message.chat_id,text='你才大佬！你全家都大佬！'
 def aisatu(bot, update):
     if update.message.new_chat_members != None:
         for u in update.message.new_chat_members:
@@ -298,6 +302,7 @@ def main():
     #dp.add_handler(MessageHandler(Filters.sticker, echo))
     #dp.add_handler(MessageHandler(Filters.text, echo2))
     #dp.add_handler(MessageHandler(Filters.command, unknown))
+    dp.add_handler(MessageHandler(Filters.text, key_word_reaction))
     dp.add_handler(MessageHandler(Filters.all, aisatu))
     
     # <function end>
