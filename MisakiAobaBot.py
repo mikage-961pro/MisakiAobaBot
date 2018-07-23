@@ -242,7 +242,7 @@ def unknown(bot, update):
 def key_word_reaction(bot,update):
     test=update.message.text
     if test.find('大佬')!=-1:
-        bot.send_message(chat_id=update.message.chat_id,text='你才大佬！你全家都大佬！'
+        bot.send_message(chat_id=update.message.chat_id,text='你才大佬！你全家都大佬！')
 def aisatu(bot, update):
     if update.message.new_chat_members != None:
         for u in update.message.new_chat_members:
