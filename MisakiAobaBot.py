@@ -66,13 +66,13 @@ def work_sheet_push(values,worksheet_name):
     worksheet = client.open_by_key(spreadsheet_key)
     try:
         worksheet=sheet.worksheet(worksheet_name)
-    except:
-        return
+    except:#there is no this worksheet
+        sheet.add_worksheet(woksheet_name,len(values),2)
     else:
         worksheet.insert_row(values,2)
 #usage (values[list of string],worksheet_name[string])
 #put a list of value and push to worksheet
-'''
+
 def work_sheet_pop(key,woksheet_name):
     scope = ['https://spreadsheets.google.com/feeds']
     creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
@@ -83,7 +83,10 @@ def work_sheet_pop(key,woksheet_name):
     worksheet = client.open_by_key(spreadsheet_key)
     cell=get_cell(key,worksheet)
     if cell!=None:
- '''       
+        row=worksheet.row_values(cell.row)
+        worksheet.delete_row(cell.row)
+    else:
+        return None 
 ################################################
 #                   command                    #
 ################################################
