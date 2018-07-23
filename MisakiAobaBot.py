@@ -131,6 +131,31 @@ telegramID:@Dephilia
 <a href="https://www.plurk.com/Dephillia">〔噗浪〕</a>
 """
 
+word_notiger="""
+    <pre>ジャンプをしない！
+    ミックスしない！
+    クラップしない！～叫ばない！
+    マナーを守ろう ｲｪｯﾀｲｶﾞｰ！
+    ﾀｲｶﾞｰ!ﾌｧｲﾔｰ!ｻｲﾊﾞｰ!ﾌｧｲﾊﾞｰ!ﾀﾞｲﾊﾞｰ!ﾊﾞｲﾊﾞｰ!ｼﾞｬｰｼﾞｬｰ!!</pre>
+"""
+
+word_kachikoi_1="""
+    <pre>言いたいことがあるんだよ
+    やっぱり$nameはかわいいよ
+    すきすき大好き、やっぱ好き</pre>
+"""
+word_kachikoi_2="""
+    <pre>やっと見つけたお姫様
+    俺が生まれてきた理由
+    それはお前に出会うため</pre>
+"""
+word_kachikoi_3="""
+    <pre>俺と一緒に人生歩もう
+    世界で一番愛してる
+        
+    ア・イ・シ・テ・ル</pre>
+"""
+
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
@@ -207,35 +232,18 @@ def state(bot, update):
 def config(bot, update,args):
     """Send a message when the command /config is issued."""
     if update.message.date > init_time:
-        word_1="""
-        <pre>    言いたいことがあるんだよ
-        やっぱり$nameはかわいいよ
-        すきすき大好き、やっぱ好き</pre>
-        """
-        word_2="""
-        <pre>    やっと見つけたお姫様
-        俺が生まれてきた理由
-        それはお前に出会うため</pre>
-        """
-        word_3="""
-        <pre>    俺と一緒に人生歩もう
-        世界で一番愛してる
-        
-        ア・イ・シ・テ・ル</pre>
-        """
-        
-        word_1=word_1.replace('$name',' '.join(args))
+        word_kachikoi_name=word_kachikoi_1.replace('$name',' '.join(args))
         t=' '.join(args)
         if not args:
             bot.send_message(chat_id=update.message.chat_id, text="本功能目前沒有毛用")
         else:
-            bot.send_message(chat_id=update.message.chat_id, text=word_1,
+            bot.send_message(chat_id=update.message.chat_id, text=word_kachikoi_name,
             parse_mode=ParseMode.HTML)
             time.sleep(9)
-            bot.send_message(chat_id=update.message.chat_id, text=word_2,
+            bot.send_message(chat_id=update.message.chat_id, text=word_kachikoi_2,
             parse_mode=ParseMode.HTML)
             time.sleep(9)
-            bot.send_message(chat_id=update.message.chat_id, text=word_3,
+            bot.send_message(chat_id=update.message.chat_id, text=word_kachikoi_3,
             parse_mode=ParseMode.HTML)
 
 def nanto(bot, update):
@@ -310,13 +318,6 @@ def set_remind_time(bot,update,args):
 def notiger(bot, update):
     """Send a message when the command /notiger is issued."""
     if update.message.date > init_time:
-        word_notiger="""
-        <pre>    ジャンプをしない！
-        ミックスしない！
-        クラップしない！～叫ばない！
-        マナーを守ろう ｲｪｯﾀｲｶﾞｰ！
-        ﾀｲｶﾞｰ!ﾌｧｲﾔｰ!ｻｲﾊﾞｰ!ﾌｧｲﾊﾞｰ!ﾀﾞｲﾊﾞｰ!ﾊﾞｲﾊﾞｰ!ｼﾞｬｰｼﾞｬｰ!!</pre>
-        """
         bot.send_message(chat_id=update.message.chat_id, text=word_notiger, 
                     parse_mode=ParseMode.HTML)
                   
