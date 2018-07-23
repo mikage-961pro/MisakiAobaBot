@@ -174,7 +174,7 @@ def set_remind_time(bot,update,args):
         
         text=' '.join(args)
         l_text=text.split('%%')
-        tsheet=sheet.worksheet('name')
+        tsheet=sheet.worksheet('time')
         cell=get_cell(l_text[0],tsheet)
         if cell==None:
             tsheet.insert_row([l_text[0],l_text[1],l_text[2],update.message.from_user.id], 2)
