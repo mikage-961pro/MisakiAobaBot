@@ -39,6 +39,8 @@ import os
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
+init_time = -1
+
 bot_name='@MisakiAobaBot'
 token = os.environ['TELEGRAM_TOKEN']
 spreadsheet_key=os.environ['SPREAD_TOKEN']
@@ -165,168 +167,158 @@ def is_admin(bot,update):
 ################################################
 #                   command                    #
 ################################################
+"""
+All cmd function need to add
+if update.message.date > init_time:
+at first to prevent too many cmd before root
+"""
+
 def start(bot, update):
     """Send a message when the command /start is issued."""
-    bot.send_message(chat_id=update.message.chat_id, text=word_start,
-                    parse_mode=ParseMode.HTML)
+    if update.message.date > init_time:
+        bot.send_message(chat_id=update.message.chat_id, text=word_start,
+                        parse_mode=ParseMode.HTML)
 
 def help(bot, update):
     """Send a message when the command /help is issued."""
-    bot.send_message(chat_id=update.message.chat_id, text=word_help, 
-                    parse_mode=ParseMode.HTML)
+    if update.message.date > init_time:
+        bot.send_message(chat_id=update.message.chat_id, text=word_help, 
+                        parse_mode=ParseMode.HTML)
 
 def tbgame(bot, update):
     """Send a message when the command /tbgame is issued."""
-    bot.send_message(chat_id=update.message.chat_id, text=word_tbgame, 
-                    parse_mode=ParseMode.HTML)
+    if update.message.date > init_time:
+        bot.send_message(chat_id=update.message.chat_id, text=word_tbgame, 
+                        parse_mode=ParseMode.HTML)
 
 def rule(bot, update):
     """Send a message when the command /rule is issued."""
-    bot.send_message(chat_id=update.message.chat_id, text=word_rule, 
-                    parse_mode=ParseMode.HTML)
+    if update.message.date > init_time:
+        bot.send_message(chat_id=update.message.chat_id, text=word_rule, 
+                        parse_mode=ParseMode.HTML)
 
 def state(bot, update):
     """Send a message when the command /state is issued."""
-    bot.send_message(chat_id=update.message.chat_id,
-    text='目前室內人數：{}'.format(str(bot.get_chat_members_count(update.message.chat.id)))+'\n'+
-    word_state,parse_mode=ParseMode.HTML)
+    if update.message.date > init_time:
+        bot.send_message(chat_id=update.message.chat_id,
+        text='目前室內人數：{}'.format(str(bot.get_chat_members_count(update.message.chat.id)))+'\n'+
+        word_state,parse_mode=ParseMode.HTML)
 
 def config(bot, update,args):
     """Send a message when the command /config is issued."""
-    word_1="""
-    <pre>    言いたいことがあるんだよ
-    やっぱり$nameはかわいいよ
-    すきすき大好き、やっぱ好き</pre>
-    """
-    word_2="""
-    <pre>    やっと見つけたお姫様
-    俺が生まれてきた理由
-    それはお前に出会うため</pre>
-    """
-    word_3="""
-    <pre>    俺と一緒に人生歩もう
-    世界で一番愛してる
-    
-    ア・イ・シ・テ・ル</pre>
-    """
-    
-    word_1=word_1.replace('$name',' '.join(args))
-    t=' '.join(args)
-    if not args:
-        bot.send_message(chat_id=update.message.chat_id, text="本功能目前沒有毛用")
-    else:
-        bot.send_message(chat_id=update.message.chat_id, text=word_1,
-        parse_mode=ParseMode.HTML)
-        time.sleep(9)
-        bot.send_message(chat_id=update.message.chat_id, text=word_2,
-        parse_mode=ParseMode.HTML)
-        time.sleep(9)
-        bot.send_message(chat_id=update.message.chat_id, text=word_3,
-        parse_mode=ParseMode.HTML)
+    if update.message.date > init_time:
+        word_1="""
+        <pre>    言いたいことがあるんだよ
+        やっぱり$nameはかわいいよ
+        すきすき大好き、やっぱ好き</pre>
+        """
+        word_2="""
+        <pre>    やっと見つけたお姫様
+        俺が生まれてきた理由
+        それはお前に出会うため</pre>
+        """
+        word_3="""
+        <pre>    俺と一緒に人生歩もう
+        世界で一番愛してる
+        
+        ア・イ・シ・テ・ル</pre>
+        """
+        
+        word_1=word_1.replace('$name',' '.join(args))
+        t=' '.join(args)
+        if not args:
+            bot.send_message(chat_id=update.message.chat_id, text="本功能目前沒有毛用")
+        else:
+            bot.send_message(chat_id=update.message.chat_id, text=word_1,
+            parse_mode=ParseMode.HTML)
+            time.sleep(9)
+            bot.send_message(chat_id=update.message.chat_id, text=word_2,
+            parse_mode=ParseMode.HTML)
+            time.sleep(9)
+            bot.send_message(chat_id=update.message.chat_id, text=word_3,
+            parse_mode=ParseMode.HTML)
 
 def nanto(bot, update):
     """Send a message when the command /nanto is issued."""
-    bot.send_message(chat_id=update.message.chat_id, text=word_nanto_1)
-    time.sleep(1)
-    bot.send_message(chat_id=update.message.chat_id, text=word_nanto_2)
-    time.sleep(0.5)
-    bot.send_sticker(chat_id=update.message.chat_id, sticker="CAADBQADGgADT1ZbIFSw_UAI28HiAg")
-    time.sleep(2)
-    bot.send_message(chat_id=update.message.chat_id, text=word_nanto_4)
+    if update.message.date > init_time:
+        bot.send_message(chat_id=update.message.chat_id, text=word_nanto_1)
+        time.sleep(1)
+        bot.send_message(chat_id=update.message.chat_id, text=word_nanto_2)
+        time.sleep(0.5)
+        bot.send_sticker(chat_id=update.message.chat_id, sticker="CAADBQADGgADT1ZbIFSw_UAI28HiAg")
+        time.sleep(2)
+        bot.send_message(chat_id=update.message.chat_id, text=word_nanto_4)
 
 def title(bot,update,args):
-    title = ' '.join(args)
-    adminlist=update.message.chat.get_administrators()
-    is_admin=False
-    
-    me=bot.get_me()
-    bot_auth=False
-    
-    for i in adminlist:
-        if update.message.from_user.id==i.user.id:
-            is_admin=True
-            
-    for b in adminlist:
-            if me.id==b.user.id:
-                bot_auth=True
-    
-    if is_admin==True:
-        if bot_auth==True:
-            bot.set_chat_title(chat_id=update.message.chat_id, title=title)
-            bot.send_message(chat_id=update.message.chat_id,text='できました！！')
-        else:
-            bot.send_message(chat_id=update.message.chat_id,text='失敗しました、能力不足ですね')
+    """Change tilte when the command /title OOO is issued."""
+    if update.message.date > init_time:
+        title = ' '.join(args)
+        adminlist=update.message.chat.get_administrators()
+        is_admin=False
         
-    else:
-        bot.send_message(chat_id=update.message.chat_id,text='申し訳ございませんが、このコマンドは、管理者しか使いません\nOops!Only admin can change title.')
+        me=bot.get_me()
+        bot_auth=False
+        
+        for i in adminlist:
+            if update.message.from_user.id==i.user.id:
+                is_admin=True
+                
+        for b in adminlist:
+                if me.id==b.user.id:
+                    bot_auth=True
+        
+        if is_admin==True:
+            if bot_auth==True:
+                bot.set_chat_title(chat_id=update.message.chat_id, title=title)
+                bot.send_message(chat_id=update.message.chat_id,text='できました！！')
+            else:
+                bot.send_message(chat_id=update.message.chat_id,text='失敗しました、能力不足ですね')
+            
+        else:
+            bot.send_message(chat_id=update.message.chat_id,text='申し訳ございませんが、このコマンドは、管理者しか使いません\nOops!Only admin can change title.')
 
 #mention that bot need to be an admin of sgroup
 #should change automatically and get title from DB,though JOBquece
 #function for test
 
 def set_remind_time(bot,update,args):
-    #do not test public cause there's no auth check yet
-    #check auth
-    #if is_admin(bot,update)==True:
-    scope = ['https://spreadsheets.google.com/feeds']
-    creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
-    #got from google api
-    #attach mine for example
-    #try to set in environ values but got fail
-    client = gspread.authorize(creds)
-    sheet = client.open_by_key(spreadsheet_key)
-    if not args:
-        return
-    
-    text=' '.join(args)
-    l_text=text.split('%%')
-    tsheet=sheet.worksheet('name')
-    cell=get_cell(l_text[0],tsheet)
-    if cell==None:
-        tsheet.insert_row([l_text[0],l_text[1],l_text[2],update.message.from_user.id], 2)
-    else:
-        tsheet.update_cell(cell.row,cell.col+1,l_text[1])
-        tsheet.update_cell(cell.row,cell.col+2,l_text[2])
-        tsheet.update_cell(cell.row,cell.col+3,update.message.from_user.id)
-
-def aisatu(bot, update):
-    if update.message.new_chat_members != None:
-        for u in update.message.new_chat_members:
-            if u.is_bot == False:
-                text='$usernameさん、ようこそ事務所へ！\n輸入 /help 可以尋求幫助'
-                # text = text.replace('$username',u.first_name.encode('utf-8'))
-                text = text.replace('$username',u.first_name)
-                bot.send_message(chat_id=update.message.chat_id,text=text)
-
-    if update.message.left_chat_member != None:
-        if update.message.left_chat_member.is_bot == False:
-            text='まだ会いましょう！$usernameさん！'
-            # text = text.replace('$username',update.message.left_chat_member.first_name.encode('utf-8'))
-            text = text.replace('$username',update.message.left_chat_member.first_name)
-            bot.send_message(chat_id=update.message.chat_id,text=text)
-
-def test(bot, update):
-    """Send a message when the command /test is issued."""
-    bot.send_message(chat_id=update.message.chat_id, text=word_test, 
-                  parse_mode=ParseMode.HTML)
+    if update.message.date > init_time:
+        #do not test public cause there's no auth check yet
+        #check auth
+        #if is_admin(bot,update)==True:
+        scope = ['https://spreadsheets.google.com/feeds']
+        creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
+        #got from google api
+        #attach mine for example
+        #try to set in environ values but got fail
+        client = gspread.authorize(creds)
+        sheet = client.open_by_key(spreadsheet_key)
+        if not args:
+            return
+        
+        text=' '.join(args)
+        l_text=text.split('%%')
+        tsheet=sheet.worksheet('name')
+        cell=get_cell(l_text[0],tsheet)
+        if cell==None:
+            tsheet.insert_row([l_text[0],l_text[1],l_text[2],update.message.from_user.id], 2)
+        else:
+            tsheet.update_cell(cell.row,cell.col+1,l_text[1])
+            tsheet.update_cell(cell.row,cell.col+2,l_text[2])
+            tsheet.update_cell(cell.row,cell.col+3,update.message.from_user.id)
 
 def notiger(bot, update):
     """Send a message when the command /notiger is issued."""
-    word_notiger="""
-    <pre>    ジャンプをしない！
-    ミックスしない！
-    クラップしない！～叫ばない！
-    マナーを守ろう ｲｪｯﾀｲｶﾞｰ！
-    ﾀｲｶﾞｰ!ﾌｧｲﾔｰ!ｻｲﾊﾞｰ!ﾌｧｲﾊﾞｰ!ﾀﾞｲﾊﾞｰ!ﾊﾞｲﾊﾞｰ!ｼﾞｬｰｼﾞｬｰ!!</pre>
-    """
-    bot.send_message(chat_id=update.message.chat_id, text=word_notiger, 
-                  parse_mode=ParseMode.HTML)
-
-def mission_callback(bot,job):
-    # somaction
-
-    # 玩人狼玩到忘記每日
-    bot.send_message(chat_id='-1001290696540',text='做每日')
+    if update.message.date > init_time:
+        word_notiger="""
+        <pre>    ジャンプをしない！
+        ミックスしない！
+        クラップしない！～叫ばない！
+        マナーを守ろう ｲｪｯﾀｲｶﾞｰ！
+        ﾀｲｶﾞｰ!ﾌｧｲﾔｰ!ｻｲﾊﾞｰ!ﾌｧｲﾊﾞｰ!ﾀﾞｲﾊﾞｰ!ﾊﾞｲﾊﾞｰ!ｼﾞｬｰｼﾞｬｰ!!</pre>
+        """
+        bot.send_message(chat_id=update.message.chat_id, text=word_notiger, 
+                    parse_mode=ParseMode.HTML)
                   
 def echo(bot, update):
     """Echo the user message."""
@@ -345,10 +337,38 @@ def unknown(bot, update):
         bot.send_message(chat_id=update.message.chat_id, text="すみません、よく分かりません。")
 
 ################################################
+#                not command                   #
+################################################
+def aisatu(bot, update):
+    if update.message.new_chat_members != None:
+        for u in update.message.new_chat_members:
+            if u.is_bot == False:
+                text='$usernameさん、ようこそ事務所へ！\n輸入 /help 可以尋求幫助'
+                # text = text.replace('$username',u.first_name.encode('utf-8'))
+                text = text.replace('$username',u.first_name)
+                bot.send_message(chat_id=update.message.chat_id,text=text)
+
+    if update.message.left_chat_member != None:
+        if update.message.left_chat_member.is_bot == False:
+            text='まだ会いましょう！$usernameさん！'
+            # text = text.replace('$username',update.message.left_chat_member.first_name.encode('utf-8'))
+            text = text.replace('$username',update.message.left_chat_member.first_name)
+            bot.send_message(chat_id=update.message.chat_id,text=text)
+
+def mission_callback(bot,job):
+    # somaction
+
+    # 玩人狼玩到忘記每日
+    bot.send_message(chat_id='-1001290696540',text='做每日')
+################################################
 #                   main                       #
 ################################################
 def main():
     """Start the bot."""
+    # ---Record init time---
+    global init_time
+    init_time = datetime.now()
+
     # ---TOKEN---
     updater = Updater(token)
 
@@ -371,7 +391,6 @@ def main():
     dp.add_handler(CommandHandler("config", config, pass_args=True))
     dp.add_handler(CommandHandler("set_remind_time", set_remind_time, pass_args=True))
     dp.add_handler(CommandHandler("nanto", nanto))
-    dp.add_handler(CommandHandler("test", test))
     dp.add_handler(CommandHandler("notiger", notiger))
     # dp.add_handler(CommandHandler("title", title, pass_args=True))
 
