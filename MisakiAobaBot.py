@@ -46,8 +46,6 @@ def get_cell(key_word,worksheet):
         return None
     else:
         return cell
-#def set_cell(value,cell,sheet):
-#    sheet.update_cell(cell.row,cell.col,value)
 
 def is_admin(bot,update):
     #bool func to check auth
@@ -58,6 +56,39 @@ def is_admin(bot,update):
             is_admin=True
     return is_admin
 
+def work_sheet_push(values,worksheet_name):
+    scope = ['https://spreadsheets.google.com/feeds']
+    creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
+    #got from google api
+    #attach mine for example
+    #try to set in environ values but got fail
+    client = gspread.authorize(creds)
+    worksheet = client.open_by_key(spreadsheet_key)
+    try:
+        worksheet=sheet.worksheet(worksheet_name)
+    except:#there is no this worksheet
+        sheet.add_worksheet(woksheet_name,len(values),2)
+        worksheet=sheet.worksheet(worksheet_name)
+        worksheet.insert_row(values,2)
+    else:
+        worksheet.insert_row(values,2)
+#usage (values[list of string],worksheet_name[string])
+#put a list of value and push to worksheet
+
+def work_sheet_pop(key,woksheet_name):
+    scope = ['https://spreadsheets.google.com/feeds']
+    creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
+    #got from google api
+    #attach mine for example
+    #try to set in environ values but got fail
+    client = gspread.authorize(creds)
+    worksheet = client.open_by_key(spreadsheet_key)
+    cell=get_cell(key,worksheet)
+    if cell!=None:
+        row=worksheet.row_values(cell.row)
+        worksheet.delete_row(cell.row)
+    else:
+        return None 
 ################################################
 #                   command                    #
 ################################################
