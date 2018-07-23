@@ -68,6 +68,8 @@ def work_sheet_push(values,worksheet_name):
         worksheet=sheet.worksheet(worksheet_name)
     except:#there is no this worksheet
         sheet.add_worksheet(woksheet_name,len(values),2)
+        worksheet=sheet.worksheet(worksheet_name)
+        worksheet.insert_row(values,2)
     else:
         worksheet.insert_row(values,2)
 #usage (values[list of string],worksheet_name[string])
