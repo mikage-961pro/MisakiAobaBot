@@ -109,3 +109,7 @@ telegramID:@Dephilia
         
     ア・イ・シ・テ・ル</pre>
     """
+    word_do_mission="""
+美咲提醒你：剩下３０分鐘換日呦～
+注意你的每日任務！
+    """

@@ -263,7 +263,7 @@ def mission_callback(bot,job):
     # somaction
 
     # 玩人狼玩到忘記每日
-    bot.send_message(chat_id='-1001290696540',text='做每日')
+    bot.send_message(chat_id='-1001290696540',text=GLOBAL_WORDS.word_do_mission)
 ################################################
 #                   main                       #
 ################################################
