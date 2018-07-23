@@ -1,13 +1,10 @@
 # MisakiAobaBot
-=============
 
-###Platform
--------------
+### Platform
 This bot is running on telegram.
 ID:@MisakiAobaBot
 
 ###Function
--------------
 
 **start** - 我是765事務所的事務員，青羽美咲
 **help** - 由青羽小姐提供您幫助
