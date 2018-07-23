@@ -25,7 +25,6 @@ spreadsheet_key=os.environ['SPREAD_TOKEN']
 # WARNING!!! Please use quarter space instead of tab
 # This will cause fatal error
 
-
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
@@ -71,25 +70,25 @@ at first to prevent too many cmd before root
 def start(bot, update):
     """Send a message when the command /start is issued."""
     if update.message.date > init_time:
-        bot.send_message(chat_id=update.message.chat_id, text=word_start,
+        bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_start,
                         parse_mode=ParseMode.HTML)
 
 def help(bot, update):
     """Send a message when the command /help is issued."""
     if update.message.date > init_time:
-        bot.send_message(chat_id=update.message.chat_id, text=word_help, 
+        bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_help, 
                         parse_mode=ParseMode.HTML)
 
 def tbgame(bot, update):
     """Send a message when the command /tbgame is issued."""
     if update.message.date > init_time:
-        bot.send_message(chat_id=update.message.chat_id, text=word_tbgame, 
+        bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_tbgame, 
                         parse_mode=ParseMode.HTML)
 
 def rule(bot, update):
     """Send a message when the command /rule is issued."""
     if update.message.date > init_time:
-        bot.send_message(chat_id=update.message.chat_id, text=word_rule, 
+        bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_rule, 
                         parse_mode=ParseMode.HTML)
 
 def state(bot, update):
@@ -97,35 +96,34 @@ def state(bot, update):
     if update.message.date > init_time:
         bot.send_message(chat_id=update.message.chat_id,
         text='目前室內人數：{}'.format(str(bot.get_chat_members_count(update.message.chat.id)))+'\n'+
-        word_state,parse_mode=ParseMode.HTML)
+        GLOBAL_WORDS.word_state,parse_mode=ParseMode.HTML)
 
 def config(bot, update,args):
     """Send a message when the command /config is issued."""
     if update.message.date > init_time:
-        word_kachikoi_name=word_kachikoi_1.replace('$name',' '.join(args))
-        t=' '.join(args)
+        word_kachikoi_name=GLOBAL_WORDS.word_kachikoi_1.replace('$name',' '.join(args))
         if not args:
             bot.send_message(chat_id=update.message.chat_id, text="本功能目前沒有毛用")
         else:
             bot.send_message(chat_id=update.message.chat_id, text=word_kachikoi_name,
             parse_mode=ParseMode.HTML)
             time.sleep(9)
-            bot.send_message(chat_id=update.message.chat_id, text=word_kachikoi_2,
+            bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_kachikoi_2,
             parse_mode=ParseMode.HTML)
             time.sleep(9)
-            bot.send_message(chat_id=update.message.chat_id, text=word_kachikoi_3,
+            bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_kachikoi_3,
             parse_mode=ParseMode.HTML)
 
 def nanto(bot, update):
     """Send a message when the command /nanto is issued."""
     if update.message.date > init_time:
-        bot.send_message(chat_id=update.message.chat_id, text=word_nanto_1)
+        bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_nanto_1)
         time.sleep(1)
-        bot.send_message(chat_id=update.message.chat_id, text=word_nanto_2)
+        bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_nanto_2)
         time.sleep(0.5)
         bot.send_sticker(chat_id=update.message.chat_id, sticker="CAADBQADGgADT1ZbIFSw_UAI28HiAg")
         time.sleep(2)
-        bot.send_message(chat_id=update.message.chat_id, text=word_nanto_4)
+        bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_nanto_4)
 
 def title(bot,update,args):
     """Change tilte when the command /title OOO is issued."""
@@ -188,7 +186,7 @@ def set_remind_time(bot,update,args):
 def notiger(bot, update):
     """Send a message when the command /notiger is issued."""
     if update.message.date > init_time:
-        bot.send_message(chat_id=update.message.chat_id, text=word_notiger, 
+        bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_notiger, 
                     parse_mode=ParseMode.HTML)
                   
 def echo(bot, update):
@@ -250,7 +248,7 @@ def main():
 
     # ---daily jobs---
     # mission_callback every 22:30 daily
-    job_m=updater.job_queue.run_daily(mission_callback,stime(14,30))
+    updater.job_queue.run_daily(mission_callback,stime(14,30))
 
     # ---Command answer---
     # on different commands - answer in Telegram
