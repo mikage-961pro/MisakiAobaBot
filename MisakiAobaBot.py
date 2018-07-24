@@ -140,6 +140,7 @@ def config(bot, update,args):
         if not args:
             bot.send_message(chat_id=update.message.chat_id, text="本功能目前沒有毛用")
         else:
+            bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
             msg_1=bot.send_message(chat_id=update.message.chat_id, text=word_kachikoi_name,
             parse_mode=ParseMode.HTML)
             time.sleep(6)
@@ -157,6 +158,7 @@ def config(bot, update,args):
 def nanto(bot, update):
     """Send a message when the command /nanto is issued."""
     if update.message.date > init_time:
+        bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
         msg_1=bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_nanto_1)
         time.sleep(1)
         msg_2=bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_nanto_2)
@@ -232,8 +234,10 @@ def set_remind_time(bot,update,args):
 def notiger(bot, update):
     """Send a message when the command /notiger is issued."""
     if update.message.date > init_time:
+        bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
         msg=bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_notiger, 
                     parse_mode=ParseMode.HTML)
+        time.sleep(10)
         bot.delete_message(chat_id=update.message.chat_id, message_id=msg.message_id)
                   
 def echo(bot, update):
