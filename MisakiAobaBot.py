@@ -173,6 +173,59 @@ def nanto(bot, update):
         bot.delete_message(chat_id=update.message.chat_id, message_id=msg_2.message_id)
         bot.delete_message(chat_id=update.message.chat_id, message_id=msg_1.message_id)
 
+@run_async
+def tiger(bot, update):
+    word_tiger_1="<pre>あー</pre>"
+    word_tiger_2="<pre>👏</pre>"
+    word_tiger_3="<pre>👏👏</pre>"
+    word_tiger_4="<pre>ジャージャー！</pre>"
+    word_tiger_5="<pre>タイガー！</pre>"
+    word_tiger_6="<pre>ファイヤー！</pre>"
+    word_tiger_7="<pre>サイバー！</pre>"
+    word_tiger_8="<pre>ファイバー！</pre>"
+    word_tiger_9="<pre>ダイバー！</pre>"
+    word_tiger_10="<pre>バイバー！</pre>"
+    word_tiger_11="<pre>ジャージャー！</pre>"
+    word_tiger_12="<pre>ファイボー！ワイパー！</pre>"
+    if update.message.date > init_time:
+        messg = bot.send_message(chat_id=update.message.chat_id, text=word_tiger_1,
+            parse_mode=ParseMode.HTML)
+        time.sleep(0.5)
+        messg = bot.editMessageText(chat_id=update.message.chat_id, text=word_tiger_2, message_id=messg.message_id,
+            parse_mode=ParseMode.HTML)
+        time.sleep(0.2)
+        messg = bot.editMessageText(chat_id=update.message.chat_id, text=word_tiger_3, message_id=messg.message_id,
+            parse_mode=ParseMode.HTML)
+        time.sleep(0.2)
+        messg = bot.editMessageText(chat_id=update.message.chat_id, text=word_tiger_4, message_id=messg.message_id,
+            parse_mode=ParseMode.HTML)
+        time.sleep(1.3)
+        messg = bot.editMessageText(chat_id=update.message.chat_id, text=word_tiger_5, message_id=messg.message_id,
+            parse_mode=ParseMode.HTML)
+        time.sleep(0.5)
+        messg = bot.editMessageText(chat_id=update.message.chat_id, text=word_tiger_6, message_id=messg.message_id,
+            parse_mode=ParseMode.HTML)
+        time.sleep(0.5)
+        messg = bot.editMessageText(chat_id=update.message.chat_id, text=word_tiger_7, message_id=messg.message_id,
+            parse_mode=ParseMode.HTML)
+        time.sleep(0.5)
+        messg = bot.editMessageText(chat_id=update.message.chat_id, text=word_tiger_8, message_id=messg.message_id,
+            parse_mode=ParseMode.HTML)
+        time.sleep(0.5)
+        messg = bot.editMessageText(chat_id=update.message.chat_id, text=word_tiger_9, message_id=messg.message_id,
+            parse_mode=ParseMode.HTML)
+        time.sleep(0.5)
+        messg = bot.editMessageText(chat_id=update.message.chat_id, text=word_tiger_10, message_id=messg.message_id,
+            parse_mode=ParseMode.HTML)
+        time.sleep(0.5)
+        messg = bot.editMessageText(chat_id=update.message.chat_id, text=word_tiger_11, message_id=messg.message_id,
+            parse_mode=ParseMode.HTML)
+        time.sleep(0.7)
+        messg = bot.editMessageText(chat_id=update.message.chat_id, text=word_tiger_12, message_id=messg.message_id,
+            parse_mode=ParseMode.HTML)
+        time.sleep(5)
+        bot.delete_message(chat_id=update.message.chat_id, message_id=messg.message_id)
+
 def title(bot,update,args):
     """Change tilte when the command /title OOO is issued."""
     if update.message.date > init_time:
@@ -320,6 +373,7 @@ def main():
     dp.add_handler(CommandHandler("config", config, pass_args=True))
     dp.add_handler(CommandHandler("set_remind_time", set_remind_time, pass_args=True))
     dp.add_handler(CommandHandler("nanto", nanto))
+    dp.add_handler(CommandHandler("tiger", tiger))
     dp.add_handler(CommandHandler("notiger", notiger))
     # dp.add_handler(CommandHandler("title", title, pass_args=True))
 

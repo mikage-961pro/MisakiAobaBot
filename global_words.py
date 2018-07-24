@@ -14,6 +14,7 @@ class GLOBAL_WORDS:
 /state - 群狀態
 /config - 設定
 /tbgame - 765プロゲーム部入口，進去跟大家玩桌遊吧
+/tiger - 老虎
 /notiger - 警察
 /nanto - なんとっ！
 
