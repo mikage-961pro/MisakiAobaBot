@@ -193,34 +193,34 @@ def tiger(bot, update):
         time.sleep(0.5)
         messg = bot.editMessageText(chat_id=update.message.chat_id, text=word_tiger_2, message_id=messg.message_id,
             parse_mode=ParseMode.HTML)
-        time.sleep(0.2)
+        time.sleep(0.25)
         messg = bot.editMessageText(chat_id=update.message.chat_id, text=word_tiger_3, message_id=messg.message_id,
             parse_mode=ParseMode.HTML)
-        time.sleep(0.2)
+        time.sleep(0.25)
         messg = bot.editMessageText(chat_id=update.message.chat_id, text=word_tiger_4, message_id=messg.message_id,
             parse_mode=ParseMode.HTML)
-        time.sleep(1.3)
+        time.sleep(1.2)
         messg = bot.editMessageText(chat_id=update.message.chat_id, text=word_tiger_5, message_id=messg.message_id,
             parse_mode=ParseMode.HTML)
-        time.sleep(0.5)
+        time.sleep(0.6)
         messg = bot.editMessageText(chat_id=update.message.chat_id, text=word_tiger_6, message_id=messg.message_id,
             parse_mode=ParseMode.HTML)
-        time.sleep(0.5)
+        time.sleep(0.6)
         messg = bot.editMessageText(chat_id=update.message.chat_id, text=word_tiger_7, message_id=messg.message_id,
             parse_mode=ParseMode.HTML)
-        time.sleep(0.5)
+        time.sleep(0.6)
         messg = bot.editMessageText(chat_id=update.message.chat_id, text=word_tiger_8, message_id=messg.message_id,
             parse_mode=ParseMode.HTML)
-        time.sleep(0.5)
+        time.sleep(0.6)
         messg = bot.editMessageText(chat_id=update.message.chat_id, text=word_tiger_9, message_id=messg.message_id,
             parse_mode=ParseMode.HTML)
-        time.sleep(0.5)
+        time.sleep(0.6)
         messg = bot.editMessageText(chat_id=update.message.chat_id, text=word_tiger_10, message_id=messg.message_id,
             parse_mode=ParseMode.HTML)
-        time.sleep(0.5)
+        time.sleep(0.6)
         messg = bot.editMessageText(chat_id=update.message.chat_id, text=word_tiger_11, message_id=messg.message_id,
             parse_mode=ParseMode.HTML)
-        time.sleep(0.7)
+        time.sleep(1.2)
         messg = bot.editMessageText(chat_id=update.message.chat_id, text=word_tiger_12, message_id=messg.message_id,
             parse_mode=ParseMode.HTML)
         time.sleep(5)
