@@ -155,7 +155,6 @@ def config(bot, update,args):
             parse_mode=ParseMode.HTML)
             time.sleep(6)
             bot.delete_message(chat_id=update.message.chat_id, message_id=msg_3.message_id)
-            bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
 
 @run_async
 def nanto(bot, update):
@@ -169,7 +168,6 @@ def nanto(bot, update):
         time.sleep(2)
         msg_4=bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_nanto_4)
         time.sleep(10)
-        bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
         bot.delete_message(chat_id=update.message.chat_id, message_id=msg_1.message_id)
         bot.delete_message(chat_id=update.message.chat_id, message_id=msg_2.message_id)
         bot.delete_message(chat_id=update.message.chat_id, message_id=msg_3.message_id)
@@ -241,8 +239,7 @@ def notiger(bot, update):
                     parse_mode=ParseMode.HTML)
         time.sleep(10)
         bot.delete_message(chat_id=update.message.chat_id, message_id=msg.message_id)
-        bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
-                  
+
 def echo(bot, update):
     """Echo the user message."""
     bot.send_message(chat_id=update.message.chat_id, text=update.message.sticker.file_id)
