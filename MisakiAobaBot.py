@@ -173,7 +173,7 @@ def nanto(bot, update):
         bot.delete_message(chat_id=update.message.chat_id, message_id=msg_2.message_id)
         bot.delete_message(chat_id=update.message.chat_id, message_id=msg_1.message_id)
 
-@run_async
+# @run_async
 def tiger(bot, update):
     word_tiger_1="<pre>あー</pre>"
     word_tiger_2="<pre>👏</pre>"
