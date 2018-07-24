@@ -26,6 +26,8 @@ spreadsheet_key=os.environ['SPREAD_TOKEN']
 # Please use test token when dev
 # WARNING!!! Please use quarter space instead of tab
 # This will cause fatal error
+# ---TOKEN---
+updater = Updater(token,workers=16)
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -350,9 +352,6 @@ def main():
     # ---Record init time---
     global init_time
     init_time = datetime.now()
-
-    # ---TOKEN---
-    updater = Updater(token)
 
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
