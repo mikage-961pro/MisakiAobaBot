@@ -168,10 +168,10 @@ def nanto(bot, update):
         time.sleep(2)
         msg_4=bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_nanto_4)
         time.sleep(10)
-        bot.delete_message(chat_id=update.message.chat_id, message_id=msg_1.message_id)
-        bot.delete_message(chat_id=update.message.chat_id, message_id=msg_2.message_id)
-        bot.delete_message(chat_id=update.message.chat_id, message_id=msg_3.message_id)
         bot.delete_message(chat_id=update.message.chat_id, message_id=msg_4.message_id)
+        bot.delete_message(chat_id=update.message.chat_id, message_id=msg_3.message_id)
+        bot.delete_message(chat_id=update.message.chat_id, message_id=msg_2.message_id)
+        bot.delete_message(chat_id=update.message.chat_id, message_id=msg_1.message_id)
 
 def title(bot,update,args):
     """Change tilte when the command /title OOO is issued."""
