@@ -6,6 +6,7 @@ rule-本群規則瀏覽
 state-群狀態
 config-設定
 tbgame-765プロゲーム部入口，進去跟大家玩桌遊吧
+which-把事情丟給美咲決定（用#井字號分隔事情）
 tiger-老虎
 notiger-警察
 nanto-なんとぉ！

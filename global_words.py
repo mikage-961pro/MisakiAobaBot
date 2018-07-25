@@ -14,6 +14,7 @@ class GLOBAL_WORDS:
 /state - 群狀態
 /config - 設定
 /tbgame - 765プロゲーム部入口，進去跟大家玩桌遊吧
+/which - 想不到的事情就交由我決定！（用#井字號分隔 ex.apple#banana）
 /tiger - 老虎
 /notiger - 警察
 /nanto - なんとっ！
@@ -80,7 +81,7 @@ class GLOBAL_WORDS:
     """
 
     word_state="""
-版本：Alpha.0.4
+版本：Alpha.0.5
 開發者：Dephilia（蝶芙）
 telegramID:@Dephilia
 <a href="https://www.plurk.com/Dephillia">〔噗浪〕</a>

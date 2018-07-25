@@ -181,9 +181,24 @@ def nanto(bot, update, args):
             time.sleep(1)
             msg_2=bot.send_sticker(chat_id=update.message.chat_id, sticker="CAADBQADGgADT1ZbIFSw_UAI28HiAg")
             time.sleep(5)
+            text="明日も$textすると、きっといいことがあると思いますよぉ～。えへへぇ♪".replace('$text',' '.join(args))
+            msg_3=bot.send_message(chat_id=update.message.chat_id, text=text)
+            time.sleep(30)
+            bot.delete_message(chat_id=update.message.chat_id, message_id=msg_3.message_id)
             bot.delete_message(chat_id=update.message.chat_id, message_id=msg_2.message_id)
             bot.delete_message(chat_id=update.message.chat_id, message_id=msg_1.message_id)
             
+def which(bot, update, args):
+    """Send a message when the command /which is issued."""
+    if update.message.date > init_time:
+        if not args:
+            text="請輸入要給我決定的事情♪\n記得用〔＃〕分開喔！"
+            msg=bot.send_message(chat_id=update.message.chat_id, text=text)
+        else:
+            things=' '.join(args).split('#')
+            result=things[randrange(len(things))]
+            text="わたしは〜♬$resが良いと思うよ〜えへへ。".replace('$res',result)
+            msg=bot.send_message(chat_id=update.message.chat_id, text=text)
 
 @run_async
 def tiger(bot, update):
@@ -384,6 +399,7 @@ def main():
     dp.add_handler(CommandHandler("nanto", nanto, pass_args=True))
     dp.add_handler(CommandHandler("tiger", tiger))
     dp.add_handler(CommandHandler("notiger", notiger))
+    dp.add_handler(CommandHandler("which", which, pass_args=True))
     # dp.add_handler(CommandHandler("title", title, pass_args=True))
 
     # ---Message answer---
