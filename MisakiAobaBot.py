@@ -182,7 +182,8 @@ def nanto(bot, update, args):
             bot.delete_message(chat_id=update.message.chat_id, message_id=msg_2.message_id)
             bot.delete_message(chat_id=update.message.chat_id, message_id=msg_1.message_id)
         else:
-            text="なんとっ!$username居然$text了！".replace('$text',' '.join(args)).replace('$username',update.message.from_user.first_name)
+            input_text=' '.join(args).split('#')
+            text="なんとっ!$username居然$text了！".replace('$text',input_text[1]).replace('$username',input_text[0])
             msg_1=bot.send_message(chat_id=update.message.chat_id, text=text)
             time.sleep(1)
             msg_2=bot.send_sticker(chat_id=update.message.chat_id, sticker="CAADBQADGgADT1ZbIFSw_UAI28HiAg")
