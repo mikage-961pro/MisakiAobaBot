@@ -138,7 +138,7 @@ def state(bot, update):
         GLOBAL_WORDS.word_state,parse_mode=ParseMode.HTML)
 
 @run_async
-def config(bot, update,args):
+def config(bot, update, args):
     """Send a message when the command /config is issued."""
     if update.message.date > init_time:
         word_kachikoi_name=GLOBAL_WORDS.word_kachikoi_1.replace('$name',' '.join(args))
@@ -159,21 +159,31 @@ def config(bot, update,args):
             bot.delete_message(chat_id=update.message.chat_id, message_id=msg_3.message_id)
 
 @run_async
-def nanto(bot, update):
+def nanto(bot, update, args):
     """Send a message when the command /nanto is issued."""
     if update.message.date > init_time:
-        msg_1=bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_nanto_1)
-        time.sleep(1)
-        msg_2=bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_nanto_2)
-        time.sleep(0.5)
-        msg_3=bot.send_sticker(chat_id=update.message.chat_id, sticker="CAADBQADGgADT1ZbIFSw_UAI28HiAg")
-        time.sleep(2)
-        msg_4=bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_nanto_4)
-        time.sleep(10)
-        bot.delete_message(chat_id=update.message.chat_id, message_id=msg_4.message_id)
-        bot.delete_message(chat_id=update.message.chat_id, message_id=msg_3.message_id)
-        bot.delete_message(chat_id=update.message.chat_id, message_id=msg_2.message_id)
-        bot.delete_message(chat_id=update.message.chat_id, message_id=msg_1.message_id)
+        if not args:
+            msg_1=bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_nanto_1)
+            time.sleep(1)
+            msg_2=bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_nanto_2)
+            time.sleep(0.5)
+            msg_3=bot.send_sticker(chat_id=update.message.chat_id, sticker="CAADBQADGgADT1ZbIFSw_UAI28HiAg")
+            time.sleep(2)
+            msg_4=bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_nanto_4)
+            time.sleep(10)
+            bot.delete_message(chat_id=update.message.chat_id, message_id=msg_4.message_id)
+            bot.delete_message(chat_id=update.message.chat_id, message_id=msg_3.message_id)
+            bot.delete_message(chat_id=update.message.chat_id, message_id=msg_2.message_id)
+            bot.delete_message(chat_id=update.message.chat_id, message_id=msg_1.message_id)
+        else:
+            text="なんとっ!$username居然$text了！".replace('$text',' '.join(args)).replace('$username',update.message.chat.first_name)
+            msg_1=bot.send_message(chat_id=update.message.chat_id, text=text)
+            time.sleep(1)
+            msg_2=bot.send_sticker(chat_id=update.message.chat_id, sticker="CAADBQADGgADT1ZbIFSw_UAI28HiAg")
+            time.sleep(5)
+            bot.delete_message(chat_id=update.message.chat_id, message_id=msg_2.message_id)
+            bot.delete_message(chat_id=update.message.chat_id, message_id=msg_1.message_id)
+            
 
 @run_async
 def tiger(bot, update):
@@ -371,7 +381,7 @@ def main():
     dp.add_handler(CommandHandler("state", state))
     dp.add_handler(CommandHandler("config", config, pass_args=True))
     dp.add_handler(CommandHandler("set_remind_time", set_remind_time, pass_args=True))
-    dp.add_handler(CommandHandler("nanto", nanto))
+    dp.add_handler(CommandHandler("nanto", nanto, pass_args=True))
     dp.add_handler(CommandHandler("tiger", tiger))
     dp.add_handler(CommandHandler("notiger", notiger))
     # dp.add_handler(CommandHandler("title", title, pass_args=True))
