@@ -188,7 +188,7 @@ def nanto(bot, update, args):
             time.sleep(1)
             msg_2=bot.send_sticker(chat_id=update.message.chat_id, sticker="CAADBQADGgADT1ZbIFSw_UAI28HiAg")
             time.sleep(5)
-            text="明日も$textすると、きっといいことがあると思いますよぉ～。えへへぇ♪".replace('$text',' '.join(args))
+            text="明日も$textすると、きっといいことがあると思いますよぉ～。えへへぇ♪".replace('$text',input_text[1])
             msg_3=bot.send_message(chat_id=update.message.chat_id, text=text)
             time.sleep(30)
             bot.delete_message(chat_id=update.message.chat_id, message_id=msg_3.message_id)
