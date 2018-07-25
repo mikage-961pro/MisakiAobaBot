@@ -197,7 +197,7 @@ def which(bot, update, args):
         else:
             things=' '.join(args).split('#')
             result=things[randrange(len(things))]
-            text="わたしは〜♬$resが良いと思うよ〜えへへ。".replace('$res',result)
+            text="わたしは〜♬［$res］が良いと思うよ〜えへへ。".replace('$res',result)
             msg=bot.send_message(chat_id=update.message.chat_id, text=text)
 
 @run_async
