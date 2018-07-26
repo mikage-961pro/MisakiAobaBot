@@ -459,7 +459,7 @@ def group_history(bot,job):
     rate=rate.replace('$water',str(water))
     rate=rate.replace('$human',str(human))
     bot.send_message(chat_id=-1001290696540,text=rate)
-    
+   
 def bot_historian(bot,update):
     #refresh token
     scope = ['https://spreadsheets.google.com/feeds']
