@@ -112,7 +112,10 @@ def start(bot, update):
 def help(bot, update):
     """Send a message when the command /help is issued."""
     if update.message.date > init_time:
-        bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_help, 
+        if randrange(1000)<30:
+            bot.send_message(chat_id=update.message.chat_id, text="ぜ")
+        else:
+            bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_help, 
                         parse_mode=ParseMode.HTML)
 
 def tbgame(bot, update):
@@ -125,10 +128,13 @@ def tbgame(bot, update):
 def rule(bot, update):
     """Send a message when the command /rule is issued."""
     if update.message.date > init_time:
-        msg=bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_rule, 
-                        parse_mode=ParseMode.HTML)
-        time.sleep(60)
-        bot.delete_message(chat_id=update.message.chat_id, message_id=msg.message_id)
+        if randrange(1000)<30:
+            bot.send_message(chat_id=update.message.chat_id, text="ぜ")
+        else:
+            msg=bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_rule, 
+                            parse_mode=ParseMode.HTML)
+            time.sleep(60)
+            bot.delete_message(chat_id=update.message.chat_id, message_id=msg.message_id)
 
 def state(bot, update):
     """Send a message when the command /state is issued."""
@@ -176,17 +182,32 @@ def nanto(bot, update, args):
             bot.delete_message(chat_id=update.message.chat_id, message_id=msg_2.message_id)
             bot.delete_message(chat_id=update.message.chat_id, message_id=msg_1.message_id)
         else:
-            text="なんとっ!$username居然$text了！".replace('$text',' '.join(args)).replace('$username',update.message.from_user.first_name)
-            msg_1=bot.send_message(chat_id=update.message.chat_id, text=text)
-            time.sleep(1)
-            msg_2=bot.send_sticker(chat_id=update.message.chat_id, sticker="CAADBQADGgADT1ZbIFSw_UAI28HiAg")
-            time.sleep(5)
-            text="明日も$textすると、きっといいことがあると思いますよぉ～。えへへぇ♪".replace('$text',' '.join(args))
-            msg_3=bot.send_message(chat_id=update.message.chat_id, text=text)
-            time.sleep(30)
-            bot.delete_message(chat_id=update.message.chat_id, message_id=msg_3.message_id)
-            bot.delete_message(chat_id=update.message.chat_id, message_id=msg_2.message_id)
-            bot.delete_message(chat_id=update.message.chat_id, message_id=msg_1.message_id)
+            if '#' in ' '.join(args):  
+                input_text=' '.join(args).split('#')
+                text="なんとっ!$username居然$text了！".replace('$text',input_text[1]).replace('$username',input_text[0])
+                msg_1=bot.send_message(chat_id=update.message.chat_id, text=text)
+                time.sleep(1)
+                msg_2=bot.send_sticker(chat_id=update.message.chat_id, sticker="CAADBQADGgADT1ZbIFSw_UAI28HiAg")
+                time.sleep(5)
+                text="明日も$textすると、きっといいことがあると思いますよぉ～。えへへぇ♪".replace('$text',input_text[1])
+                msg_3=bot.send_message(chat_id=update.message.chat_id, text=text)
+                time.sleep(30)
+                bot.delete_message(chat_id=update.message.chat_id, message_id=msg_3.message_id)
+                bot.delete_message(chat_id=update.message.chat_id, message_id=msg_2.message_id)
+                bot.delete_message(chat_id=update.message.chat_id, message_id=msg_1.message_id)
+            else:
+                input_text=' '.join(args)
+                text="なんとっ!居然$text了！".replace('$text',input_text)
+                msg_1=bot.send_message(chat_id=update.message.chat_id, text=text)
+                time.sleep(1)
+                msg_2=bot.send_sticker(chat_id=update.message.chat_id, sticker="CAADBQADGgADT1ZbIFSw_UAI28HiAg")
+                time.sleep(5)
+                text="明日も$textすると、きっといいことがあると思いますよぉ～。えへへぇ♪".replace('$text',input_text)
+                msg_3=bot.send_message(chat_id=update.message.chat_id, text=text)
+                time.sleep(30)
+                bot.delete_message(chat_id=update.message.chat_id, message_id=msg_3.message_id)
+                bot.delete_message(chat_id=update.message.chat_id, message_id=msg_2.message_id)
+                bot.delete_message(chat_id=update.message.chat_id, message_id=msg_1.message_id)
             
 def which(bot, update, args):
     """Send a message when the command /which is issued."""

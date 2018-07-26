@@ -17,7 +17,7 @@ class GLOBAL_WORDS:
 /which - 想不到的事情就交由我決定！（用#井字號分隔 apple#banana）
 /tiger - 老虎
 /notiger - 警察
-/nanto - なんとっ！
+/nanto - なんとっ！+(名字#事件)
 
 【みんなのリンク】
 <a href="https://t.me/joinchat/IFtWTxKu7x6vuSK8HsFgsQ">〔765技術部〕</a>：技術部開放對BOT的意見以及回饋
