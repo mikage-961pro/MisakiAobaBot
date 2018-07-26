@@ -404,6 +404,29 @@ def key_word_reaction(bot,update):
         test.find('巨巨')!=-1
     if dalao_check and randrange(100)<20:
         bot.send_message(chat_id=update.message.chat_id,text='你才大佬！你全家都大佬！')
+
+def bot_historian(bot,update):
+    #refresh token
+    scope = ['https://spreadsheets.google.com/feeds']
+    creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
+    client = gspread.authorize(creds)
+    sheet = client.open_by_key(spreadsheet_key)
+    worksheet=sheet.worksheet('last_message_misaki')
+    chat_id=update.message.chat_id
+    #record all message_id
+    lmessage_id=update.message.message_id
+    list=[str(chat_id),lmessage_id]
+    try:
+        #find chat_id
+        cell=worksheet.find(str(chat_id))
+    except:
+        #ERROR:not found
+        #creat new record
+        worksheet.insert_row(list, 2)
+    else:
+        #replace record
+        worksheet.update_cell(cell.row,cell.col+1,lmessage_id)
+
 def aisatu(bot, update):
     if update.message.new_chat_members != None:
         for u in update.message.new_chat_members:
@@ -419,6 +442,10 @@ def aisatu(bot, update):
             # text = text.replace('$username',update.message.left_chat_member.first_name.encode('utf-8'))
             text = text.replace('$username',update.message.left_chat_member.first_name)
             bot.send_message(chat_id=update.message.chat_id,text=text)
+
+def message_callback(bot, update):
+    aisatu(bot, update)
+    bot_historian(bot,update)
 
 def mission_callback(bot,job):
     # somaction
@@ -460,27 +487,7 @@ def group_history(bot,job):
     rate=rate.replace('$human',str(human))
     bot.send_message(chat_id=-1001290696540,text=rate)
    
-def bot_historian(bot,update):
-    #refresh token
-    scope = ['https://spreadsheets.google.com/feeds']
-    creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
-    client = gspread.authorize(creds)
-    sheet = client.open_by_key(spreadsheet_key)
-    worksheet=sheet.worksheet('last_message_misaki')
-    chat_id=update.message.chat_id
-    #record all message_id
-    lmessage_id=update.message.message_id
-    list=[str(chat_id),lmessage_id]
-    try:
-        #find chat_id
-        cell=worksheet.find(str(chat_id))
-    except:
-        #ERROR:not found
-        #creat new record
-        worksheet.insert_row(list, 2)
-    else:
-        #replace record
-        worksheet.update_cell(cell.row,cell.col+1,lmessage_id)
+
 ################################################
 #                   main                       #
 ################################################
@@ -525,8 +532,7 @@ def main():
     #dp.add_handler(MessageHandler(Filters.text, echo2))
     #dp.add_handler(MessageHandler(Filters.command, unknown))
     dp.add_handler(MessageHandler(Filters.text, key_word_reaction))
-    dp.add_handler(MessageHandler(Filters.all, bot_historian))
-    dp.add_handler(MessageHandler(Filters.all, aisatu))
+    dp.add_handler(MessageHandler(Filters.all, message_callback))
     
     # <function end>
 
