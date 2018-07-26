@@ -221,6 +221,41 @@ def which(bot, update, args):
             text="わたしは〜♬［$res］が良いと思うよ〜えへへ。".replace('$res',result)
             msg=bot.send_message(chat_id=update.message.chat_id, text=text)
 
+
+def dice(bot,update,args):
+    """Send a message when the command /dice is issued."""
+    dice=['⚀','⚁','⚂','⚃','⚄','⚅']
+    count=[0,0,0,0,0,0]
+    text=''
+    if update.message.date > init_time:
+        if not args:
+            #dice 1
+                msg=bot.send_message(chat_id=update.message.chat_id, text=dice[randrange(6)])
+        else:
+            dice_num=' '.join(args)
+            try:
+                num=int(dice_num)
+            except:
+                #value error
+                return
+            else:
+                if num>100:
+                    return
+                else:
+                    for i in range(0,num):
+                        j=randrange(6)
+                        text=text+dice[j]
+                        count[j]=count[j]+1
+                    msg=bot.send_message(chat_id=update.message.chat_id, text=text)
+                    text=''
+                    for i in range(0,6):
+                        text=text+dice[i]+str(count[i])+'個\n'
+                    if num>20:
+                        msg1=bot.send_message(chat_id=update.message.chat_id, text=text)
+                        time.sleep(5)
+                        bot.delete_message(chat_id=update.message.chat_id, message_id=msg.message_id)
+                        bot.delete_message(chat_id=update.message.chat_id, message_id=msg1.message_id)
+                    
 @run_async
 def tiger(bot, update):
     word_tiger_1="<pre>あー</pre>"
@@ -390,6 +425,62 @@ def mission_callback(bot,job):
 
     # 玩人狼玩到忘記每日
     bot.send_message(chat_id='-1001290696540',text=GLOBAL_WORDS.word_do_mission)
+    
+def group_history(bot,job):
+    ######################
+    #put in your group id#
+    ######################
+    chat_id=-1001290696540
+    ######################
+    #put in your group id#
+    ######################    
+    time = datetime.now().strftime("%y/%m/%d %H:%M:%S")#+0 time
+
+    #refresh token
+    scope = ['https://spreadsheets.google.com/feeds']
+    creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
+    client = gspread.authorize(creds)
+    sheet = client.open_by_key(spreadsheet_key)
+    #get last_message_id
+    worksheet=sheet.worksheet('last_message')
+    c=get_cell(str(chat_id),worksheet)
+    message_id=worksheet.cell(c.row,c.col+1).value
+    count=bot.get_chat_members_count(chat_id)
+    #create record and save it
+    list=[str(chat_id),time,message_id,str(count)]
+    work_sheet_push(list,'server')
+    #get info 'now'
+    worksheet=sheet.worksheet('server')
+    w=get_cell(str(chat_id),worksheet)
+    #calculate
+    water=int(worksheet.cell(w.row,w.col+2).value)-int(worksheet.cell(w.row+1,w.col+2).value)
+    human=int(worksheet.cell(w.row,w.col+3).value)-int(worksheet.cell(w.row+1,w.col+3).value)
+    rate='在過去的幾個小時內，本群組增加了$water則訊息、加入$human位成員'
+    rate=rate.replace('$water',str(water))
+    rate=rate.replace('$human',str(human))
+    bot.send_message(chat_id=-1001290696540,text=rate)
+    
+def bot_historian:
+    #refresh token
+    scope = ['https://spreadsheets.google.com/feeds']
+    creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
+    client = gspread.authorize(creds)
+    sheet = client.open_by_key(spreadsheet_key)
+    worksheet=sheet.worksheet('last_message')
+    chat_id=update.message.chat_id
+    #record all message_id
+    lmessage_id=update.message.message_id
+    list=[str(chat_id),lmessage_id]
+    try:
+        #find chat_id
+        cell=worksheet.find(str(chat_id))
+    except:
+        #ERROR:not found
+        #creat new record
+        worksheet.insert_row(list, 2)
+    else:
+        #replace record
+        worksheet.update_cell(cell.row,cell.col+1,lmessage_id)
 ################################################
 #                   main                       #
 ################################################
@@ -407,6 +498,11 @@ def main():
     # ---daily jobs---
     # mission_callback every 22:30 daily
     updater.job_queue.run_daily(mission_callback,stime(14,30))
+    # mission_show record every 8 hours
+    m_history=[stime(7,0,0),stime(15,0,0),stime(23,0,0)]
+    for t in m_history:
+        #plug in mission time with loop
+        updater.job_queue.run_daily(group_history,t)
 
     # ---Command answer---
     # on different commands - answer in Telegram
@@ -421,6 +517,7 @@ def main():
     dp.add_handler(CommandHandler("tiger", tiger))
     dp.add_handler(CommandHandler("notiger", notiger))
     dp.add_handler(CommandHandler("which", which, pass_args=True))
+    dp.add_handler(CommandHandler("dice", dice, pass_args=True))
     # dp.add_handler(CommandHandler("title", title, pass_args=True))
 
     # ---Message answer---
@@ -428,6 +525,7 @@ def main():
     #dp.add_handler(MessageHandler(Filters.text, echo2))
     #dp.add_handler(MessageHandler(Filters.command, unknown))
     dp.add_handler(MessageHandler(Filters.text, key_word_reaction))
+    dp.add_handler(MessageHandler(Filters.all, bot_historian))
     dp.add_handler(MessageHandler(Filters.all, aisatu))
     
     # <function end>
