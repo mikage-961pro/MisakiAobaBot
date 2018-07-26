@@ -16,3 +16,4 @@ ID:@MisakiAobaBot
 - **which** - 把事情丟給美咲決定（用#井字號分隔事情）
 - **tiger** - 老虎
 - **notiger** - 警察
+- **dice** - 公正的骰子
