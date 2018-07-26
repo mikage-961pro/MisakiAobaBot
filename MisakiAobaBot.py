@@ -503,6 +503,7 @@ def main():
     for t in m_history:
         #plug in mission time with loop
         updater.job_queue.run_daily(group_history,t)
+
     # ---Command answer---
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start))
