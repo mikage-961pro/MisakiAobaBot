@@ -442,7 +442,7 @@ def group_history(bot,job):
     client = gspread.authorize(creds)
     sheet = client.open_by_key(spreadsheet_key)
     #get last_message_id
-    worksheet=sheet.worksheet('last_message')
+    worksheet=sheet.worksheet('last_message_misaki')
     c=get_cell(str(chat_id),worksheet)
     message_id=worksheet.cell(c.row,c.col+1).value
     count=bot.get_chat_members_count(chat_id)
@@ -459,14 +459,14 @@ def group_history(bot,job):
     rate=rate.replace('$water',str(water))
     rate=rate.replace('$human',str(human))
     bot.send_message(chat_id=-1001290696540,text=rate)
-
-def bot_historian():
+   
+def bot_historian(bot,update):
     #refresh token
     scope = ['https://spreadsheets.google.com/feeds']
     creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
     client = gspread.authorize(creds)
     sheet = client.open_by_key(spreadsheet_key)
-    worksheet=sheet.worksheet('last_message')
+    worksheet=sheet.worksheet('last_message_misaki')
     chat_id=update.message.chat_id
     #record all message_id
     lmessage_id=update.message.message_id
