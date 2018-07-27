@@ -401,7 +401,9 @@ def key_word_reaction(bot,update):
         test.find('大老')!=-1 or\
         test.find('dalao')!=-1 or\
         test.find('ㄉㄚˋㄌㄠˇ')!=-1 or\
-        test.find('巨巨')!=-1
+        test.find('巨巨')!=-1 or\
+        test.find('Dalao')!=-1 or\
+        test.find('大 佬')!=-1 
     if dalao_check and randrange(100)<20:
         bot.send_message(chat_id=update.message.chat_id,text='你才大佬！你全家都大佬！')
 
