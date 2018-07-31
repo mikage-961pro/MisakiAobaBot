@@ -71,11 +71,11 @@ def work_sheet_push(values,worksheet_name):
     try:
         worksheet=spreadsheet.worksheet(worksheet_name)
     except:#there is no this worksheet
-        spreadsheet.add_worksheet(worksheet_name,len(values),2)
+        spreadsheet.add_worksheet(worksheet_name,len(values),1)
         worksheet=spreadsheet.worksheet(worksheet_name)
-        worksheet.insert_row(values,2)
+        worksheet.insert_row(values,1)
     else:
-        worksheet.insert_row(values,2)
+        worksheet.insert_row(values,1)
 #usage (values[list of string],worksheet_name[string])
 #put a list of value and push to worksheet
 
@@ -449,6 +449,22 @@ def message_callback(bot, update):
     else:
         #replace record
         worksheet.update_cell(cell.row,cell.col+1,lmessage_id)
+    ###################################
+    #          quote collector        #
+    ###################################
+    
+    if test.find(' #名言')!=-1 or test.find('#名言 ')!=-1:
+        if update.message.reply_to_message==None and update.message.from_user.is_bot==False:
+            test=test.replace(' #名言','').replace('#名言 ','')
+            qlist=[test,update.message.from_user.first_name]
+            work_sheet_push(qlist,'quote_main')
+            return
+    if test.find('#名言')!=-1:
+        if update.message.reply_to_message is not None and update.message.reply_to_message.from_user.is_bot==False:
+            qlist=[update.message.reply_to_message.text,update.message.reply_to_message.from_user.first_name]
+            work_sheet_push(qlist,'quote_main')
+            return
+    
 def mission_callback(bot,job):
     # somaction
 
