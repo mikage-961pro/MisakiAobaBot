@@ -411,11 +411,34 @@ def key_word_reaction(bot,update):
         test.find('大老')!=-1 or\
         test.find('dalao')!=-1 or\
         test.find('ㄉㄚˋㄌㄠˇ')!=-1 or\
-        test.find('巨巨')!=-1
+        test.find('巨巨')!=-1 or\
+        test.find('Dalao')!=-1 or\
+        test.find('大 佬')!=-1 
     if dalao_check and randrange(100)<20:
         bot.send_message(chat_id=update.message.chat_id,text='你才大佬！你全家都大佬！')
 
-def bot_historian(bot,update):
+def message_callback(bot, update):
+    ###################################
+    #              aisatu             #
+    ###################################
+    if update.message.new_chat_members != None:
+        for u in update.message.new_chat_members:
+            if u.is_bot == False:
+                text='$usernameさん、ようこそ事務所へ！\n輸入 /help 可以尋求幫助'
+                # text = text.replace('$username',u.first_name.encode('utf-8'))
+                text = text.replace('$username',u.first_name)
+                bot.send_message(chat_id=update.message.chat_id,text=text)
+
+    if update.message.left_chat_member != None:
+        if update.message.left_chat_member.is_bot == False:
+            text='まだ会いましょう！$usernameさん！'
+            # text = text.replace('$username',update.message.left_chat_member.first_name.encode('utf-8'))
+            text = text.replace('$username',update.message.left_chat_member.first_name)
+            bot.send_message(chat_id=update.message.chat_id,text=text)
+    
+    ###################################
+    #          bot_historian          #
+    ###################################
     #refresh token
     scope = ['https://spreadsheets.google.com/feeds']
     creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
@@ -436,27 +459,6 @@ def bot_historian(bot,update):
     else:
         #replace record
         worksheet.update_cell(cell.row,cell.col+1,lmessage_id)
-
-def aisatu(bot, update):
-    if update.message.new_chat_members != None:
-        for u in update.message.new_chat_members:
-            if u.is_bot == False:
-                text='$usernameさん、ようこそ事務所へ！\n輸入 /help 可以尋求幫助'
-                # text = text.replace('$username',u.first_name.encode('utf-8'))
-                text = text.replace('$username',u.first_name)
-                bot.send_message(chat_id=update.message.chat_id,text=text)
-
-    if update.message.left_chat_member != None:
-        if update.message.left_chat_member.is_bot == False:
-            text='まだ会いましょう！$usernameさん！'
-            # text = text.replace('$username',update.message.left_chat_member.first_name.encode('utf-8'))
-            text = text.replace('$username',update.message.left_chat_member.first_name)
-            bot.send_message(chat_id=update.message.chat_id,text=text)
-
-def message_callback(bot, update):
-    aisatu(bot, update)
-    bot_historian(bot,update)
-
 def mission_callback(bot,job):
     # somaction
 
@@ -550,7 +552,7 @@ def main():
     dp.add_error_handler(error)
     
     # Start the Bot
-    updater.start_polling()
+    updater.start_polling(clean=True)
 
     # IDLE
     updater.idle()
