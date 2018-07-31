@@ -406,16 +406,37 @@ def unknown(bot, update):
 #                not command                   #
 ################################################
 def key_word_reaction(bot,update):
-    test=update.message.text
-    dalao_check=test.find('大佬')!=-1 or\
-        test.find('大老')!=-1 or\
-        test.find('dalao')!=-1 or\
-        test.find('ㄉㄚˋㄌㄠˇ')!=-1 or\
-        test.find('巨巨')!=-1 or\
-        test.find('Dalao')!=-1 or\
-        test.find('大 佬')!=-1 
+    key_words=update.message.text
+    cid=update.message.chat_id
+    dalao_check=key_words.find('大佬')!=-1 or\
+        key_words.find('大老')!=-1 or\
+        key_words.find('dalao')!=-1 or\
+        key_words.find('ㄉㄚˋㄌㄠˇ')!=-1 or\
+        key_words.find('巨巨')!=-1 or\
+        key_words.find('Dalao')!=-1 or\
+        key_words.find('大 佬')!=-1 
     if dalao_check and randrange(100)<20:
-        bot.send_message(chat_id=update.message.chat_id,text='你才大佬！你全家都大佬！')
+        bot.send_message(chat_id=cid,text='你才大佬！你全家都大佬！')
+
+    if key_words.find('この歌声が')!=-1:
+        bot.send_message(chat_id=cid,text='MILLLLLIIIONNNNNN')
+
+    if key_words.find('依田')!=-1 or key_words.find('芳乃')!=-1:
+        bot.send_message(chat_id=cid,text='ぶおおー')
+
+    if key_words.find('青羽')!=-1 or key_words.find('美咲')!=-1:
+        bot.send_message(chat_id=cid,text='お疲れ様でした！')
+
+    if key_words.find('もちょ')!=-1 and randrange(4)==0:
+        bot.send_message(chat_id=cid,text='(o・∇・o)もちー！もちもちもちもちもちーーーもちぃ！')
+    else:
+        bot.send_message(chat_id=cid,text='(●･▽･●)')
+
+    if key_words.find('ナンス')!=-1:
+        bot.send_message(chat_id=cid,text='(*>△<)<ナーンナーンっ')
+
+    if key_words.find('小鳥')!=-1:
+        bot.send_message(chat_id=cid,text='もしかして〜♪ 音無先輩ですか')
 
 def message_callback(bot, update):
     ###################################
