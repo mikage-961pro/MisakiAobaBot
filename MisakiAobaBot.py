@@ -437,7 +437,7 @@ def key_word_reaction(bot,update):
         bot.send_message(chat_id=cid,text='(*>△<)<ナーンナーンっ')
 
     if key_words.find('小鳥')!=-1:
-        bot.send_message(chat_id=cid,text='もしかして〜♪ 音無先輩ですか')
+        bot.send_message(chat_id=cid,text='もしかして〜♪ 音無先輩についてのお話ですか')
 
 def message_callback(bot, update):
     ###################################
