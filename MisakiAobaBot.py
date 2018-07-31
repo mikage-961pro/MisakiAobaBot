@@ -7,6 +7,7 @@
 from telegram import (Bot, Chat, Sticker, ReplyKeyboardMarkup, ReplyKeyboardRemove, ParseMode)
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters,JobQueue
 from telegram.ext.dispatcher import run_async
+import datetime as dt
 from datetime import datetime,tzinfo,timedelta
 from datetime import time as stime#specific time
 import logging
@@ -35,6 +36,15 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 logger = logging.getLogger(__name__)
 
+################################################
+#                     class                    #
+################################################
+class remind():
+    def __init__(self,stime,text,day=7):
+        self.stime=dt.datetime.strptime(stime, '%H:%M').time()
+        #str to stime()
+        self.text=text
+        self.day=day
 ################################################
 #                   tool kits                  #
 ################################################
