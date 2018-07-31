@@ -440,6 +440,7 @@ def key_word_reaction(bot,update):
         bot.send_message(chat_id=cid,text='もしかして〜♪ 音無先輩についてのお話ですか')
 
 def message_callback(bot, update):
+
     ###################################
     #              aisatu             #
     ###################################
@@ -457,6 +458,21 @@ def message_callback(bot, update):
             # text = text.replace('$username',update.message.left_chat_member.first_name.encode('utf-8'))
             text = text.replace('$username',update.message.left_chat_member.first_name)
             bot.send_message(chat_id=update.message.chat_id,text=text)
+    ###################################
+    #          quote collector        #
+    ###################################
+    record=False
+    if test.find(' #名言')!=-1 or test.find('#名言 ')!=-1:
+        if update.message.reply_to_message==None and update.message.from_user.is_bot==False:
+            test=test.replace(' #名言','').replace('#名言 ','')
+            qlist=[test,update.message.from_user.first_name]
+            work_sheet_push(qlist,'quote_main')
+            record=True
+    if test.find('#名言')!=-1 and record==False:
+        if update.message.reply_to_message is not None and update.message.reply_to_message.from_user.is_bot==False:
+            qlist=[update.message.reply_to_message.text,update.message.reply_to_message.from_user.first_name]
+            work_sheet_push(qlist,'quote_main')
+            
     
     ###################################
     #          bot_historian          #
@@ -481,21 +497,6 @@ def message_callback(bot, update):
     else:
         #replace record
         worksheet.update_cell(cell.row,cell.col+1,lmessage_id)
-    ###################################
-    #          quote collector        #
-    ###################################
-    
-    if test.find(' #名言')!=-1 or test.find('#名言 ')!=-1:
-        if update.message.reply_to_message==None and update.message.from_user.is_bot==False:
-            test=test.replace(' #名言','').replace('#名言 ','')
-            qlist=[test,update.message.from_user.first_name]
-            work_sheet_push(qlist,'quote_main')
-            return
-    if test.find('#名言')!=-1:
-        if update.message.reply_to_message is not None and update.message.reply_to_message.from_user.is_bot==False:
-            qlist=[update.message.reply_to_message.text,update.message.reply_to_message.from_user.first_name]
-            work_sheet_push(qlist,'quote_main')
-            return
     
 def mission_callback(bot,job):
     # somaction
