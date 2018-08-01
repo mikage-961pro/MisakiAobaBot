@@ -1,35 +1,39 @@
 # coding=utf-8
 
 ################################################
-#                   Global                     #
+#                   Import                     #
 ################################################
-# import
+
+# Telegram
 from telegram import (Bot, Chat, Sticker, ReplyKeyboardMarkup, ReplyKeyboardRemove, ParseMode)
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters,JobQueue
 from telegram.ext.dispatcher import run_async
+
+# Python function
 import datetime as dt
 from datetime import datetime,tzinfo,timedelta
 from datetime import time as stime#specific time
 import logging
 import time
 import os
+from random import randrange
+
+# Database
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+
+# User Module
 from global_words import GLOBAL_WORDS
-from random import randrange
 
 ################################################
 #                     init                     #
 ################################################
 
+# ---BOT SETTING---
 bot_name='@MisakiAobaBot'
 token = os.environ['TELEGRAM_TOKEN']
 spreadsheet_key=os.environ['SPREAD_TOKEN']
 # token will taken by heroku
-# Please use test token when dev
-# WARNING!!! Please use quarter space instead of tab
-# This will cause fatal error
-# ---TOKEN---
 updater = Updater(token,workers=16)
 
 # Enable logging
@@ -37,6 +41,8 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                     level=logging.INFO)
 
 logger = logging.getLogger(__name__)
+
+# Record bot init time
 init_time = -1
 ################################################
 #                     class                    #
