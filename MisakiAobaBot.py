@@ -18,7 +18,9 @@ from oauth2client.service_account import ServiceAccountCredentials
 from global_words import GLOBAL_WORDS
 from random import randrange
 
-init_time = -1
+################################################
+#                     init                     #
+################################################
 
 bot_name='@MisakiAobaBot'
 token = os.environ['TELEGRAM_TOKEN']
@@ -35,7 +37,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                     level=logging.INFO)
 
 logger = logging.getLogger(__name__)
-
+init_time = -1
 ################################################
 #                     class                    #
 ################################################
@@ -122,6 +124,7 @@ def start(bot, update):
 def help(bot, update):
     """Send a message when the command /help is issued."""
     if update.message.date > init_time:
+        bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
         if randrange(1000)<30:
             bot.send_message(chat_id=update.message.chat_id, text="ぜ")
         else:
@@ -131,6 +134,7 @@ def help(bot, update):
 def tbgame(bot, update):
     """Send a message when the command /tbgame is issued."""
     if update.message.date > init_time:
+        bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
         bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_tbgame, 
                         parse_mode=ParseMode.HTML)
 
@@ -138,6 +142,7 @@ def tbgame(bot, update):
 def rule(bot, update):
     """Send a message when the command /rule is issued."""
     if update.message.date > init_time:
+        bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
         if randrange(1000)<30:
             bot.send_message(chat_id=update.message.chat_id, text="ぜ")
         else:
@@ -157,6 +162,7 @@ def state(bot, update):
 def config(bot, update, args):
     """Send a message when the command /config is issued."""
     if update.message.date > init_time:
+        bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
         word_kachikoi_name=GLOBAL_WORDS.word_kachikoi_1.replace('$name',' '.join(args))
         if not args:
             bot.send_message(chat_id=update.message.chat_id, text="本功能目前沒有毛用")
@@ -178,6 +184,7 @@ def config(bot, update, args):
 def nanto(bot, update, args):
     """Send a message when the command /nanto is issued."""
     if update.message.date > init_time:
+        bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
         if not args:
             msg_1=bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_nanto_1)
             time.sleep(1)
@@ -238,6 +245,7 @@ def dice(bot,update,args):
     count=[0,0,0,0,0,0]
     text=''
     if update.message.date > init_time:
+        bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
         if not args:
             #dice 1
                 msg=bot.send_message(chat_id=update.message.chat_id, text=dice[randrange(6)])
@@ -281,6 +289,7 @@ def tiger(bot, update):
     word_tiger_11="<pre>ジャージャー！</pre>"
     word_tiger_12="<pre>ファイボー！ワイパー！</pre>"
     if update.message.date > init_time:
+        bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
         messg = bot.send_message(chat_id=update.message.chat_id, text=word_tiger_1,
             parse_mode=ParseMode.HTML)
         time.sleep(0.5)
@@ -381,6 +390,7 @@ def set_remind_time(bot,update,args):
 def notiger(bot, update):
     """Send a message when the command /notiger is issued."""
     if update.message.date > init_time:
+        bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
         msg=bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_notiger, 
                     parse_mode=ParseMode.HTML)
         time.sleep(10)
