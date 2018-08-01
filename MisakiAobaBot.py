@@ -521,6 +521,7 @@ def message_callback(bot, update):
     #          quote collector        #
     ###################################
     record=False
+    test=update.message.text
     if test.find(' #名言')!=-1 or test.find('#名言 ')!=-1:
         if update.message.reply_to_message==None and update.message.from_user.is_bot==False:
             test=test.replace(' #名言','').replace('#名言 ','')
