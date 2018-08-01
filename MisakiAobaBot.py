@@ -102,7 +102,7 @@ def del_cmd(bot,update):
 
 def yuunou(bot,update):
     """misaki is good"""
-    if randrange(100) <3:
+    if randrange(100) <50:
         bot.send_photo(chat_id=update.message.chat_id, photo=open('yuunou.jpg', 'rb'))
 
 def work_sheet_push(values,worksheet_name):
@@ -598,7 +598,6 @@ def group_history(bot,job):
     rate=rate.replace('$water',str(water))
     rate=rate.replace('$human',str(human))
     bot.send_message(chat_id=-1001290696540,text=rate)
-    yuunou(bot,update)
    
 
 ################################################
