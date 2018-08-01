@@ -408,6 +408,10 @@ def unknown(bot, update):
 def key_word_reaction(bot,update):
     key_words=update.message.text
     cid=update.message.chat_id
+    
+    # a random number from 0 to 99
+    num = randrange(100)
+    
     dalao_check=key_words.find('大佬')!=-1 or\
         key_words.find('大老')!=-1 or\
         key_words.find('dalao')!=-1 or\
@@ -415,22 +419,23 @@ def key_word_reaction(bot,update):
         key_words.find('巨巨')!=-1 or\
         key_words.find('Dalao')!=-1 or\
         key_words.find('大 佬')!=-1 
-    if dalao_check and randrange(100)<20:
+    if dalao_check and num<20:
         bot.send_message(chat_id=cid,text='你才大佬！你全家都大佬！')
 
-    if key_words.find('この歌声が')!=-1:
+    if key_words.find('この歌声が')!=-1 and num >= 50:
         bot.send_message(chat_id=cid,text='MILLLLLIIIONNNNNN')
+    if key_words.find('この歌声が')!=-1 and num < 50:
+        bot.send_message(chat_id=cid,text='UNIIIIIOOONNNNN')
 
     if key_words.find('依田')!=-1 or key_words.find('芳乃')!=-1:
         bot.send_message(chat_id=cid,text='ぶおおー')
 
     if key_words.find('青羽')!=-1 or key_words.find('美咲')!=-1:
         bot.send_message(chat_id=cid,text='お疲れ様でした！')
-    
-    num = randrange(4)
-    if key_words.find('もちょ')!=-1 and num == 0:
+
+    if key_words.find('もちょ')!=-1 and num >= 50:
         bot.send_message(chat_id=cid,text='(o・∇・o)もちー！もちもちもちもちもちーーーもちぃ！')
-    if key_words.find('もちょ')!=-1 and num != 0:
+    if key_words.find('もちょ')!=-1 and num < 50:
         bot.send_message(chat_id=cid,text='(●･▽･●)')
 
     if key_words.find('ナンス')!=-1:
