@@ -102,7 +102,7 @@ def del_cmd(bot,update):
 
 def yuunou(bot,update):
     """misaki is good"""
-    if randrange(100) <50:
+    if randrange(100) <3:
         bot.send_photo(chat_id=update.message.chat_id, photo=open('yuunou.jpg', 'rb'))
 
 def work_sheet_push(values,worksheet_name):
