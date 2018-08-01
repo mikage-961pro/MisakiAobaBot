@@ -410,6 +410,10 @@ def unknown(bot, update):
 ################################################
 def key_word_reaction(bot,update):
     def find_word(words, echo, prob=100, els=None):
+        # words: words need to reaction
+        # echo: msg send after reaction
+        # prob: probability, if not, send els msg
+        # els: if not in prob
         key_words=update.message.text
         cid=update.message.chat_id
         # a random number from 0 to 99
