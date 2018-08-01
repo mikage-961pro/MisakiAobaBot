@@ -436,7 +436,7 @@ def unknown(bot, update):
 #                not command                   #
 ################################################
 def key_word_reaction(bot,update):
-    def find_word(words, echo, prob=100, els=None):
+    def find_word(words, echo=None, prob=100, els=None, video=None):
         # words: words need to reaction
         # echo: msg send after reaction
         # prob: probability, if not, send els msg
@@ -449,22 +449,34 @@ def key_word_reaction(bot,update):
         for check in words:
             if key_words.find(check)!=-1:
                 key_words_value=True
-        if key_words_value==True and num<prob:
-            bot.send_message(chat_id=cid,text=echo)
-        if key_words_value==True and num>=prob and els!=None:
-            bot.send_message(chat_id=cid,text=els)
+        if echo != None:
+            if key_words_value==True and num<prob:
+                bot.send_message(chat_id=cid,text=echo)
+            if key_words_value==True and num>=prob and els!=None:
+                bot.send_message(chat_id=cid,text=els)
+        elif video != None:
+            if key_words_value==True and num<prob:
+                bot.send_video(chat_id=cid, video=video)
     
     find_word(words=['大老','dalao','ㄉㄚˋㄌㄠˇ','巨巨','Dalao','大 佬'], 
         echo='你才大佬！你全家都大佬！', prob=20)
     find_word(words=['依田','芳乃'], echo='ぶおおー')
     find_word(words=['青羽','美咲'], echo='お疲れ様でした！')
     find_word(words=['この歌声が'], echo='MILLLLLIIIONNNNNN',els='UNIIIIIOOONNNNN',prob=50)
-    find_word(words=['もちょ'], echo='(●･▽･●)',els='(o・∇・o)もちー！もちもちもちもちもちーーーもちぃ！',prob=90)
-    find_word(words=['ナンス'], echo='(*>△<)<ナーンナーンっ')
+    find_word(words=['麻倉','もも','もちょ'], echo='(●･▽･●)',els='(o・∇・o)もちー！もちもちもちもちもちーーーもちぃ！',prob=90)
+    find_word(words=['夏川','椎菜','ナンス'], echo='(*>△<)<ナーンナーンっ')
+    find_word(words=['雨宮','天','てん'], video='https://i.imgur.com/XmWYqS1.mp4')
+    find_word(words=['終','結束','沒了'], echo='終わりだよ(●･▽･●)')
     find_word(words=['小鳥'], echo='もしかして〜♪ 音無先輩についてのお話ですか')
     find_word(words=['誰一百'], echo='咖嘎雅哭')
     find_word(words=['咖嘎雅哭'], echo='吼西米～那咧')
     find_word(words=['高木','社長','順二朗'], echo='あぁ！社長のことを知りたい！')
+    find_word(words=['天海','春香'], echo='天海さんのクッキーはとっても美味しいですね〜')
+    find_word(words=['如月','千早','72'], echo='如月さんの歌は素晴らしい！')
+    find_word(words=['星井','美希'], echo='あの...星井さんはどこかで知っていますか？')
+    find_word(words=['高槻','やよい'], echo='元気がいっぱいのかわいい！')
+    find_word(words=['萩原','雪歩'], echo='あ、先のお茶は萩原さんからの')
+
 
 def message_callback(bot, update):
 
