@@ -97,7 +97,7 @@ def bot_is_admin(bot,update):
 
 def del_cmd(bot,update):
     """Dectect bot if admin, if True, del cmd"""
-    if is_admin(bot,update):
+    if bot_is_admin(bot,update):
         bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
 
 def work_sheet_push(values,worksheet_name):
