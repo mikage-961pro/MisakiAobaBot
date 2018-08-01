@@ -100,6 +100,11 @@ def del_cmd(bot,update):
     if bot_is_admin(bot,update):
         bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
 
+def yuunou(bot,update):
+    """misaki is good"""
+    if randrange(100) <3:
+        bot.send_photo(chat_id=update.message.chat_id, photo=open('yuunou.jpg', 'rb'))
+
 def work_sheet_push(values,worksheet_name):
     scope = ['https://spreadsheets.google.com/feeds']
     creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
@@ -148,6 +153,7 @@ def start(bot, update):
     if update.message.date > init_time:
         bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_start,
                         parse_mode=ParseMode.HTML)
+        yuunou(bot,update)
 
 def help(bot, update):
     """Send a message when the command /help is issued."""
@@ -158,6 +164,7 @@ def help(bot, update):
         else:
             bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_help, 
                         parse_mode=ParseMode.HTML)
+            yuunou(bot,update)
 
 def tbgame(bot, update):
     """Send a message when the command /tbgame is issued."""
@@ -165,6 +172,7 @@ def tbgame(bot, update):
         del_cmd(bot,update)
         bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_tbgame, 
                         parse_mode=ParseMode.HTML)
+        yuunou(bot,update)
 
 @run_async
 def rule(bot, update):
@@ -178,6 +186,7 @@ def rule(bot, update):
                             parse_mode=ParseMode.HTML)
             time.sleep(60)
             bot.delete_message(chat_id=update.message.chat_id, message_id=msg.message_id)
+            yuunou(bot,update)
 
 def state(bot, update):
     """Send a message when the command /state is issued."""
@@ -207,6 +216,7 @@ def config(bot, update, args):
             parse_mode=ParseMode.HTML)
             time.sleep(6)
             bot.delete_message(chat_id=update.message.chat_id, message_id=msg_3.message_id)
+            yuunou(bot,update)
 
 @run_async
 def nanto(bot, update, args):
@@ -253,6 +263,7 @@ def nanto(bot, update, args):
                 bot.delete_message(chat_id=update.message.chat_id, message_id=msg_3.message_id)
                 bot.delete_message(chat_id=update.message.chat_id, message_id=msg_2.message_id)
                 bot.delete_message(chat_id=update.message.chat_id, message_id=msg_1.message_id)
+        yuunou(bot,update)
             
 def which(bot, update, args):
     """Send a message when the command /which is issued."""
@@ -265,6 +276,7 @@ def which(bot, update, args):
             result=things[randrange(len(things))]
             text="わたしは〜♬［$res］が良いと思うよ〜えへへ。".replace('$res',result)
             msg=bot.send_message(chat_id=update.message.chat_id, text=text)
+            yuunou(bot,update)
 
 def dice(bot,update,args):
     """Send a message when the command /dice is issued."""
@@ -354,6 +366,7 @@ def tiger(bot, update):
             parse_mode=ParseMode.HTML)
         time.sleep(5)
         bot.delete_message(chat_id=update.message.chat_id, message_id=messg.message_id)
+        yuunou(bot,update)
 
 @run_async
 def notiger(bot, update):
@@ -364,6 +377,7 @@ def notiger(bot, update):
                     parse_mode=ParseMode.HTML)
         time.sleep(10)
         bot.delete_message(chat_id=update.message.chat_id, message_id=msg.message_id)
+        yuunou(bot,update)
 
 def title(bot,update,args):
     """Change tilte when the command /title OOO is issued."""
@@ -452,11 +466,14 @@ def key_word_reaction(bot,update):
         if echo != None:
             if key_words_value==True and num<prob:
                 bot.send_message(chat_id=cid,text=echo)
+                yuunou(bot,update)
             if key_words_value==True and num>=prob and els!=None:
                 bot.send_message(chat_id=cid,text=els)
+                yuunou(bot,update)
         elif video != None:
             if key_words_value==True and num<prob:
                 bot.send_video(chat_id=cid, video=video)
+                yuunou(bot,update)
     
     find_word(words=['大老','dalao','ㄉㄚˋㄌㄠˇ','巨巨','Dalao','大 佬'], 
         echo='你才大佬！你全家都大佬！', prob=20)
@@ -491,6 +508,7 @@ def message_callback(bot, update):
                 # text = text.replace('$username',u.first_name.encode('utf-8'))
                 text = text.replace('$username',u.first_name)
                 bot.send_message(chat_id=update.message.chat_id,text=text)
+                yuunou(bot,update)
 
     if update.message.left_chat_member != None:
         if update.message.left_chat_member.is_bot == False:
@@ -498,6 +516,7 @@ def message_callback(bot, update):
             # text = text.replace('$username',update.message.left_chat_member.first_name.encode('utf-8'))
             text = text.replace('$username',update.message.left_chat_member.first_name)
             bot.send_message(chat_id=update.message.chat_id,text=text)
+            yuunou(bot,update)
     ###################################
     #          quote collector        #
     ###################################
@@ -543,6 +562,7 @@ def mission_callback(bot,job):
 
     # 玩人狼玩到忘記每日
     bot.send_message(chat_id='-1001290696540',text=GLOBAL_WORDS.word_do_mission)
+    yuunou(bot,update)
     
 def group_history(bot,job):
     ######################
@@ -577,6 +597,7 @@ def group_history(bot,job):
     rate=rate.replace('$water',str(water))
     rate=rate.replace('$human',str(human))
     bot.send_message(chat_id=-1001290696540,text=rate)
+    yuunou(bot,update)
    
 
 ################################################
