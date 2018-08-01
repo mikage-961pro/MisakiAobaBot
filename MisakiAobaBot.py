@@ -70,17 +70,33 @@ def get_cell(key_word,worksheet):
         return cell
 
 def is_admin(bot,update):
-    #bool func to check auth
+    """Dectect user if admin, return boolen value"""
     is_admin=False
     if update.message.chat.type=='private':
         return is_admin
-    adminlist=update.message.chat.get_administrators()
-    for i in adminlist:
-        if update.message.from_user.id==i.user.id:
-            is_admin=True
-    return is_admin
+    else:
+        adminlist=update.message.chat.get_administrators()
+        for i in adminlist:
+            print(i.user.id)
+            if update.message.from_user.id==i.user.id:
+                is_admin=True
+        return is_admin
+
+def bot_is_admin(bot,update):
+    """Dectect bot if admin, return boolen value"""
+    bot_auth=False
+    if update.message.chat.type=='private':
+        return bot_auth
+    else:
+        adminlist=update.message.chat.get_administrators()
+        me=bot.get_me()
+        for b in adminlist:
+                if me.id==b.user.id:
+                    bot_auth=True
+        return bot_auth
 
 def del_cmd(bot,update):
+    """Dectect bot if admin, if True, del cmd"""
     if is_admin(bot,update):
         bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
 
