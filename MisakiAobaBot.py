@@ -386,14 +386,7 @@ def notiger(bot, update):
         time.sleep(10)
         bot.delete_message(chat_id=update.message.chat_id, message_id=msg.message_id)
 
-def echo(bot, update):
-    """Echo the user message."""
-    bot.send_message(chat_id=update.message.chat_id, text=update.message.sticker.file_id)
-
-def echo2(bot, update):
-    """Echo the user message."""
-    bot.send_message(chat_id=update.message.chat_id, text=update.message.text)
-
+# other command
 def error(bot, update, error):
     """Log Errors caused by Updates."""
     logger.warning('Update "%s" caused error "%s"', update, error)
@@ -590,9 +583,6 @@ def main():
     # dp.add_handler(CommandHandler("title", title, pass_args=True))
 
     # ---Message answer---
-    #dp.add_handler(MessageHandler(Filters.sticker, echo))
-    #dp.add_handler(MessageHandler(Filters.text, echo2))
-    #dp.add_handler(MessageHandler(Filters.command, unknown))
     dp.add_handler(MessageHandler(Filters.text, key_word_reaction))
     dp.add_handler(MessageHandler(Filters.all, message_callback))
     
