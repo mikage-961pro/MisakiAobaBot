@@ -168,11 +168,11 @@ def state(bot, update):
 def config(bot, update, args):
     """Send a message when the command /config is issued."""
     if update.message.date > init_time:
-        bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
         word_kachikoi_name=GLOBAL_WORDS.word_kachikoi_1.replace('$name',' '.join(args))
         if not args:
             bot.send_message(chat_id=update.message.chat_id, text="本功能目前沒有毛用")
         else:
+            bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
             msg_1=bot.send_message(chat_id=update.message.chat_id, text=word_kachikoi_name,
             parse_mode=ParseMode.HTML)
             time.sleep(6)
