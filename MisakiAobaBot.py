@@ -444,6 +444,12 @@ def key_word_reaction(bot,update):
     if key_words.find('小鳥')!=-1:
         bot.send_message(chat_id=cid,text='もしかして〜♪ 音無先輩についてのお話ですか')
 
+    if key_words.find('誰一百')!=-1:
+        bot.send_message(chat_id=cid,text='咖嘎雅哭')
+        
+    if key_words.find('咖嘎雅哭')!=-1:
+        bot.send_message(chat_id=cid,text='吼西米～那咧')
+
 def message_callback(bot, update):
 
     ###################################
