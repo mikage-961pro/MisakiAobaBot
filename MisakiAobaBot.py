@@ -433,9 +433,9 @@ def key_word_reaction(bot,update):
     if key_words.find('青羽')!=-1 or key_words.find('美咲')!=-1:
         bot.send_message(chat_id=cid,text='お疲れ様でした！')
 
-    if key_words.find('もちょ')!=-1 and num >= 10:
+    if key_words.find('もちょ')!=-1 and num >= 90:
         bot.send_message(chat_id=cid,text='(o・∇・o)もちー！もちもちもちもちもちーーーもちぃ！')
-    if key_words.find('もちょ')!=-1 and num < 10:
+    if key_words.find('もちょ')!=-1 and num < 90:
         bot.send_message(chat_id=cid,text='(●･▽･●)')
 
     if key_words.find('ナンス')!=-1:
