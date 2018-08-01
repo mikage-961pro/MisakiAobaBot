@@ -71,12 +71,18 @@ def get_cell(key_word,worksheet):
 
 def is_admin(bot,update):
     #bool func to check auth
-    adminlist=update.message.chat.get_administrators()
     is_admin=False
+    if update.message.chat.type=='private':
+        return is_admin
+    adminlist=update.message.chat.get_administrators()
     for i in adminlist:
         if update.message.from_user.id==i.user.id:
             is_admin=True
     return is_admin
+
+def del_cmd(bot,update):
+    if is_admin(bot,update):
+        bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
 
 def work_sheet_push(values,worksheet_name):
     scope = ['https://spreadsheets.google.com/feeds']
@@ -130,8 +136,7 @@ def start(bot, update):
 def help(bot, update):
     """Send a message when the command /help is issued."""
     if update.message.date > init_time:
-        if is_admin(bot,update):
-            bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
+        del_cmd(bot,update)
         if randrange(1000)<30:
             bot.send_message(chat_id=update.message.chat_id, text="ぜ")
         else:
@@ -141,8 +146,7 @@ def help(bot, update):
 def tbgame(bot, update):
     """Send a message when the command /tbgame is issued."""
     if update.message.date > init_time:
-        if is_admin(bot,update):
-            bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
+        del_cmd(bot,update)
         bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_tbgame, 
                         parse_mode=ParseMode.HTML)
 
@@ -150,8 +154,7 @@ def tbgame(bot, update):
 def rule(bot, update):
     """Send a message when the command /rule is issued."""
     if update.message.date > init_time:
-        if is_admin(bot,update):
-            bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
+        del_cmd(bot,update)
         if randrange(1000)<30:
             bot.send_message(chat_id=update.message.chat_id, text="ぜ")
         else:
@@ -175,8 +178,7 @@ def config(bot, update, args):
         if not args:
             bot.send_message(chat_id=update.message.chat_id, text="本功能目前沒有毛用")
         else:
-            if is_admin(bot,update):
-                bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
+            del_cmd(bot,update)
             msg_1=bot.send_message(chat_id=update.message.chat_id, text=word_kachikoi_name,
             parse_mode=ParseMode.HTML)
             time.sleep(6)
@@ -194,8 +196,7 @@ def config(bot, update, args):
 def nanto(bot, update, args):
     """Send a message when the command /nanto is issued."""
     if update.message.date > init_time:
-        if is_admin(bot,update):
-            bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
+        del_cmd(bot,update)
         if not args:
             msg_1=bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_nanto_1)
             time.sleep(1)
@@ -299,8 +300,7 @@ def tiger(bot, update):
     word_tiger_11="<pre>ジャージャー！</pre>"
     word_tiger_12="<pre>ファイボー！ワイパー！</pre>"
     if update.message.date > init_time:
-        if is_admin(bot,update):
-            bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
+        del_cmd(bot,update)
         messg = bot.send_message(chat_id=update.message.chat_id, text=word_tiger_1,
             parse_mode=ParseMode.HTML)
         time.sleep(0.5)
@@ -338,6 +338,16 @@ def tiger(bot, update):
             parse_mode=ParseMode.HTML)
         time.sleep(5)
         bot.delete_message(chat_id=update.message.chat_id, message_id=messg.message_id)
+
+@run_async
+def notiger(bot, update):
+    """Send a message when the command /notiger is issued."""
+    if update.message.date > init_time:
+        del_cmd(bot,update)
+        msg=bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_notiger, 
+                    parse_mode=ParseMode.HTML)
+        time.sleep(10)
+        bot.delete_message(chat_id=update.message.chat_id, message_id=msg.message_id)
 
 def title(bot,update,args):
     """Change tilte when the command /title OOO is issued."""
@@ -396,17 +406,6 @@ def set_remind_time(bot,update,args):
             tsheet.update_cell(cell.row,cell.col+1,l_text[1])
             tsheet.update_cell(cell.row,cell.col+2,l_text[2])
             tsheet.update_cell(cell.row,cell.col+3,update.message.from_user.id)
-
-@run_async
-def notiger(bot, update):
-    """Send a message when the command /notiger is issued."""
-    if update.message.date > init_time:
-        if is_admin(bot,update):
-            bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
-        msg=bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_notiger, 
-                    parse_mode=ParseMode.HTML)
-        time.sleep(10)
-        bot.delete_message(chat_id=update.message.chat_id, message_id=msg.message_id)
 
 # other command
 def error(bot, update, error):

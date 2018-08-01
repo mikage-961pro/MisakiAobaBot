@@ -81,7 +81,7 @@ class GLOBAL_WORDS:
     """
 
     word_state="""
-版本：Alpha.0.5
+版本：Alpha.0.6
 開發者：Dephilia（蝶芙）
 telegramID:@Dephilia
 <a href="https://www.plurk.com/Dephillia">〔噗浪〕</a>
