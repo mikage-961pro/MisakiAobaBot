@@ -489,7 +489,7 @@ def key_word_reaction(bot,update):
                 yuunou(bot,update)
         return key_words_value
     
-    if find_word(words=['#美咲請安靜']):
+    if find_word(words=['#美咲請安靜']) == False:
         find_word(words=['大老','dalao','ㄉㄚˋㄌㄠˇ','巨巨','Dalao','大 佬'], 
             echo='你才大佬！你全家都大佬！', prob=20)
         find_word(words=['依田','芳乃'], echo='ぶおおー')
