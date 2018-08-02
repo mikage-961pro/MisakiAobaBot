@@ -495,28 +495,6 @@ def key_word_reaction(bot,update):
     find_word(words=['高槻','やよい'], echo='元気がいっぱいのかわいい！')
     find_word(words=['萩原','雪歩'], echo='あ、先のお茶は萩原さんからの')
 
-
-def message_callback(bot, update):
-
-    ###################################
-    #              aisatu             #
-    ###################################
-    if update.message.new_chat_members != None:
-        for u in update.message.new_chat_members:
-            if u.is_bot == False:
-                text='$usernameさん、ようこそ事務所へ！\n輸入 /help 可以尋求幫助'
-                # text = text.replace('$username',u.first_name.encode('utf-8'))
-                text = text.replace('$username',u.first_name)
-                bot.send_message(chat_id=update.message.chat_id,text=text)
-                yuunou(bot,update)
-
-    if update.message.left_chat_member != None:
-        if update.message.left_chat_member.is_bot == False:
-            text='まだ会いましょう！$usernameさん！'
-            # text = text.replace('$username',update.message.left_chat_member.first_name.encode('utf-8'))
-            text = text.replace('$username',update.message.left_chat_member.first_name)
-            bot.send_message(chat_id=update.message.chat_id,text=text)
-            yuunou(bot,update)
     ###################################
     #          quote collector        #
     ###################################
@@ -557,6 +535,29 @@ def message_callback(bot, update):
     else:
         #replace record
         worksheet.update_cell(cell.row,cell.col+1,lmessage_id)
+
+def message_callback(bot, update):
+
+    ###################################
+    #              aisatu             #
+    ###################################
+    if update.message.new_chat_members != None:
+        for u in update.message.new_chat_members:
+            if u.is_bot == False:
+                text='$usernameさん、ようこそ事務所へ！\n輸入 /help 可以尋求幫助'
+                # text = text.replace('$username',u.first_name.encode('utf-8'))
+                text = text.replace('$username',u.first_name)
+                bot.send_message(chat_id=update.message.chat_id,text=text)
+                yuunou(bot,update)
+
+    if update.message.left_chat_member != None:
+        if update.message.left_chat_member.is_bot == False:
+            text='まだ会いましょう！$usernameさん！'
+            # text = text.replace('$username',update.message.left_chat_member.first_name.encode('utf-8'))
+            text = text.replace('$username',update.message.left_chat_member.first_name)
+            bot.send_message(chat_id=update.message.chat_id,text=text)
+            yuunou(bot,update)
+
     
 def mission_callback(bot,job):
     # somaction
