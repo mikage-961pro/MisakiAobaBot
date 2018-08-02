@@ -450,7 +450,7 @@ def unknown(bot, update):
 #                not command                   #
 ################################################
 def key_word_reaction(bot,update):
-    def find_word(words, echo=None, prob=100, els=None, video=None, allco=False):
+    def find_word(words, echo=None, prob=100, els=None,photo =None, video=None, allco=False):
         # words: words need to reaction
         # echo: msg send after reaction
         # prob: probability, if not, send els msg
@@ -482,6 +482,10 @@ def key_word_reaction(bot,update):
         elif video != None:
             if key_words_value==True and num<prob:
                 bot.send_video(chat_id=cid, video=video)
+                yuunou(bot,update)
+        elif photo != None:
+            if key_words_value==True and num<prob:
+                bot.send_photo(chat_id=cid, photo=photo)
                 yuunou(bot,update)
     
     find_word(words=['大老','dalao','ㄉㄚˋㄌㄠˇ','巨巨','Dalao','大 佬'], 
@@ -516,6 +520,7 @@ def key_word_reaction(bot,update):
     find_word(words=['亜美'], echo='亜美？あそこよ')
     find_word(words=['真美'], echo='真美？いないよ')
     find_word(words=['双海'], echo='亜美真美？先に外へ行きました')
+    find_word(words=['なんなん'], photo=open('nannnann.jpg', 'rb'))
 
 
 def message_callback(bot, update):
