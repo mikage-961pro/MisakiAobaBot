@@ -340,9 +340,9 @@ def title(bot,update,args):
         if is_admin==True:
             if bot_auth==True:
                 bot.set_chat_title(chat_id=update.message.chat_id, title=title)
-                bot.send_message(chat_id=update.message.chat_id,text='できました！！')
+                bot.send_message(chat_id=update.message.chat_id,text='できました！！\OK~~')
             else:
-                bot.send_message(chat_id=update.message.chat_id,text='失敗しました、能力不足ですね')
+                bot.send_message(chat_id=update.message.chat_id,text='失敗しました.....\nFail.....')
             
         else:
             bot.send_message(chat_id=update.message.chat_id,text='申し訳ございませんが、このコマンドは、管理者しか使いません\nOops!Only admin can change title.')
