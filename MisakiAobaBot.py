@@ -138,7 +138,50 @@ def work_sheet_pop(key,woksheet_name):
         row=worksheet.row_values(cell.row)
         worksheet.delete_row(cell.row)
     else:
-        return None  
+        return None
+        
+def set_config(id,command):
+    scope = ['https://spreadsheets.google.com/feeds']
+    creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
+    client = gspread.authorize(creds)
+    sheet = client.open_by_key(spreadsheet_key)
+    worksheet=sheet.worksheet('config')
+    user_id=id
+    try:
+        #find chat_id
+        cell=worksheet.find(str(user_id))
+    except:
+        #ERROR:not found
+        #creat new record
+        worksheet.insert_row([user_id,command], 1)
+    else:
+        #replace record
+        setting=worksheet(cell.row,cell.col+1).value
+        if setting.find(command)!=-1:
+            setting=setting.replace(command,'')
+        else:
+            setting=setting+command
+        worksheet.update_cell(cell.row,cell.col+1,setting)
+
+def get_config(id,setting):
+    scope = ['https://spreadsheets.google.com/feeds']
+    creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
+    client = gspread.authorize(creds)
+    sheet = client.open_by_key(spreadsheet_key)
+    worksheet=sheet.worksheet('config')
+    user_id=id
+    try:
+        #find chat_id
+        cell=worksheet.find(str(user_id))
+    except:
+        return False
+    else:
+        config=cell.value
+        if config.find(setting)!=-1:
+            return True
+        else:
+            return False
+        
 ################################################
 #                   command                    #
 ################################################
@@ -202,6 +245,9 @@ def config(bot, update, args):
         word_kachikoi_name=GLOBAL_WORDS.word_kachikoi_1.replace('$name',' '.join(args))
         if not args:
             bot.send_message(chat_id=update.message.chat_id, text="本功能目前沒有毛用")
+        elif word_kachikoi_name.find('安靜')!=-1:
+            set_config(update.message.from_user.id,'s')
+            return
         else:
             del_cmd(bot,update)
             msg_1=bot.send_message(chat_id=update.message.chat_id, text=word_kachikoi_name,
@@ -400,9 +446,9 @@ def title(bot,update,args):
         if is_admin==True:
             if bot_auth==True:
                 bot.set_chat_title(chat_id=update.message.chat_id, title=title)
-                bot.send_message(chat_id=update.message.chat_id,text='できました！！')
+                bot.send_message(chat_id=update.message.chat_id,text='できました！！\OK~~')
             else:
-                bot.send_message(chat_id=update.message.chat_id,text='失敗しました、能力不足ですね')
+                bot.send_message(chat_id=update.message.chat_id,text='失敗しました.....\nFail.....')
             
         else:
             bot.send_message(chat_id=update.message.chat_id,text='申し訳ございませんが、このコマンドは、管理者しか使いません\nOops!Only admin can change title.')
@@ -488,7 +534,7 @@ def key_word_reaction(bot,update):
                 bot.send_photo(chat_id=cid, photo=photo)
                 yuunou(bot,update)
         return key_words_value
-    
+    #if get_config(update.message.from_user.id,'s'):
     if find_word(words=['#美咲請安靜']) == False:
         find_word(words=['大老','dalao','ㄉㄚˋㄌㄠˇ','巨巨','Dalao','大 佬'], 
             echo='你才大佬！你全家都大佬！', prob=20)
@@ -505,9 +551,10 @@ def key_word_reaction(bot,update):
         find_word(words=['小鳥'], echo='もしかして〜♪ 音無先輩についてのお話ですか')
         find_word(words=['誰一百'], echo='咖嘎雅哭')
         find_word(words=['咖嘎雅哭'], echo='吼西米～那咧')
+        find_word(words=['vertex'], echo='IDOL!')
         find_word(words=['高木','社長','順二朗'], echo='あぁ！社長のことを知りたい！')
         find_word(words=['天海','春香'], echo='天海さんのクッキーはとっても美味しいですね〜')
-        find_word(words=['閣下'], echo='え！？もしかして春香ちゃん！？')
+        find_word(words=['閣下'], echo='え！？もしかして春香ちゃん！？',els='恐れ、平れ伏し、崇め奉りなさいのヮの！',prob=90)
         find_word(words=['如月','千早'], echo='如月さんの歌は素晴らしい！')
         find_word(words=['72'],prob=10, echo='こんな言えば如月さんは怒ってしまうよ！')
         find_word(words=['星井','美希'], echo='あの...星井さんはどこかで知っていますか？')
@@ -524,28 +571,6 @@ def key_word_reaction(bot,update):
         find_word(words=['双海'], echo='亜美真美？先に外へ行きました')
         find_word(words=['なんなん'], photo=open('nannnann.jpg', 'rb'))
 
-
-def message_callback(bot, update):
-
-    ###################################
-    #              aisatu             #
-    ###################################
-    if update.message.new_chat_members != None:
-        for u in update.message.new_chat_members:
-            if u.is_bot == False:
-                text='$usernameさん、ようこそ事務所へ！\n輸入 /help 可以尋求幫助'
-                # text = text.replace('$username',u.first_name.encode('utf-8'))
-                text = text.replace('$username',u.first_name)
-                bot.send_message(chat_id=update.message.chat_id,text=text)
-                yuunou(bot,update)
-
-    if update.message.left_chat_member != None:
-        if update.message.left_chat_member.is_bot == False:
-            text='まだ会いましょう！$usernameさん！'
-            # text = text.replace('$username',update.message.left_chat_member.first_name.encode('utf-8'))
-            text = text.replace('$username',update.message.left_chat_member.first_name)
-            bot.send_message(chat_id=update.message.chat_id,text=text)
-            yuunou(bot,update)
     ###################################
     #          quote collector        #
     ###################################
@@ -586,6 +611,29 @@ def message_callback(bot, update):
     else:
         #replace record
         worksheet.update_cell(cell.row,cell.col+1,lmessage_id)
+
+def message_callback(bot, update):
+
+    ###################################
+    #              aisatu             #
+    ###################################
+    if update.message.new_chat_members != None:
+        for u in update.message.new_chat_members:
+            if u.is_bot == False:
+                text='$usernameさん、ようこそ事務所へ！\n輸入 /help 可以尋求幫助'
+                # text = text.replace('$username',u.first_name.encode('utf-8'))
+                text = text.replace('$username',u.first_name)
+                bot.send_message(chat_id=update.message.chat_id,text=text)
+                yuunou(bot,update)
+
+    if update.message.left_chat_member != None:
+        if update.message.left_chat_member.is_bot == False:
+            text='まだ会いましょう！$usernameさん！'
+            # text = text.replace('$username',update.message.left_chat_member.first_name.encode('utf-8'))
+            text = text.replace('$username',update.message.left_chat_member.first_name)
+            bot.send_message(chat_id=update.message.chat_id,text=text)
+            yuunou(bot,update)
+
     
 def mission_callback(bot,job):
     # somaction
