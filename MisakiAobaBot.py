@@ -98,7 +98,10 @@ def bot_is_admin(bot,update):
 def del_cmd(bot,update):
     """Dectect bot if admin, if True, del cmd"""
     if bot_is_admin(bot,update):
-        bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
+        try:
+            bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
+        except:
+            pass
 
 def yuunou(bot,update):
     """misaki is good"""
@@ -446,7 +449,7 @@ def title(bot,update,args):
         if is_admin==True:
             if bot_auth==True:
                 bot.set_chat_title(chat_id=update.message.chat_id, title=title)
-                bot.send_message(chat_id=update.message.chat_id,text='できました！！\OK~~')
+                bot.send_message(chat_id=update.message.chat_id,text='できました！！\nOK~~')
             else:
                 bot.send_message(chat_id=update.message.chat_id,text='失敗しました.....\nFail.....')
             
@@ -640,7 +643,6 @@ def mission_callback(bot,job):
 
     # 玩人狼玩到忘記每日
     bot.send_message(chat_id='-1001290696540',text=GLOBAL_WORDS.word_do_mission)
-    yuunou(bot,update)
     
 def group_history(bot,job):
     ######################
