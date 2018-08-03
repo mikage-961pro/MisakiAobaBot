@@ -138,7 +138,50 @@ def work_sheet_pop(key,woksheet_name):
         row=worksheet.row_values(cell.row)
         worksheet.delete_row(cell.row)
     else:
-        return None  
+        return None
+        
+def set_config(id,command):
+    scope = ['https://spreadsheets.google.com/feeds']
+    creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
+    client = gspread.authorize(creds)
+    sheet = client.open_by_key(spreadsheet_key)
+    worksheet=sheet.worksheet('config')
+    user_id=id
+    try:
+        #find chat_id
+        cell=worksheet.find(str(user_id))
+    except:
+        #ERROR:not found
+        #creat new record
+        worksheet.insert_row([user_id,command], 1)
+    else:
+        #replace record
+        setting=worksheet(cell.row,cell.col+1).value
+        if setting.find(command)!=-1:
+            setting=setting.replace(command,'')
+        else:
+            setting=setting+command
+        worksheet.update_cell(cell.row,cell.col+1,setting)
+
+def get_config(id,setting):
+    scope = ['https://spreadsheets.google.com/feeds']
+    creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
+    client = gspread.authorize(creds)
+    sheet = client.open_by_key(spreadsheet_key)
+    worksheet=sheet.worksheet('config')
+    user_id=id
+    try:
+        #find chat_id
+        cell=worksheet.find(str(user_id))
+    except:
+        return False
+    else:
+        config=cell.value
+        if config.find(setting)!=-1:
+            return True
+        else:
+            return False
+        
 ################################################
 #                   command                    #
 ################################################
@@ -202,6 +245,9 @@ def config(bot, update, args):
         word_kachikoi_name=GLOBAL_WORDS.word_kachikoi_1.replace('$name',' '.join(args))
         if not args:
             bot.send_message(chat_id=update.message.chat_id, text="本功能目前沒有毛用")
+        elif word_kachikoi_name.find('安靜')!=-1:
+            set_config(update.message.from_user.id,'s')
+            return
         else:
             del_cmd(bot,update)
             msg_1=bot.send_message(chat_id=update.message.chat_id, text=word_kachikoi_name,
@@ -488,7 +534,7 @@ def key_word_reaction(bot,update):
                 bot.send_photo(chat_id=cid, photo=photo)
                 yuunou(bot,update)
         return key_words_value
-    
+    #if get_config(update.message.from_user.id,'s'):
     if find_word(words=['#美咲請安靜']) == False:
         find_word(words=['大老','dalao','ㄉㄚˋㄌㄠˇ','巨巨','Dalao','大 佬'], 
             echo='你才大佬！你全家都大佬！', prob=20)
@@ -505,9 +551,10 @@ def key_word_reaction(bot,update):
         find_word(words=['小鳥'], echo='もしかして〜♪ 音無先輩についてのお話ですか')
         find_word(words=['誰一百'], echo='咖嘎雅哭')
         find_word(words=['咖嘎雅哭'], echo='吼西米～那咧')
+        find_word(words=['vertex'], echo='IDOL!')
         find_word(words=['高木','社長','順二朗'], echo='あぁ！社長のことを知りたい！')
         find_word(words=['天海','春香'], echo='天海さんのクッキーはとっても美味しいですね〜')
-        find_word(words=['閣下'], echo='え！？もしかして春香ちゃん！？')
+        find_word(words=['閣下'], echo='え！？もしかして春香ちゃん！？',els='恐れ、平れ伏し、崇め奉りなさいのヮの！',prob=90)
         find_word(words=['如月','千早'], echo='如月さんの歌は素晴らしい！')
         find_word(words=['72'],prob=10, echo='こんな言えば如月さんは怒ってしまうよ！')
         find_word(words=['星井','美希'], echo='あの...星井さんはどこかで知っていますか？')
