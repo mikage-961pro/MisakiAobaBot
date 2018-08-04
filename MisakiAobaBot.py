@@ -166,7 +166,7 @@ def set_config(id,command):
             setting=setting+command
         worksheet.update_cell(cell.row,cell.col+1,setting)
 
-def get_config(id,setting='a'):
+def get_config(id,setting):
     scope = ['https://spreadsheets.google.com/feeds']
     creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
     client = gspread.authorize(creds)
@@ -486,6 +486,24 @@ def set_remind_time(bot,update,args):
             tsheet.update_cell(cell.row,cell.col+2,l_text[2])
             tsheet.update_cell(cell.row,cell.col+3,update.message.from_user.id)
 
+            
+def quote(bot,update):
+    #daily quote
+    if get_config(update.message.from_user.id,'q')==True:
+        del_cmd(bot,update)
+        return
+    else:
+        set_config(update.message.from_user.id,'q')
+        del_cmd(bot,update)
+    scope = ['https://spreadsheets.google.com/feeds']
+    creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
+    client = gspread.authorize(creds)
+    sheet = client.open_by_key(spreadsheet_key)
+    quote=sheet.worksheet('quote_main').get_all_values()
+    num=random.randint(0,len(quote)-1)
+    text='<pre>'+quote[num][0]+'</pre>\n'+'-----<b>'+quote[num][1]+'</b> より'
+    msg=bot.send_message(chat_id=update.message.chat_id,text=text,parse_mode='HTML')
+
 # other command
 def error(bot, update, error):
     """Log Errors caused by Updates."""
@@ -678,7 +696,15 @@ def group_history(bot,job):
     rate=rate.replace('$human',str(human))
     bot.send_message(chat_id=-1001290696540,text=rate)
    
-
+def daily_reset(bot,job):
+    scope = ['https://spreadsheets.google.com/feeds']
+    creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
+    client = gspread.authorize(creds)
+    sheet = client.open_by_key(spreadsheet_key)
+    user_config=sheet.worksheet('config').get_all_values()
+    for i in user_config:
+        if i[1].find('q') != -1:
+            set_config(i[0],'q')
 ################################################
 #                   main                       #
 ################################################
@@ -701,7 +727,9 @@ def main():
     for t in m_history:
         #plug in mission time with loop
         updater.job_queue.run_daily(group_history,t)
-
+    #mission refresh daily gasya
+    updater.job_queue.run_daily(daily_reset,stime(14,59,59))
+    
     # ---Command answer---
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start))
@@ -716,6 +744,7 @@ def main():
     dp.add_handler(CommandHandler("notiger", notiger))
     dp.add_handler(CommandHandler("which", which, pass_args=True))
     dp.add_handler(CommandHandler("dice", dice, pass_args=True))
+    dp.add_handler(CommandHandler("quote",quote))
     # dp.add_handler(CommandHandler("title", title, pass_args=True))
 
     # ---Message answer---
