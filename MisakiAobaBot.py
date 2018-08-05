@@ -96,6 +96,15 @@ def bot_is_admin(bot,update):
                     bot_auth=True
         return bot_auth
 
+def bot_num(bot,update):
+    """Bots number in a room"""
+    bot_num=0
+    mem_list=update.message.chat.get_member()
+    for b in mem_list:
+            if b.user.is_bot:
+                bot_num += 1
+    return bot_num
+
 def del_cmd(bot,update):
     """Dectect bot if admin, if True, del cmd"""
     if bot_is_admin(bot,update):
@@ -238,8 +247,11 @@ def rule(bot, update):
 def state(bot, update):
     """Send a message when the command /state is issued."""
     if update.message.date > init_time:
+        total_count=bot.get_chat_members_count(update.message.chat.id)
+        bot_count=bot_num(bot,update)
+        human_count=total_count-bot_count
         bot.send_message(chat_id=update.message.chat_id,
-        text='目前室內人數：{}'.format(str(bot.get_chat_members_count(update.message.chat.id)))+'\n'+
+        text='目前室內人數：{}'.format(str(human_count))+'\n'+
         GLOBAL_WORDS.word_state,parse_mode=ParseMode.HTML)
 
 @run_async
