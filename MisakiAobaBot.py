@@ -521,15 +521,17 @@ def unknown(bot, update):
 #                not command                   #
 ################################################
 def key_word_reaction(bot,update):
-    def find_word(words, echo=None, prob=100, els=None,photo =None, video=None, allco=False):
+    def find_word(words, echo=None, prob=100, els=None,photo =None, video=None, allco=False, passArg=[]):
         # words: words need to reaction
-        # echo: msg send after reaction
-        # prob: probability, if not, send els msg
+        # echo, photo, video: msg send after reaction
+        # prob: probability, if not, send els msg (1 for 0.1%)
         # els: if not in prob
+        # allco: if words are all correct will go
+        # passArg: if true, the function will never go; default is false
         key_words=update.message.text
         cid=update.message.chat_id
-        # a random number from 0 to 99
-        num = randrange(100)
+        # a random number from 0 to 999
+        num = randrange(1000)
         key_words_value=False
         for check in words:
             if allco == False:
@@ -543,6 +545,9 @@ def key_word_reaction(bot,update):
                 else:
                     key_words_value=False
                     break
+        for fp in passArg:
+            if fp==True:
+                key_words_value=False
         if echo != None:
             if key_words_value==True and num<prob:
                 bot.send_message(chat_id=cid,text=echo)
@@ -560,41 +565,45 @@ def key_word_reaction(bot,update):
                 yuunou(bot,update)
         return key_words_value
     #if get_config(update.message.from_user.id,'s'):
-    if find_word(words=['#美咲請安靜']) == False:
-        find_word(words=['大老','dalao','ㄉㄚˋㄌㄠˇ','巨巨','Dalao','大 佬'], 
-            echo='你才大佬！你全家都大佬！', prob=20)
-        find_word(words=['依田','芳乃'], echo='ぶおおー')
-        find_word(words=['青羽','美咲'], echo='お疲れ様でした！')
-        find_word(words=['ころあず'], echo='ありがサンキュー！')
-        find_word(words=['この歌声が'], echo='MILLLLLIIIONNNNNN',els='UNIIIIIOOONNNNN',prob=50)
-        if find_word(words=['天','ナンス','もちょ'], video='https://i.imgur.com/b9s69iK.mp4',allco=True) == False:
-            find_word(words=['麻倉','もも','もちょ'], echo='(●･▽･●)',els='(o・∇・o)もちー！もちもちもちもちもちーーーもちぃ！',prob=90)
-            find_word(words=['夏川','椎菜','ナンス'], echo='(*>△<)<ナーンナーンっ')
-            find_word(words=['雨宮','てん','天ちゃん'], video='https://i.imgur.com/XmWYqS1.mp4')
-            find_word(words=['天'], prob=3, video='https://i.imgur.com/XmWYqS1.mp4')
-        find_word(words=['終','結束','沒了','完結'], echo='終わりだよ(●･▽･●)')
-        find_word(words=['小鳥'], echo='もしかして〜♪ 音無先輩についてのお話ですか')
-        find_word(words=['誰一百'], echo='咖嘎雅哭')
-        find_word(words=['咖嘎雅哭'], echo='吼西米～那咧')
-        find_word(words=['vertex'], echo='IDOL!')
-        find_word(words=['高木','社長','順二朗'], echo='あぁ！社長のことを知りたい！')
-        find_word(words=['天海','春香'], echo='天海さんのクッキーはとっても美味しいですね〜')
-        find_word(words=['閣下'], echo='え！？もしかして春香ちゃん！？',els='恐れ、平れ伏し、崇め奉りなさいのヮの！',prob=90)
-        find_word(words=['如月','千早'], echo='如月さんの歌は素晴らしい！',els='静かな光は蒼の波紋 VERTEX BLUE!!!!',prob=72)
-        find_word(words=['72'],prob=10, echo='こんな言えば如月さんは怒ってしまうよ！')
-        find_word(words=['星井','美希'], echo='あの...星井さんはどこかで知っていますか？')
-        find_word(words=['高槻','やよい'], echo="ζ*'ヮ')ζ＜うっうー ")
-        find_word(words=['萩原','雪歩'], echo='あ、先のお茶は萩原さんからの')
-        find_word(words=['秋月','律子'], echo='律子さんは毎日仕事するで、大変ですよね〜')
-        find_word(words=['三浦','あずさ'], echo='え？あずささんは今北海道に！？')
-        find_word(words=['水瀬','伊織'], echo='このショコラは今朝水瀬さんからの、みな一緒に食べろう！')
-        find_word(words=['菊地','真'], echo='真さんは今、王子役の仕事をしていますよ。',els='真さんは今、ヒーロー役の仕事をしていますよ～～激しい光は黒の衝撃 VERTEX BLACK!!!!',prob=70,allco=True)
-        find_word(words=['我那覇','響'], echo='ハム蔵はどこでしょうか？探していますね',els='弾ける光は浅葱の波濤 VERTEX LIGHTBLUE!!',prob=70,allco=True)
-        find_word(words=['四条','貴音'], echo='昨日〜貴音さんがわたしに色々な美味しい麺屋を紹介しました！',els='秘めたり光は臙脂の炎 VERTEX CARMINE〜〜',prob=70)
-        find_word(words=['亜美'], echo='亜美？あそこよ')
-        find_word(words=['真美'], echo='真美？いないよ')
-        find_word(words=['双海'], echo='亜美真美？先に外へ行きました')
-        find_word(words=['なんなん'], photo=open('nannnann.jpg', 'rb'))
+
+    # word_pass
+    misaki_pass=find_word(words=['#美咲請安靜'])
+    try_pass=find_word(words=['天','ナンス','もちょ'])
+
+    # word_echo
+    find_word(passArg=[misaki_pass],words=['大老','dalao','ㄉㄚˋㄌㄠˇ','巨巨','Dalao','大 佬'],echo='你才大佬！你全家都大佬！', prob=200)
+    find_word(passArg=[misaki_pass],words=['依田','芳乃'], echo='ぶおおー')
+    find_word(passArg=[misaki_pass],words=['青羽','美咲'], echo='お疲れ様でした！')
+    find_word(passArg=[misaki_pass],words=['ころあず'], echo='ありがサンキュー！')
+    find_word(passArg=[misaki_pass],words=['この歌声が'], echo='MILLLLLIIIONNNNNN',els='UNIIIIIOOONNNNN',prob=500)
+    find_word(passArg=[misaki_pass],words=['天','ナンス','もちょ'], video='https://i.imgur.com/b9s69iK.mp4',allco=True)
+    find_word(passArg=[misaki_pass,try_pass],words=['麻倉','もも','もちょ'], echo='(●･▽･●)',els='(o・∇・o)もちー！もちもちもちもちもちーーーもちぃ！',prob=900)
+    find_word(passArg=[misaki_pass,try_pass],words=['夏川','椎菜','ナンス'], echo='(*>△<)<ナーンナーンっ')
+    find_word(passArg=[misaki_pass,try_pass],words=['雨宮','てん','天ちゃん'], video='https://i.imgur.com/XmWYqS1.mp4')
+    find_word(passArg=[misaki_pass,try_pass],words=['天'], prob=15, video='https://i.imgur.com/XmWYqS1.mp4')
+    find_word(passArg=[misaki_pass],words=['終','結束','沒了','完結'], echo='終わりだよ(●･▽･●)')
+    find_word(passArg=[misaki_pass],words=['小鳥'], echo='もしかして〜♪ 音無先輩についてのお話ですか')
+    find_word(passArg=[misaki_pass],words=['誰一百'], echo='咖嘎雅哭')
+    find_word(passArg=[misaki_pass],words=['咖嘎雅哭'], echo='吼西米～那咧')
+    find_word(passArg=[misaki_pass],words=['vertex'], echo='IDOL!')
+    find_word(passArg=[misaki_pass],words=['高木','社長','順二朗'], echo='あぁ！社長のことを知りたい！')
+    find_word(passArg=[misaki_pass],words=['天海','春香'], echo='天海さんのクッキーはとっても美味しいですね〜')
+    find_word(passArg=[misaki_pass],words=['閣下'], echo='え！？もしかして春香ちゃん！？',els='恐れ、平れ伏し、崇め奉りなさいのヮの！',prob=900)
+    find_word(passArg=[misaki_pass],words=['如月','千早'], echo='如月さんの歌は素晴らしい！',els='静かな光は蒼の波紋 VERTEX BLUE!!!!',prob=720)
+    find_word(passArg=[misaki_pass],words=['72'],prob=100, echo='こんな言えば如月さんは怒ってしまうよ！')
+    find_word(passArg=[misaki_pass],words=['星井','美希'], echo='あの...星井さんはどこかで知っていますか？')
+    find_word(passArg=[misaki_pass],words=['高槻','やよい'], echo="ζ*'ヮ')ζ＜うっうー ")
+    find_word(passArg=[misaki_pass],words=['萩原','雪歩'], echo='あ、先のお茶は萩原さんからの')
+    find_word(passArg=[misaki_pass],words=['秋月','律子'], echo='律子さんは毎日仕事するで、大変ですよね〜')
+    find_word(passArg=[misaki_pass],words=['三浦','あずさ'], echo='え？あずささんは今北海道に！？')
+    find_word(passArg=[misaki_pass],words=['水瀬','伊織'], echo='このショコラは今朝水瀬さんからの、みな一緒に食べろう！')
+    find_word(passArg=[misaki_pass],words=['菊地','真'], echo='真さんは今、王子役の仕事をしていますよ。',els='真さんは今、ヒーロー役の仕事をしていますよ～～激しい光は黒の衝撃 VERTEX BLACK!!!!',prob=700,allco=True)
+    find_word(passArg=[misaki_pass],words=['我那覇','響'], echo='ハム蔵はどこでしょうか？探していますね',els='弾ける光は浅葱の波濤 VERTEX LIGHTBLUE!!',prob=700,allco=True)
+    find_word(passArg=[misaki_pass],words=['四条','貴音'], echo='昨日〜貴音さんがわたしに色々な美味しい麺屋を紹介しました！',els='秘めたり光は臙脂の炎 VERTEX CARMINE〜〜',prob=700)
+    find_word(passArg=[misaki_pass],words=['亜美'], echo='亜美？あそこよ')
+    find_word(passArg=[misaki_pass],words=['真美'], echo='真美？いないよ')
+    find_word(passArg=[misaki_pass],words=['双海'], echo='亜美真美？先に外へ行きました')
+    find_word(passArg=[misaki_pass],words=['なんなん'], photo=open('nannnann.jpg', 'rb'))
 
     ###################################
     #          quote collector        #
