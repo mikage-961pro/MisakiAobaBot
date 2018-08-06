@@ -521,7 +521,7 @@ def unknown(bot, update):
 #                not command                   #
 ################################################
 def key_word_reaction(bot,update):
-    def find_word(words, echo=None, prob=100, els=None,photo =None, video=None, allco=False, passArg=[]):
+    def find_word(words, echo=None, prob=1000, els=None,photo =None, video=None, allco=False, passArg=[]):
         # words: words need to reaction
         # echo, photo, video: msg send after reaction
         # prob: probability, if not, send els msg (1 for 0.1%)
@@ -570,7 +570,6 @@ def key_word_reaction(bot,update):
     misaki_pass=find_word(words=['#美咲請安靜'])
     try_pass=find_word(words=['天','ナンス','もちょ'])
 
-    find_word(passArg=[misaki_pass],words=['test_pass'], echo='ぶおおー')
     # word_echo
     find_word(passArg=[misaki_pass],words=['大老','dalao','ㄉㄚˋㄌㄠˇ','巨巨','Dalao','大 佬'],echo='你才大佬！你全家都大佬！', prob=200)
     find_word(passArg=[misaki_pass],words=['依田','芳乃'], echo='ぶおおー')
