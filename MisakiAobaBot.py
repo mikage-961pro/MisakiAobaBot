@@ -568,7 +568,7 @@ def key_word_reaction(bot,update):
 
     # word_pass
     misaki_pass=find_word(words=['#美咲請安靜'])
-    try_pass=find_word(words=['天','ナンス','もちょ'])
+    try_pass=find_word(words=['天','ナンス','もちょ'],allco=True)
 
     # word_echo
     find_word(passArg=[misaki_pass],words=['大老','dalao','ㄉㄚˋㄌㄠˇ','巨巨','Dalao','大 佬'],echo='你才大佬！你全家都大佬！', prob=200)
