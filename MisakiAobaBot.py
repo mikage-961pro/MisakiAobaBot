@@ -323,12 +323,12 @@ def which(bot, update, args):
     if update.message.date > init_time:
         if not args:
             text="請輸入要給我決定的事情♪\n記得用〔＃〕分開喔！"
-            msg=bot.send_message(chat_id=update.message.chat_id, text=text)
+            bot.send_message(chat_id=update.message.chat_id, text=text)
         else:
             things=' '.join(args).split('#')
             result=things[randrange(len(things))]
             text="わたしは〜♬［$res］が良いと思うよ〜えへへ。".replace('$res',result)
-            msg=bot.send_message(chat_id=update.message.chat_id, text=text)
+            bot.send_message(chat_id=update.message.chat_id, text=text)
             yuunou(bot,update)
 
 def dice(bot,update,args):
