@@ -850,7 +850,8 @@ def main():
         updater.job_queue.run_daily(group_history,t)
     #mission refresh daily gasya
     updater.job_queue.run_daily(daily_reset,stime(14,59,59))
-    
+    #refresh buffer
+    updater.job_queue.run_repeating(key_word_j_buffer, interval=60, first=0)
     # ---Command answer---
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start))
