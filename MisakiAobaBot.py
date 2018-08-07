@@ -45,6 +45,9 @@ logger = logging.getLogger(__name__)
 
 # Record bot init time
 init_time = -1
+
+# Buffer of key_word dic , fomat : list of dic
+kw_j_buffer=[]
 ################################################
 #                     class                    #
 ################################################
@@ -108,6 +111,20 @@ def yuunou(bot,update):
     """misaki is good"""
     if randrange(100) <3:
         bot.send_photo(chat_id=update.message.chat_id, photo=open('yuunou.jpg', 'rb'))
+
+def get_sheet(name):
+    scope = ['https://spreadsheets.google.com/feeds']
+    creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
+    client = gspread.authorize(creds)
+    sheet = client.open_by_key(spreadsheet_key)
+    try:
+        worksheet=sheet.worksheet(name)
+    except:
+        sheet.add_worksheet(name,1,1)
+        worksheet=sheet.worksheet(name)
+        return worksheet
+    else:
+        return worksheet
 
 def work_sheet_push(values,worksheet_name):
     scope = ['https://spreadsheets.google.com/feeds']
@@ -727,6 +744,21 @@ def daily_reset(bot,job):
     for i in user_config:
         if i[1].find('q') != -1:
             set_config(i[0],'q')
+
+def key_word_j_buffer(bot,job):
+    global kw_j_buffer
+    kw_j_buffer=[]
+    #clean buffer
+    k=[]
+    key_word_j=get_sheet('key_word_j')
+    try:
+        k=key_word_j.get_all_values()
+    except:
+        return
+    else:
+        for i in k:
+            temp=json.loads(i[0])
+            kw_j_buffer.append(temp)
 ################################################
 #                   main                       #
 ################################################
