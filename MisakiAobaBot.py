@@ -538,6 +538,10 @@ def key_word_reaction(bot,update):
                 "one word correct will go"
                 if key_words.find(check)!=-1:
                     key_words_value=True
+
+                    t="$text is occur.".replace('$text',check)
+                    bot.send_message(chat_id='-313454366',text=t)
+
             if allco == True:
                 "all word correct will go"
                 if key_words.find(check)!=-1:
@@ -547,7 +551,7 @@ def key_word_reaction(bot,update):
                     break
         for fp in passArg:
             if fp==True:
-                key_words_value=False
+                key_words_value=False       
         if echo != None:
             if key_words_value==True and num<prob:
                 bot.send_message(chat_id=cid,text=echo)
@@ -574,10 +578,10 @@ def key_word_reaction(bot,update):
     try_pass=find_word(words=['天','ナンス','もちょ'],allco=True)
 
     # long url
-    ten=['https://i.imgur.com/XmWYqS1.mp4',
+    pic_ten=['https://i.imgur.com/XmWYqS1.mp4',
     'https://imgur.com/LYBnOzo.mp4',
     'https://i.imgur.com/denCUYX.mp4']
-    trys=['https://img.gifmagazine.net/gifmagazine/images/2289135/original.mp4',
+    pic_trys=['https://img.gifmagazine.net/gifmagazine/images/2289135/original.mp4',
     'https://i.imgur.com/b9s69iK.mp4',
     'https://img.gifmagazine.net/gifmagazine/images/1333179/original.mp4']
 
@@ -587,11 +591,11 @@ def key_word_reaction(bot,update):
     find_word(passArg=[misaki_pass],words=['青羽','美咲'], echo='お疲れ様でした！')
     find_word(passArg=[misaki_pass],words=['ころあず'], echo='ありがサンキュー！')
     find_word(passArg=[misaki_pass],words=['この歌声が'], echo='MILLLLLIIIONNNNNN',els='UNIIIIIOOONNNNN',prob=500)
-    find_word(passArg=[misaki_pass],words=['天','ナンス','もちょ'],video=trys,allco=True)
+    find_word(passArg=[misaki_pass],words=['天','ナンス','もちょ'],video=pic_trys,allco=True)
     find_word(passArg=[misaki_pass,try_pass],words=['麻倉','もも','もちょ'], echo='(●･▽･●)',els='(o・∇・o)もちー！もちもちもちもちもちーーーもちぃ！',prob=900)
     find_word(passArg=[misaki_pass,try_pass],words=['夏川','椎菜','ナンス'], echo='(*>△<)<ナーンナーンっ')
-    find_word(passArg=[misaki_pass,try_pass],words=['雨宮','てん','天ちゃん'], video=ten)
-    find_word(passArg=[misaki_pass,try_pass],words=['天'], prob=15, video=ten)
+    find_word(passArg=[misaki_pass,try_pass],words=['雨宮','てん','天ちゃん'], video=pic_ten)
+    find_word(passArg=[misaki_pass,try_pass],words=['天'], prob=15, video=pic_ten)
     find_word(passArg=[misaki_pass],words=['終わり','結束','沒了','完結'], echo='終わりだよ(●･▽･●)')
     find_word(passArg=[misaki_pass],words=['小鳥'], echo='もしかして〜♪ 音無先輩についてのお話ですか')
     find_word(passArg=[misaki_pass],words=['誰一百'], echo='咖嘎雅哭')
