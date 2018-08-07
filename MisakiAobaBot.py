@@ -558,9 +558,9 @@ def key_word_reaction(bot,update):
         elif video != None:
             if key_words_value==True and num<prob:
                 if type(video) == list:
-                    vl=bot.send_video(chat_id=cid, video=video[randrange(len(video))])
-                    if vl==False:
-                        bot.send_message(chat_id='-313454366',text="FAIL")
+                    vd=video[randrange(len(video))]
+                    bot.send_video(chat_id=cid, video=vd)
+                    bot.send_message(chat_id='-313454366',text=vd)
                 elif type(video) == str:
                     bot.send_video(chat_id=cid, video=video)
                 yuunou(bot,update)
