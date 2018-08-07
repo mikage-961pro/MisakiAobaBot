@@ -532,14 +532,6 @@ def unknown(bot, update):
 ################################################
 #                not command                   #
 ################################################
-def key_word_reaction_json(word):
-    global kw_j_buffer
-    list_k=[]
-    for i in kw_j_buffer:
-        temp_t=find_word_TAKEVER(word,i['key_words'],echo=i['echo'],prob=i['prob'],els=i['els'],allco=i['allco'],photo =i['photo'], video=i['video'],sticker=i['sticker'])
-        if temp_t != None:
-            list_k.append(temp_t)
-    return list_k
 def find_word_TAKEVER(sentence,key_words, echo=None, prob=1000, els=None,photo =None, video=None,sticker=None, allco=False):
     #sentence:sentence user send
     # words: words need to reaction
@@ -574,19 +566,30 @@ def find_word_TAKEVER(sentence,key_words, echo=None, prob=1000, els=None,photo =
     elif photo!=None:
         if key_words_value==True and num<prob:
             list_r[0]='p'
-            list_r[1]=photo
+            list_r[1]=photo[randrange(len(photo))]
             return list_r
     elif video != None:
         if key_words_value==True and num<prob:
             list_r[0]='v'
-            list_r[1]=video
+            list_r[1]=video[randrange(len(video))]
             return list_r
     elif sticker != None:
         if key_words_value==True and num<prob:
             list_r[0]='s'
-            list_r[1]=sticker
+            list_r[1]=stickerrandrange(len(sticker))
             return list_r
     return None
+
+def key_word_reaction_json(word):
+    global kw_j_buffer
+    list_k=[]
+    for i in kw_j_buffer:
+        temp_t=find_word_TAKEVER(word,i['key_words'],echo=i['echo'],prob=i['prob'],els=i['els'],allco=i['allco'],photo =i['photo'], video=i['video'],sticker=i['sticker'])
+        if temp_t != None:
+            list_k.append(temp_t)
+    return list_k
+
+
 def key_word_reaction(bot,update):
     def find_word(words, echo=None, prob=1000, els=None,photo =None, video=None, allco=False, passArg=[]):
         # words: words need to reaction
@@ -634,7 +637,21 @@ def key_word_reaction(bot,update):
                 bot.send_photo(chat_id=cid, photo=photo)
                 yuunou(bot,update)
         return key_words_value
-    #if get_config(update.message.from_user.id,'s'):
+    '''
+    if get_config(update.message.from_user.id,'s') != True:
+        react=y=key_word_reaction_json(update.message.text)
+        for i in react:
+            if i!=None:
+                if i[0]=='t':
+                    bot.send_message(chat_id=update.message.chat_id, text=i[1])
+                elif i[0]=='p':
+                    bot.send_photo(chat_id=update.message.chat_id, photo=i[1])
+                elif i[0]=='s':
+                    bot.send_sticker(chat_id=update.message.chat_id, sticker=i[1])
+                elif i[0]=='v':
+                    bot.send_video(chat_id=update.message.chat_id, video=i[1])
+                '''
+
 
     # word_pass
     misaki_pass=find_word(words=['#美咲請安靜'])
