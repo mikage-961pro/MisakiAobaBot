@@ -235,6 +235,21 @@ def rule(bot, update):
             bot.delete_message(chat_id=update.message.chat_id, message_id=msg.message_id)
             yuunou(bot,update)
 
+def sendmsg(bot, update, args):
+    """Send a message to chat when the command /sendmsg is issued."""
+    """Only for admin use"""
+    t_pw='misakiisgood'
+    if update.message.date > init_time:
+        if not args:
+            bot.send_message(chat_id=update.message.chat_id, text="Please enter message and password.")
+        else:
+            t=' '.join(args).split('#')
+            if t[0] != t_pw:
+                bot.send_message(chat_id=update.message.chat_id, text="Uncorrect password.")
+            else:
+                text=t[1]
+                bot.send_message(chat_id='-1001290696540', text=text)
+
 def state(bot, update):
     """Send a message when the command /state is issued."""
     if update.message.date > init_time:
@@ -771,6 +786,7 @@ def main():
     dp.add_handler(CommandHandler("which", which, pass_args=True))
     dp.add_handler(CommandHandler("dice", dice, pass_args=True))
     dp.add_handler(CommandHandler("quote",quote))
+    dp.add_handler(CommandHandler("sendmsg", sendmsg, pass_args=True))
     # dp.add_handler(CommandHandler("title", title, pass_args=True))
 
     # ---Message answer---

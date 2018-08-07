@@ -18,6 +18,7 @@ class GLOBAL_WORDS:
 /tiger - 老虎
 /notiger - 警察
 /nanto - なんとっ！+(名字#事件)
+/quote - 每日一句
 
 【みんなのリンク】
 <a href="https://t.me/joinchat/IFtWTxKu7x6vuSK8HsFgsQ">〔765技術部〕</a>：技術部開放對BOT的意見以及回饋
@@ -79,7 +80,7 @@ class GLOBAL_WORDS:
     """
 
     word_state="""
-版本：Alpha.0.6
+版本：Alpha.0.7
 開發者：Dephilia（蝶芙）
 telegramID:@Dephilia
 <a href="https://www.plurk.com/Dephillia">〔噗浪〕</a>
