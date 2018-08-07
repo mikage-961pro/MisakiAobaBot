@@ -551,10 +551,11 @@ def key_word_reaction(bot,update):
         if echo != None:
             if key_words_value==True and num<prob:
                 bot.send_message(chat_id=cid,text=echo)
-                yuunou(bot,update)
             if key_words_value==True and num>=prob and els!=None:
-                bot.send_message(chat_id=cid,text=els)
-                yuunou(bot,update)
+                if els.find('https://')!=-1:
+                    bot.send_video(chat_id=cid, video=els)
+                else:
+                    bot.send_message(chat_id=cid,text=els)
         elif video != None:
             if key_words_value==True and num<prob:
                 try:
@@ -562,11 +563,11 @@ def key_word_reaction(bot,update):
                     bot.send_video(chat_id=cid, video=vd)
                 except:
                     bot.send_video(chat_id=cid, video=video)
-                yuunou(bot,update)
         elif photo != None:
             if key_words_value==True and num<prob:
                 bot.send_photo(chat_id=cid, photo=photo)
-                yuunou(bot,update)
+        if key_words_value:
+            yuunou(bot,update)
         return key_words_value
     #if get_config(update.message.from_user.id,'s'):
 
@@ -590,7 +591,7 @@ def key_word_reaction(bot,update):
     find_word(passArg=[misaki_pass],words=['この歌声が'], echo='MILLLLLIIIONNNNNN',els='UNIIIIIOOONNNNN',prob=500)
     find_word(passArg=[misaki_pass],words=['天','ナンス','もちょ'],video=pic_trys,allco=True)
     find_word(passArg=[misaki_pass,try_pass],words=['麻倉','もも','もちょ'], echo='(●･▽･●)',els='(o・∇・o)もちー！もちもちもちもちもちーーーもちぃ！',prob=900)
-    find_word(passArg=[misaki_pass,try_pass],words=['夏川','椎菜','ナンス'], echo='(*>△<)<ナーンナーンっ')
+    find_word(passArg=[misaki_pass,try_pass],words=['夏川','椎菜','ナンス'], echo='(*>△<)<ナーンナーンっ',els='https://imgur.com/AOfQWWS.mp4',prob=300)
     find_word(passArg=[misaki_pass,try_pass],words=['雨宮','てん','天ちゃん'], video=pic_ten)
     find_word(passArg=[misaki_pass,try_pass],words=['天'], prob=15, video=pic_ten)
     find_word(passArg=[misaki_pass],words=['終わり','結束','沒了','完結'], echo='終わりだよ(●･▽･●)')
