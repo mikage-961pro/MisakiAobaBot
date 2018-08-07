@@ -573,21 +573,23 @@ def key_word_reaction(bot,update):
     misaki_pass=find_word(words=['#美咲請安靜'])
     try_pass=find_word(words=['天','ナンス','もちょ'],allco=True)
 
+    # long url
+    ten=['https://i.imgur.com/XmWYqS1.mp4','https://imgur.com/LYBnOzo.mp4','https://i.imgur.com/denCUYX.mp4']
+    trys=['https://img.gifmagazine.net/gifmagazine/images/2289135/original.mp4',
+        'https://i.imgur.com/b9s69iK.mp4',
+        'https://img.gifmagazine.net/gifmagazine/images/1333179/original.mp4']
+
     # word_echo
     find_word(passArg=[misaki_pass],words=['大老','dalao','ㄉㄚˋㄌㄠˇ','巨巨','Dalao','大 佬'],echo='你才大佬！你全家都大佬！', prob=200)
     find_word(passArg=[misaki_pass],words=['依田','芳乃'], echo='ぶおおー')
     find_word(passArg=[misaki_pass],words=['青羽','美咲'], echo='お疲れ様でした！')
     find_word(passArg=[misaki_pass],words=['ころあず'], echo='ありがサンキュー！')
     find_word(passArg=[misaki_pass],words=['この歌声が'], echo='MILLLLLIIIONNNNNN',els='UNIIIIIOOONNNNN',prob=500)
-    find_word(passArg=[misaki_pass],words=['天','ナンス','もちょ'], 
-        video=['https://img.gifmagazine.net/gifmagazine/images/2289135/original.mp4',
-        'https://i.imgur.com/b9s69iK.mp4',
-        'https://img.gifmagazine.net/gifmagazine/images/1333179/original.mp4'],
-        allco=True)
+    find_word(passArg=[misaki_pass],words=['天','ナンス','もちょ'],video=trys,allco=True)
     find_word(passArg=[misaki_pass,try_pass],words=['麻倉','もも','もちょ'], echo='(●･▽･●)',els='(o・∇・o)もちー！もちもちもちもちもちーーーもちぃ！',prob=900)
     find_word(passArg=[misaki_pass,try_pass],words=['夏川','椎菜','ナンス'], echo='(*>△<)<ナーンナーンっ')
-    find_word(passArg=[misaki_pass,try_pass],words=['雨宮','てん','天ちゃん'], video=['https://i.imgur.com/XmWYqS1.mp4','https://imgur.com/LYBnOzo.mp4'])
-    find_word(passArg=[misaki_pass,try_pass],words=['天'], prob=15, video=['https://i.imgur.com/XmWYqS1.mp4','https://imgur.com/LYBnOzo.mp4'])
+    find_word(passArg=[misaki_pass,try_pass],words=['雨宮','てん','天ちゃん'], video=ten)
+    find_word(passArg=[misaki_pass,try_pass],words=['天'], prob=15, video=ten)
     find_word(passArg=[misaki_pass],words=['終わり','結束','沒了','完結'], echo='終わりだよ(●･▽･●)')
     find_word(passArg=[misaki_pass],words=['小鳥'], echo='もしかして〜♪ 音無先輩についてのお話ですか')
     find_word(passArg=[misaki_pass],words=['誰一百'], echo='咖嘎雅哭')
