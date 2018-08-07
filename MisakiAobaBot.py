@@ -574,10 +574,12 @@ def key_word_reaction(bot,update):
     try_pass=find_word(words=['天','ナンス','もちょ'],allco=True)
 
     # long url
-    ten=['https://i.imgur.com/XmWYqS1.mp4','https://imgur.com/LYBnOzo.mp4','https://i.imgur.com/denCUYX.mp4']
+    ten=['https://i.imgur.com/XmWYqS1.mp4',
+    'https://imgur.com/LYBnOzo.mp4',
+    'https://i.imgur.com/denCUYX.mp4']
     trys=['https://img.gifmagazine.net/gifmagazine/images/2289135/original.mp4',
-        'https://i.imgur.com/b9s69iK.mp4',
-        'https://img.gifmagazine.net/gifmagazine/images/1333179/original.mp4']
+    'https://i.imgur.com/b9s69iK.mp4',
+    'https://img.gifmagazine.net/gifmagazine/images/1333179/original.mp4']
 
     # word_echo
     find_word(passArg=[misaki_pass],words=['大老','dalao','ㄉㄚˋㄌㄠˇ','巨巨','Dalao','大 佬'],echo='你才大佬！你全家都大佬！', prob=200)
