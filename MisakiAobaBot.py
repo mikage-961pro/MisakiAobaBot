@@ -514,13 +514,8 @@ def quote(bot,update):
         del_cmd(bot,update)
         return
     else:
-        set_config(update.message.from_user.id,'q')
-        del_cmd(bot,update)
-    scope = ['https://spreadsheets.google.com/feeds']
-    creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
-    client = gspread.authorize(creds)
-    sheet = client.open_by_key(spreadsheet_key)
-    quote=sheet.worksheet('quote_main').get_all_values()
+    worksheet=get_sheet('quote_main')
+    quote=worksheet.get_all_values()
     num=random.randint(0,len(quote)-1)
     text='<pre>'+quote[num][0]+'</pre>\n'+'-----<b>'+quote[num][1]+'</b> より'
     msg=bot.send_message(chat_id=update.message.chat_id,text=text,parse_mode='HTML')
@@ -537,6 +532,61 @@ def unknown(bot, update):
 ################################################
 #                not command                   #
 ################################################
+def key_word_reaction_json(word):
+    global kw_j_buffer
+    list_k=[]
+    for i in kw_j_buffer:
+        temp_t=find_word_TAKEVER(word,i['key_words'],echo=i['echo'],prob=i['prob'],els=i['els'],allco=i['allco'],photo =i['photo'], video=i['video'],sticker=i['sticker'])
+        if temp_t != None:
+            list_k.append(temp_t)
+    return list_k
+def find_word_TAKEVER(sentence,key_words, echo=None, prob=1000, els=None,photo =None, video=None,sticker=None, allco=False):
+    #sentence:sentence user send
+    # words: words need to reaction
+    # echo: msg send after reaction
+    # prob: probability, if not, send els msg
+    # els: if not in prob
+    list_r=['','']
+    #represent type of return
+    # a random number from 0 to 99
+    num = randrange(1000)
+    key_words_value=False
+    for check in key_words:
+        if allco == False:
+             if sentence.find(check)!=-1:
+                key_words_value=True
+        if allco == True:
+            if sentence.find(check)!=-1:
+                key_words_value=True
+            else:
+                key_words_value=False
+                break
+
+    if echo != None:
+        if key_words_value==True and num<prob:
+            list_r[0]='t'
+            list_r[1]=echo
+            return list_r
+        if key_words_value==True and num>=prob and els!=None:
+            list_r[0]='t'
+            list_r[1]=els
+            return list_r
+    elif photo!=None:
+        if key_words_value==True and num<prob:
+            list_r[0]='p'
+            list_r[1]=photo
+            return list_r
+    elif video != None:
+        if key_words_value==True and num<prob:
+            list_r[0]='v'
+            list_r[1]=video
+            return list_r
+    elif sticker != None:
+        if key_words_value==True and num<prob:
+            list_r[0]='s'
+            list_r[1]=sticker
+            return list_r
+    return None
 def key_word_reaction(bot,update):
     def find_word(words, echo=None, prob=1000, els=None,photo =None, video=None, allco=False, passArg=[]):
         # words: words need to reaction
