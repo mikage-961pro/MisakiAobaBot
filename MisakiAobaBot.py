@@ -606,7 +606,7 @@ def find_word_TAKEVER(sentence,key_words, echo=None, prob=1000, els=None,photo =
 def key_word_reaction_json(word):
     global kw_j_buffer
     list_k=[]
-    passArg={misaki_pass:find_word_TAKEVER(words=['#美咲請安靜']),try_pass:find_word_TAKEVER(words=['天','ナンス','もちょ'],allco=True)]
+    passArg={misaki_pass:find_word_TAKEVER(word,['#美咲請安靜']),try_pass:find_word_TAKEVER(word,['天','ナンス','もちょ'],allco=True)]
     for i in kw_j_buffer:
         pl=[]
         for j in i['passArg']:
