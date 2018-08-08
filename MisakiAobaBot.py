@@ -110,7 +110,7 @@ def del_cmd(bot,update):
 def yuunou(bot,update):
     """misaki is good"""
     if randrange(100) <3:
-        bot.send_photo(chat_id=update.message.chat_id, photo=open('yuunou.jpg', 'rb'))
+        bot.send_photo(chat_id=update.message.chat_id, photo="AgADBQADH6gxG-PqWFeXC2VoaLbr-X4v1TIABGPh7BIAAV-A7H2vAgABAg")
 
 def get_sheet(name):
     scope = ['https://spreadsheets.google.com/feeds']
@@ -681,6 +681,7 @@ def key_word_reaction(bot,update):
                     bot.send_sticker(chat_id=update.message.chat_id, sticker=i[1])
                 elif i[0]=='v':
                     bot.send_video(chat_id=update.message.chat_id, video=i[1])
+                yuunou(bot,update)
                 
 
 
@@ -701,9 +702,7 @@ def key_word_reaction(bot,update):
     find_word(passArg=[misaki_pass],words=['天','ナンス','もちょ'],video=pic_trys,allco=True)
 
 
-    find_word(passArg=[misaki_pass],words=['亜美'], echo='亜美？あそこよ')
-    find_word(passArg=[misaki_pass],words=['真美'], echo='真美？いないよ')
-    find_word(passArg=[misaki_pass],words=['双海'], echo='亜美真美？先に外へ行きました')
+
     find_word(passArg=[misaki_pass],words=['なんなん'], photo=open('nannnann.jpg', 'rb'))
 
     ###################################
