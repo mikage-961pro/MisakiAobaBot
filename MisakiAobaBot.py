@@ -601,7 +601,7 @@ def find_word_TAKEVER(sentence,key_words, echo=None, prob=1000, els=None,photo =
             list_r[0]='s'
             list_r[1]=stickerrandrange(len(sticker))
             return list_r
-    return None
+    return key_words_value
 
 def key_word_reaction_json(word):
     global kw_j_buffer
