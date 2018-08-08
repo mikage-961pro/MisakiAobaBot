@@ -601,13 +601,14 @@ def find_word_TAKEVER(sentence,key_words, echo=None, prob=1000, els=None,photo =
             list_r[0]='s'
             list_r[1]=stickerrandrange(len(sticker))
             return list_r
-    return key_words_value
+    lr=[None,key_words_value]
+    return lr
 
 def key_word_reaction_json(word):
     global kw_j_buffer
     list_k=[]
     
-    passArg={'misaki_pass':find_word_TAKEVER(word,['#美咲請安靜']),'try_pass':find_word_TAKEVER(word,['天','ナンス','もちょ'],allco=True)}
+    passArg={'misaki_pass':find_word_TAKEVER(word,['#美咲請安靜'])[1],'try_pass':find_word_TAKEVER(word,['天','ナンス','もちょ'],allco=True)[1]}
     for i in kw_j_buffer:
         pl=[]
         for j in i['passArg']:
@@ -671,7 +672,7 @@ def key_word_reaction(bot,update):
     if get_config(update.message.from_user.id,'s') != True:
         react=key_word_reaction_json(update.message.text)
         for i in react:
-            if i!=None:
+            if i[0]!=None:
                 if i[0]=='t':
                     bot.send_message(chat_id=update.message.chat_id, text=i[1])
                 elif i[0]=='p':
