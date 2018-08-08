@@ -656,7 +656,7 @@ def key_word_reaction(bot,update):
         if key_words_value:
             yuunou(bot,update)
         return key_words_value
-    '''
+    
     if get_config(update.message.from_user.id,'s') != True:
         react=y=key_word_reaction_json(update.message.text)
         for i in react:
@@ -669,7 +669,7 @@ def key_word_reaction(bot,update):
                     bot.send_sticker(chat_id=update.message.chat_id, sticker=i[1])
                 elif i[0]=='v':
                     bot.send_video(chat_id=update.message.chat_id, video=i[1])
-                '''
+                
 
 
     # word_pass
@@ -838,7 +838,7 @@ def key_word_j_buffer(bot,job):
     kw_j_buffer=[]
     #clean buffer
     k=[]
-    key_word_j=get_sheet('key_word_j')
+    key_word_j=get_sheet('key_word_j_m')
     try:
         k=key_word_j.get_all_values()
     except:
