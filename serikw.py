@@ -11,10 +11,9 @@ while i==True:
     kwi=False
     while kwi!=True:
         a=input('key_word')
-        if a=='exit':
+        if a=='':
             kwi=True
-        elif a=='':
-            pass
+        
         else:
             key_words.append(a)
     dic['key_words']=key_words
