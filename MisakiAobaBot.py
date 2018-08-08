@@ -549,7 +549,7 @@ def unknown(bot, update):
 ################################################
 #                not command                   #
 ################################################
-def find_word_TAKEVER(sentence,key_words, echo=None, prob=1000, els=None,photo =None, video=None,sticker=None, allco=False):
+def find_word_TAKEVER(sentence,key_words, echo=None, prob=1000, els=None,photo =None, video=None,sticker=None, allco=False,passArg=[]):
     #sentence:sentence user send
     # words: words need to reaction
     # echo: msg send after reaction
@@ -570,14 +570,20 @@ def find_word_TAKEVER(sentence,key_words, echo=None, prob=1000, els=None,photo =
             else:
                 key_words_value=False
                 break
-
+    for i in passArg:
+        if i==True:
+            key_words_value=False
+            
     if echo != None:
         if key_words_value==True and num<prob:
             list_r[0]='t'
             list_r[1]=echo
             return list_r
         if key_words_value==True and num>=prob and els!=None:
-            list_r[0]='t'
+            if els.find('http')!=-1:
+                list_r[0]='v'
+            else:
+                list_r[0]='t'
             list_r[1]=els
             return list_r
     elif photo!=None:
@@ -600,8 +606,12 @@ def find_word_TAKEVER(sentence,key_words, echo=None, prob=1000, els=None,photo =
 def key_word_reaction_json(word):
     global kw_j_buffer
     list_k=[]
+    passArg={misaki_pass:find_word_TAKEVER(words=['#美咲請安靜']),try_pass:find_word_TAKEVER(words=['天','ナンス','もちょ'],allco=True)]
     for i in kw_j_buffer:
-        temp_t=find_word_TAKEVER(word,i['key_words'],echo=i['echo'],prob=i['prob'],els=i['els'],allco=i['allco'],photo =i['photo'], video=i['video'],sticker=i['sticker'])
+        pl=[]
+        for j in i['passArg']:
+            pl.append(passArg[i])
+        temp_t=find_word_TAKEVER(word,i['key_words'],echo=i['echo'],prob=i['prob'],els=i['els'],allco=i['allco'],photo =i['photo'], video=i['video'],sticker=i['sticker'],passArg=pl)
         if temp_t != None:
             list_k.append(temp_t)
     return list_k
