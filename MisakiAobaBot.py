@@ -658,7 +658,7 @@ def key_word_reaction(bot,update):
         return key_words_value
     
     if get_config(update.message.from_user.id,'s') != True:
-        react=y=key_word_reaction_json(update.message.text)
+        react=key_word_reaction_json(update.message.text)
         for i in react:
             if i!=None:
                 if i[0]=='t':
