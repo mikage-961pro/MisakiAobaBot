@@ -252,6 +252,21 @@ def rule(bot, update):
             bot.delete_message(chat_id=update.message.chat_id, message_id=msg.message_id)
             yuunou(bot,update)
 
+def sendmsg(bot, update, args):
+    """Send a message to chat when the command /sendmsg is issued."""
+    """Only for admin use"""
+    t_pw='misakiisgood'
+    if update.message.date > init_time:
+        if not args:
+            bot.send_message(chat_id=update.message.chat_id, text="Please enter message and password.")
+        else:
+            t=' '.join(args).split('#')
+            if t[0] != t_pw:
+                bot.send_message(chat_id=update.message.chat_id, text="Uncorrect password.")
+            else:
+                text=t[1]
+                bot.send_message(chat_id='-1001290696540', text=text)
+
 def state(bot, update):
     """Send a message when the command /state is issued."""
     if update.message.date > init_time:
@@ -617,25 +632,27 @@ def key_word_reaction(bot,update):
                     break
         for fp in passArg:
             if fp==True:
-                key_words_value=False
+                key_words_value=False       
         if echo != None:
             if key_words_value==True and num<prob:
                 bot.send_message(chat_id=cid,text=echo)
-                yuunou(bot,update)
             if key_words_value==True and num>=prob and els!=None:
-                bot.send_message(chat_id=cid,text=els)
-                yuunou(bot,update)
+                if els.find('https://')!=-1:
+                    bot.send_video(chat_id=cid, video=els)
+                else:
+                    bot.send_message(chat_id=cid,text=els)
         elif video != None:
             if key_words_value==True and num<prob:
-                if type(video) == list:
-                    bot.send_video(chat_id=cid, video=video[randrange(len(video))])
-                elif type(video) == str:
+                try:
+                    vd=video[randrange(len(video))]
+                    bot.send_video(chat_id=cid, video=vd)
+                except:
                     bot.send_video(chat_id=cid, video=video)
-                yuunou(bot,update)
         elif photo != None:
             if key_words_value==True and num<prob:
                 bot.send_photo(chat_id=cid, photo=photo)
-                yuunou(bot,update)
+        if key_words_value:
+            yuunou(bot,update)
         return key_words_value
     '''
     if get_config(update.message.from_user.id,'s') != True:
@@ -658,10 +675,12 @@ def key_word_reaction(bot,update):
     try_pass=find_word(words=['天','ナンス','もちょ'],allco=True)
 
     # long url
-    ten=['https://i.imgur.com/XmWYqS1.mp4','https://imgur.com/LYBnOzo.mp4','https://i.imgur.com/denCUYX.mp4']
-    trys=['https://img.gifmagazine.net/gifmagazine/images/2289135/original.mp4',
-        'https://i.imgur.com/b9s69iK.mp4',
-        'https://img.gifmagazine.net/gifmagazine/images/1333179/original.mp4']
+    pic_ten=['https://i.imgur.com/XmWYqS1.mp4',
+    'https://imgur.com/LYBnOzo.mp4',
+    'https://i.imgur.com/denCUYX.mp4']
+    pic_trys=['https://img.gifmagazine.net/gifmagazine/images/2289135/original.mp4',
+    'https://i.imgur.com/b9s69iK.mp4',
+    'https://img.gifmagazine.net/gifmagazine/images/1333179/original.mp4']
 
     # word_echo
     find_word(passArg=[misaki_pass],words=['大老','dalao','ㄉㄚˋㄌㄠˇ','巨巨','Dalao','大 佬'],echo='你才大佬！你全家都大佬！', prob=200)
@@ -669,11 +688,11 @@ def key_word_reaction(bot,update):
     find_word(passArg=[misaki_pass],words=['青羽','美咲'], echo='お疲れ様でした！')
     find_word(passArg=[misaki_pass],words=['ころあず'], echo='ありがサンキュー！')
     find_word(passArg=[misaki_pass],words=['この歌声が'], echo='MILLLLLIIIONNNNNN',els='UNIIIIIOOONNNNN',prob=500)
-    find_word(passArg=[misaki_pass],words=['天','ナンス','もちょ'],video=trys,allco=True)
+    find_word(passArg=[misaki_pass],words=['天','ナンス','もちょ'],video=pic_trys,allco=True)
     find_word(passArg=[misaki_pass,try_pass],words=['麻倉','もも','もちょ'], echo='(●･▽･●)',els='(o・∇・o)もちー！もちもちもちもちもちーーーもちぃ！',prob=900)
-    find_word(passArg=[misaki_pass,try_pass],words=['夏川','椎菜','ナンス'], echo='(*>△<)<ナーンナーンっ')
-    find_word(passArg=[misaki_pass,try_pass],words=['雨宮','てん','天ちゃん'], video=ten)
-    find_word(passArg=[misaki_pass,try_pass],words=['天'], prob=15, video=ten)
+    find_word(passArg=[misaki_pass,try_pass],words=['夏川','椎菜','ナンス'], echo='(*>△<)<ナーンナーンっ',els='https://imgur.com/AOfQWWS.mp4',prob=300)
+    find_word(passArg=[misaki_pass,try_pass],words=['雨宮','てん','天ちゃん'], video=pic_ten)
+    find_word(passArg=[misaki_pass,try_pass],words=['天'], prob=15, video=pic_ten)
     find_word(passArg=[misaki_pass],words=['終わり','結束','沒了','完結'], echo='終わりだよ(●･▽･●)')
     find_word(passArg=[misaki_pass],words=['小鳥'], echo='もしかして〜♪ 音無先輩についてのお話ですか')
     find_word(passArg=[misaki_pass],words=['誰一百'], echo='咖嘎雅哭')
@@ -867,6 +886,7 @@ def main():
     dp.add_handler(CommandHandler("which", which, pass_args=True))
     dp.add_handler(CommandHandler("dice", dice, pass_args=True))
     dp.add_handler(CommandHandler("quote",quote))
+    dp.add_handler(CommandHandler("sendmsg", sendmsg, pass_args=True))
     # dp.add_handler(CommandHandler("title", title, pass_args=True))
 
     # ---Message answer---
