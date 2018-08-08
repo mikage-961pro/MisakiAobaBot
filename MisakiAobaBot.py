@@ -611,7 +611,7 @@ def key_word_reaction_json(word):
     for i in kw_j_buffer:
         pl=[]
         for j in i['passArg']:
-            pl.append(passArg[i])
+            pl.append(passArg[j])
         temp_t=find_word_TAKEVER(word,i['key_words'],echo=i['echo'],prob=i['prob'],els=i['els'],allco=i['allco'],photo =i['photo'], video=i['video'],sticker=i['sticker'],passArg=pl)
         if temp_t != None:
             list_k.append(temp_t)
