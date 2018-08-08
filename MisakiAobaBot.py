@@ -669,7 +669,7 @@ def key_word_reaction(bot,update):
             yuunou(bot,update)
         return key_words_value
     
-    if get_config(update.message.from_user.id,'s') != True:
+    if get_config(update.message.from_user.id,'s') == False:
         react=key_word_reaction_json(update.message.text)
         for i in react:
             if i[0]!=None:

@@ -70,7 +70,8 @@ while i==True:
     else:
         dic['video']=None
 
-    sti=False    
+    sti=False 
+    stic=[]
     while sti!=True:
         s=input('passArg')
         if s=='':
