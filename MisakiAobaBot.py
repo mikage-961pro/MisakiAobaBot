@@ -529,11 +529,13 @@ def quote(bot,update):
         del_cmd(bot,update)
         return
     else:
-        worksheet=get_sheet('quote_main')
-        quote=worksheet.get_all_values()
-        num=random.randint(0,len(quote)-1)
-        text='<pre>'+quote[num][0]+'</pre>\n'+'-----<b>'+quote[num][1]+'</b> より'
-        msg=bot.send_message(chat_id=update.message.chat_id,text=text,parse_mode='HTML')
+        set_config(update.message.from_user.id,'q')
+        del_cmd(bot,update)
+    worksheet=get_sheet('quote_main')
+    quote=worksheet.get_all_values()
+    num=random.randint(0,len(quote)-1)
+    text='<pre>'+quote[num][0]+'</pre>\n'+'-----<b>'+quote[num][1]+'</b> より'
+    msg=bot.send_message(chat_id=update.message.chat_id,text=text,parse_mode='HTML')
 
 # other command
 def error(bot, update, error):
