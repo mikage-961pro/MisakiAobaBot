@@ -566,23 +566,27 @@ def key_word_reaction(bot,update):
         if echo != None:
             if key_words_value==True and num<prob:
                 bot.send_message(chat_id=cid,text=echo)
+                yuunou(bot,update)
             if key_words_value==True and num>=prob and els!=None:
                 if els.find('https://')!=-1:
                     bot.send_video(chat_id=cid, video=els)
+                    yuunou(bot,update)
                 else:
                     bot.send_message(chat_id=cid,text=els)
+                    yuunou(bot,update)
         elif video != None:
             if key_words_value==True and num<prob:
                 try:
                     vd=video[randrange(len(video))]
                     bot.send_video(chat_id=cid, video=vd)
+                    yuunou(bot,update)
                 except:
                     bot.send_video(chat_id=cid, video=video)
+                    yuunou(bot,update)
         elif photo != None:
             if key_words_value==True and num<prob:
                 bot.send_photo(chat_id=cid, photo=photo)
-        if key_words_value:
-            yuunou(bot,update)
+                yuunou(bot,update)
         return key_words_value
     #if get_config(update.message.from_user.id,'s'):
 
@@ -618,7 +622,7 @@ def key_word_reaction(bot,update):
     find_word(passArg=[misaki_pass],words=['天海','春香'], echo='天海さんのクッキーはとっても美味しいですね〜')
     find_word(passArg=[misaki_pass],words=['閣下'], echo='え！？もしかして春香ちゃん！？',els='恐れ、平れ伏し、崇め奉りなさいのヮの！',prob=900)
     find_word(passArg=[misaki_pass],words=['如月','千早'], echo='如月さんの歌は素晴らしい！',els='静かな光は蒼の波紋 VERTEX BLUE!!!!',prob=720)
-    find_word(passArg=[misaki_pass],words=['72'],prob=100, echo='こんな言えば如月さんは怒ってしまうよ！')
+    find_word(passArg=[misaki_pass],words=['72'],prob=10, echo='こんな言えば如月さんは怒ってしまうよ！')
     find_word(passArg=[misaki_pass],words=['星井','美希'], echo='あの...星井さんはどこかで知っていますか？')
     find_word(passArg=[misaki_pass],words=['高槻','やよい'], echo="ζ*'ヮ')ζ＜うっうー ")
     find_word(passArg=[misaki_pass],words=['萩原','雪歩'], echo='あ、先のお茶は萩原さんからの')
