@@ -18,7 +18,7 @@ import time
 import os
 from random import randrange
 import random
-
+import json
 # Database
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
@@ -45,6 +45,9 @@ logger = logging.getLogger(__name__)
 
 # Record bot init time
 init_time = -1
+
+# Buffer of key_word dic , fomat : list of dic
+kw_j_buffer=[]
 ################################################
 #                     class                    #
 ################################################
@@ -108,6 +111,20 @@ def yuunou(bot,update):
     """misaki is good"""
     if randrange(100) <3:
         bot.send_photo(chat_id=update.message.chat_id, photo=open('yuunou.jpg', 'rb'))
+
+def get_sheet(name):
+    scope = ['https://spreadsheets.google.com/feeds']
+    creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
+    client = gspread.authorize(creds)
+    sheet = client.open_by_key(spreadsheet_key)
+    try:
+        worksheet=sheet.worksheet(name)
+    except:
+        sheet.add_worksheet(name,1,1)
+        worksheet=sheet.worksheet(name)
+        return worksheet
+    else:
+        return worksheet
 
 def work_sheet_push(values,worksheet_name):
     scope = ['https://spreadsheets.google.com/feeds']
@@ -514,11 +531,8 @@ def quote(bot,update):
     else:
         set_config(update.message.from_user.id,'q')
         del_cmd(bot,update)
-    scope = ['https://spreadsheets.google.com/feeds']
-    creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
-    client = gspread.authorize(creds)
-    sheet = client.open_by_key(spreadsheet_key)
-    quote=sheet.worksheet('quote_main').get_all_values()
+    worksheet=get_sheet('quote_main')
+    quote=worksheet.get_all_values()
     num=random.randint(0,len(quote)-1)
     text='<pre>'+quote[num][0]+'</pre>\n'+'-----<b>'+quote[num][1]+'</b> より'
     msg=bot.send_message(chat_id=update.message.chat_id,text=text,parse_mode='HTML')
@@ -535,6 +549,76 @@ def unknown(bot, update):
 ################################################
 #                not command                   #
 ################################################
+def find_word_TAKEVER(sentence,key_words, echo=None, prob=1000, els=None,photo =None, video=None,sticker=None, allco=False,passArg=[]):
+    #sentence:sentence user send
+    # words: words need to reaction
+    # echo: msg send after reaction
+    # prob: probability, if not, send els msg
+    # els: if not in prob
+    list_r=['','']
+    #represent type of return
+    # a random number from 0 to 99
+    num = randrange(1000)
+    key_words_value=False
+    for check in key_words:
+        if allco == False:
+             if sentence.find(check)!=-1:
+                key_words_value=True
+        if allco == True:
+            if sentence.find(check)!=-1:
+                key_words_value=True
+            else:
+                key_words_value=False
+                break
+    for i in passArg:
+        if i==True:
+            key_words_value=False
+            
+    if echo != None:
+        if key_words_value==True and num<prob:
+            list_r[0]='t'
+            list_r[1]=echo
+            return list_r
+        if key_words_value==True and num>=prob and els!=None:
+            if els.find('http')!=-1:
+                list_r[0]='v'
+            else:
+                list_r[0]='t'
+            list_r[1]=els
+            return list_r
+    elif photo!=None:
+        if key_words_value==True and num<prob:
+            list_r[0]='p'
+            list_r[1]=photo[randrange(len(photo))]
+            return list_r
+    elif video != None:
+        if key_words_value==True and num<prob:
+            list_r[0]='v'
+            list_r[1]=video[randrange(len(video))]
+            return list_r
+    elif sticker != None:
+        if key_words_value==True and num<prob:
+            list_r[0]='s'
+            list_r[1]=stickerrandrange(len(sticker))
+            return list_r
+    lr=[None,key_words_value]
+    return lr
+
+def key_word_reaction_json(word):
+    global kw_j_buffer
+    list_k=[]
+    
+    passArg={'misaki_pass':find_word_TAKEVER(word,['#美咲請安靜'])[1],'try_pass':find_word_TAKEVER(word,['天','ナンス','もちょ'],allco=True)[1]}
+    for i in kw_j_buffer:
+        pl=[]
+        for j in i['passArg']:
+            pl.append(passArg[j])
+        temp_t=find_word_TAKEVER(word,i['key_words'],echo=i['echo'],prob=i['prob'],els=i['els'],allco=i['allco'],photo =i['photo'], video=i['video'],sticker=i['sticker'],passArg=pl)
+        if temp_t != None:
+            list_k.append(temp_t)
+    return list_k
+
+
 def key_word_reaction(bot,update):
     def find_word(words, echo=None, prob=1000, els=None,photo =None, video=None, allco=False, passArg=[]):
         # words: words need to reaction
@@ -588,7 +672,21 @@ def key_word_reaction(bot,update):
                 bot.send_photo(chat_id=cid, photo=photo)
                 yuunou(bot,update)
         return key_words_value
-    #if get_config(update.message.from_user.id,'s'):
+    
+    if get_config(update.message.from_user.id,'s') == False:
+        react=key_word_reaction_json(update.message.text)
+        for i in react:
+            if i[0]!=None:
+                if i[0]=='t':
+                    bot.send_message(chat_id=update.message.chat_id, text=i[1])
+                elif i[0]=='p':
+                    bot.send_photo(chat_id=update.message.chat_id, photo=i[1])
+                elif i[0]=='s':
+                    bot.send_sticker(chat_id=update.message.chat_id, sticker=i[1])
+                elif i[0]=='v':
+                    bot.send_video(chat_id=update.message.chat_id, video=i[1])
+                
+
 
     # word_pass
     misaki_pass=find_word(words=['#美咲請安靜'])
@@ -603,12 +701,10 @@ def key_word_reaction(bot,update):
     'https://img.gifmagazine.net/gifmagazine/images/1333179/original.mp4']
 
     # word_echo
-    find_word(passArg=[misaki_pass],words=['大老','dalao','ㄉㄚˋㄌㄠˇ','巨巨','Dalao','大 佬'],echo='你才大佬！你全家都大佬！', prob=200)
-    find_word(passArg=[misaki_pass],words=['依田','芳乃'], echo='ぶおおー')
-    find_word(passArg=[misaki_pass],words=['青羽','美咲'], echo='お疲れ様でした！')
-    find_word(passArg=[misaki_pass],words=['ころあず'], echo='ありがサンキュー！')
-    find_word(passArg=[misaki_pass],words=['この歌声が'], echo='MILLLLLIIIONNNNNN',els='UNIIIIIOOONNNNN',prob=500)
+
     find_word(passArg=[misaki_pass],words=['天','ナンス','もちょ'],video=pic_trys,allco=True)
+
+"""
     find_word(passArg=[misaki_pass,try_pass],words=['麻倉','もも','もちょ'], echo='(●･▽･●)',els='(o・∇・o)もちー！もちもちもちもちもちーーーもちぃ！',prob=900)
     find_word(passArg=[misaki_pass,try_pass],words=['夏川','椎菜','ナンス'], echo='(*>△<)<ナーンナーンっ',els='https://imgur.com/AOfQWWS.mp4',prob=300)
     find_word(passArg=[misaki_pass,try_pass],words=['雨宮','てん','天ちゃん'], video=pic_ten)
@@ -632,6 +728,7 @@ def key_word_reaction(bot,update):
     find_word(passArg=[misaki_pass],words=['菊地','真'], echo='真さんは今、王子役の仕事をしていますよ。',els='真さんは今、ヒーロー役の仕事をしていますよ～～激しい光は黒の衝撃 VERTEX BLACK!!!!',prob=700,allco=True)
     find_word(passArg=[misaki_pass],words=['我那覇','響'], echo='ハム蔵はどこでしょうか？探していますね',els='弾ける光は浅葱の波濤 VERTEX LIGHTBLUE!!',prob=700,allco=True)
     find_word(passArg=[misaki_pass],words=['四条','貴音'], echo='昨日〜貴音さんがわたしに色々な美味しい麺屋を紹介しました！',els='秘めたり光は臙脂の炎 VERTEX CARMINE〜〜',prob=700)
+"""
     find_word(passArg=[misaki_pass],words=['亜美'], echo='亜美？あそこよ')
     find_word(passArg=[misaki_pass],words=['真美'], echo='真美？いないよ')
     find_word(passArg=[misaki_pass],words=['双海'], echo='亜美真美？先に外へ行きました')
@@ -750,6 +847,21 @@ def daily_reset(bot,job):
     for i in user_config:
         if i[1].find('q') != -1:
             set_config(i[0],'q')
+
+def key_word_j_buffer(bot,job):
+    global kw_j_buffer
+    kw_j_buffer=[]
+    #clean buffer
+    k=[]
+    key_word_j=get_sheet('key_word_j_m')
+    try:
+        k=key_word_j.get_all_values()
+    except:
+        return
+    else:
+        for i in k:
+            temp=json.loads(i[0])
+            kw_j_buffer.append(temp)
 ################################################
 #                   main                       #
 ################################################
@@ -774,7 +886,8 @@ def main():
         updater.job_queue.run_daily(group_history,t)
     #mission refresh daily gasya
     updater.job_queue.run_daily(daily_reset,stime(14,59,59))
-    
+    #refresh buffer
+    updater.job_queue.run_repeating(key_word_j_buffer, interval=60, first=0)
     # ---Command answer---
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start))
