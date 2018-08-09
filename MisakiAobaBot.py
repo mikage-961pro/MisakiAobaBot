@@ -691,7 +691,7 @@ def key_word_reaction(bot,update):
     # word_pass
     misaki_pass=find_word(words=['#美咲請安靜'])
     try_pass=find_word(words=['天','ナンス','もちょ'],allco=True)
-
+"""
     # long url
     pic_ten=['https://i.imgur.com/XmWYqS1.mp4',
     'https://imgur.com/LYBnOzo.mp4',
@@ -701,10 +701,7 @@ def key_word_reaction(bot,update):
     'https://img.gifmagazine.net/gifmagazine/images/1333179/original.mp4']
 
     # word_echo
-
     find_word(passArg=[misaki_pass],words=['天','ナンス','もちょ'],video=pic_trys,allco=True)
-
-"""
     find_word(passArg=[misaki_pass,try_pass],words=['麻倉','もも','もちょ'], echo='(●･▽･●)',els='(o・∇・o)もちー！もちもちもちもちもちーーーもちぃ！',prob=900)
     find_word(passArg=[misaki_pass,try_pass],words=['夏川','椎菜','ナンス'], echo='(*>△<)<ナーンナーンっ',els='https://imgur.com/AOfQWWS.mp4',prob=300)
     find_word(passArg=[misaki_pass,try_pass],words=['雨宮','てん','天ちゃん'], video=pic_ten)
@@ -728,11 +725,11 @@ def key_word_reaction(bot,update):
     find_word(passArg=[misaki_pass],words=['菊地','真'], echo='真さんは今、王子役の仕事をしていますよ。',els='真さんは今、ヒーロー役の仕事をしていますよ～～激しい光は黒の衝撃 VERTEX BLACK!!!!',prob=700,allco=True)
     find_word(passArg=[misaki_pass],words=['我那覇','響'], echo='ハム蔵はどこでしょうか？探していますね',els='弾ける光は浅葱の波濤 VERTEX LIGHTBLUE!!',prob=700,allco=True)
     find_word(passArg=[misaki_pass],words=['四条','貴音'], echo='昨日〜貴音さんがわたしに色々な美味しい麺屋を紹介しました！',els='秘めたり光は臙脂の炎 VERTEX CARMINE〜〜',prob=700)
-"""
     find_word(passArg=[misaki_pass],words=['亜美'], echo='亜美？あそこよ')
     find_word(passArg=[misaki_pass],words=['真美'], echo='真美？いないよ')
     find_word(passArg=[misaki_pass],words=['双海'], echo='亜美真美？先に外へ行きました')
     find_word(passArg=[misaki_pass],words=['なんなん'], photo=open('nannnann.jpg', 'rb'))
+"""
 
     ###################################
     #          quote collector        #
