@@ -620,55 +620,9 @@ def key_word_reaction_json(word):
 
 
 def key_word_reaction(bot,update):
-    def find_word(words, echo=None, prob=1000, els=None,photo =None, video=None, allco=False, passArg=[]):
-        # words: words need to reaction
-        # echo, photo, video: msg send after reaction
-        # prob: probability, if not, send els msg (1 for 0.1%)
-        # els: if not in prob
-        # allco: if words are all correct will go
-        # passArg: if true, the function will never go; default is false
-        key_words=update.message.text
-        cid=update.message.chat_id
-        # a random number from 0 to 999
-        num = randrange(1000)
-        key_words_value=False
-        for check in words:
-            if allco == False:
-                "one word correct will go"
-                if key_words.find(check)!=-1:
-                    key_words_value=True
-            if allco == True:
-                "all word correct will go"
-                if key_words.find(check)!=-1:
-                    key_words_value=True
-                else:
-                    key_words_value=False
-                    break
-        for fp in passArg:
-            if fp==True:
-                key_words_value=False       
-        if echo != None:
-            if key_words_value==True and num<prob:
-                bot.send_message(chat_id=cid,text=echo)
-            if key_words_value==True and num>=prob and els!=None:
-                if els.find('https://')!=-1:
-                    bot.send_video(chat_id=cid, video=els)
-                else:
-                    bot.send_message(chat_id=cid,text=els)
-        elif video != None:
-            if key_words_value==True and num<prob:
-                try:
-                    vd=video[randrange(len(video))]
-                    bot.send_video(chat_id=cid, video=vd)
-                except:
-                    bot.send_video(chat_id=cid, video=video)
-        elif photo != None:
-            if key_words_value==True and num<prob:
-                bot.send_photo(chat_id=cid, photo=photo)
-        if key_words_value:
-            yuunou(bot,update)
-        return key_words_value
-    
+    ###################################
+    #        key wird reaction        #
+    ###################################
     if get_config(update.message.from_user.id,'s') == False:
         react=key_word_reaction_json(update.message.text)
         for i in react:
@@ -682,29 +636,6 @@ def key_word_reaction(bot,update):
                 elif i[0]=='v':
                     bot.send_video(chat_id=update.message.chat_id, video=i[1])
                 yuunou(bot,update)
-                
-
-
-    # word_pass
-    misaki_pass=find_word(words=['#美咲請安靜'])
-    try_pass=find_word(words=['天','ナンス','もちょ'],allco=True)
-
-    # long url
-    pic_ten=['https://i.imgur.com/XmWYqS1.mp4',
-    'https://imgur.com/LYBnOzo.mp4',
-    'https://i.imgur.com/denCUYX.mp4']
-    pic_trys=['https://img.gifmagazine.net/gifmagazine/images/2289135/original.mp4',
-    'https://i.imgur.com/b9s69iK.mp4',
-    'https://img.gifmagazine.net/gifmagazine/images/1333179/original.mp4']
-
-    # word_echo
-
-    find_word(passArg=[misaki_pass],words=['天','ナンス','もちょ'],video=pic_trys,allco=True)
-
-
-
-    find_word(passArg=[misaki_pass],words=['なんなん'], photo=open('nannnann.jpg', 'rb'))
-
     ###################################
     #          quote collector        #
     ###################################
