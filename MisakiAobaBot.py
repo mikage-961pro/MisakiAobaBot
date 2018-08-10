@@ -702,6 +702,11 @@ def key_word_reaction(bot,update):
     'https://img.gifmagazine.net/gifmagazine/images/1333179/original.mp4']
 
     # word_echo
+    find_word(passArg=[misaki_pass],words=['大老','dalao','ㄉㄚˋㄌㄠˇ','巨巨','Dalao','大 佬'],echo='你才大佬！你全家都大佬！', prob=200)
+    find_word(passArg=[misaki_pass],words=['依田','芳乃'], echo='ぶおおー')
+    find_word(passArg=[misaki_pass],words=['青羽','美咲'], echo='お疲れ様でした！')
+    find_word(passArg=[misaki_pass],words=['ころあず'], echo='ありがサンキュー！')
+    find_word(passArg=[misaki_pass],words=['この歌声が'], echo='MILLLLLIIIONNNNNN',els='UNIIIIIOOONNNNN',prob=500)
     find_word(passArg=[misaki_pass],words=['天','ナンス','もちょ'],video=pic_trys,allco=True)
     find_word(passArg=[misaki_pass,try_pass],words=['麻倉','もも','もちょ'], echo='(●･▽･●)',els='(o・∇・o)もちー！もちもちもちもちもちーーーもちぃ！',prob=900)
     find_word(passArg=[misaki_pass,try_pass],words=['夏川','椎菜','ナンス'], echo='(*>△<)<ナーンナーンっ',els='https://imgur.com/AOfQWWS.mp4',prob=300)
