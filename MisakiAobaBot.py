@@ -365,8 +365,8 @@ def which(bot, update, args):
 
 def nanikore(bot, update):
     """Send a message when the command /nanikore is issued."""
-    rec_msg=[かまぼこエミリー,メタル桃子,巨乳可奈,育ゴーレム,ロコたろう,
-    イキリ金魚,マツダムシ,ユリケラトプス,アンナス,ユリコーン,ジュニオール箱崎]
+    rec_msg=['かまぼこエミリー','メタル桃子','巨乳可奈','育ゴーレム','ロコたろう',
+    'イキリ金魚','マツダムシ','ユリケラトプス','アンナス','ユリコーン','ジュニオール箱崎']
     if update.message.date > init_time:
         bot.send_message(chat_id=update.message.chat_id, text=rec_msg[randrange(len(rec_msg))])
         
