@@ -672,7 +672,7 @@ def key_word_reaction(bot,update):
                 bot.send_photo(chat_id=cid, photo=photo)
                 yuunou(bot,update)
         return key_words_value
-    
+    """
     if get_config(update.message.from_user.id,'s') == False:
         react=key_word_reaction_json(update.message.text)
         for i in react:
@@ -686,13 +686,13 @@ def key_word_reaction(bot,update):
                 elif i[0]=='v':
                     bot.send_video(chat_id=update.message.chat_id, video=i[1])
                 
-
+    """
 
     # word_pass
     misaki_pass=find_word(words=['#美咲請安靜'])
     try_pass=find_word(words=['天','ナンス','もちょ'],allco=True)
     
-    """
+
     # long url
     pic_ten=['https://i.imgur.com/XmWYqS1.mp4',
     'https://imgur.com/LYBnOzo.mp4',
@@ -730,7 +730,7 @@ def key_word_reaction(bot,update):
     find_word(passArg=[misaki_pass],words=['真美'], echo='真美？いないよ')
     find_word(passArg=[misaki_pass],words=['双海'], echo='亜美真美？先に外へ行きました')
     find_word(passArg=[misaki_pass],words=['なんなん'], photo=open('nannnann.jpg', 'rb'))
-    """
+
     ###################################
     #          quote collector        #
     ###################################
