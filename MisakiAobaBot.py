@@ -198,7 +198,7 @@ def set_config(id,command):
 def get_config(id,setting):
     global config_buffer
     global config_buffer_Plock
-    if config_buffer_Plock=True:
+    if config_buffer_Plock==True:
         time.sleep(0.5)
     for i in config_buffer:
         if i[0].find(id)!=-1:
@@ -615,7 +615,7 @@ def key_word_reaction_json(word):
     list_k=[]
     
     passArg={'misaki_pass':find_word_TAKEVER(word,['#美咲請安靜'])[1],'try_pass':find_word_TAKEVER(word,['天','ナンス','もちょ'],allco=True)[1]}
-    if kw_j_buffer_Plock=True:
+    if kw_j_buffer_Plock==True:
         time.sleep(1)
     #if buffer is refreshing
     for i in kw_j_buffer:
