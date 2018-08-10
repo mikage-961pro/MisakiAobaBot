@@ -46,8 +46,15 @@ logger = logging.getLogger(__name__)
 # Record bot init time
 init_time = -1
 
-# Buffer of key_word dic , fomat : list of dic
+# Buffers
+#悲觀鎖
 kw_j_buffer=[]
+kw_j_buffer_Plock=False
+config_buffer=[]
+config_buffer_Plock=False
+last_message_list=[]
+
+
 ################################################
 #                     class                    #
 ################################################
@@ -162,11 +169,8 @@ def work_sheet_pop(key,woksheet_name):
         return None
         
 def set_config(id,command):
-    scope = ['https://spreadsheets.google.com/feeds']
-    creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
-    client = gspread.authorize(creds)
-    sheet = client.open_by_key(spreadsheet_key)
-    worksheet=sheet.worksheet('config')
+    
+    worksheet=get_sheet('config')
     user_id=id
     try:
         #find chat_id
@@ -183,25 +187,26 @@ def set_config(id,command):
         else:
             setting=setting+command
         worksheet.update_cell(cell.row,cell.col+1,setting)
+    global config_buffer
+    global config_buffer_Plock
+    if config_buffer_Plock=True:
+        time.sleep(0.5)
+    config_buffer_Plock=True
+    config_buffer=worksheet.get_all_values()
+    config_buffer_Plock=False
 
 def get_config(id,setting):
-    scope = ['https://spreadsheets.google.com/feeds']
-    creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
-    client = gspread.authorize(creds)
-    sheet = client.open_by_key(spreadsheet_key)
-    worksheet=sheet.worksheet('config')
-    user_id=id
-    try:
-        #find chat_id
-        cell=worksheet.find(str(user_id))
-    except:
-        return False
-    else:
-        config=worksheet.cell(cell.row,cell.col+1).value
-        if config.find(setting)!=-1:
-            return True
-        else:
-            return False
+    global config_buffer
+    global config_buffer_Plock
+    if config_buffer_Plock=True:
+        time.sleep(0.5)
+    for i in config_buffer:
+        if i[0].find(id)!=-1:
+            if i[1].find(setting)!=-1:
+                return True
+            else:
+                return False
+    return False
         
 ################################################
 #                   command                    #
@@ -606,9 +611,13 @@ def find_word_TAKEVER(sentence,key_words, echo=None, prob=1000, els=None,photo =
 
 def key_word_reaction_json(word):
     global kw_j_buffer
+    global kw_j_buffer_Plock
     list_k=[]
     
     passArg={'misaki_pass':find_word_TAKEVER(word,['#美咲請安靜'])[1],'try_pass':find_word_TAKEVER(word,['天','ナンス','もちょ'],allco=True)[1]}
+    if kw_j_buffer_Plock=True:
+        time.sleep(1)
+    #if buffer is refreshing
     for i in kw_j_buffer:
         pl=[]
         for j in i['passArg']:
@@ -621,7 +630,7 @@ def key_word_reaction_json(word):
 
 def key_word_reaction(bot,update):
     ###################################
-    #        key wird reaction        #
+    #        key word reaction        #
     ###################################
     if get_config(update.message.from_user.id,'s') == False:
         react=key_word_reaction_json(update.message.text)
@@ -656,26 +665,19 @@ def key_word_reaction(bot,update):
     ###################################
     #          bot_historian          #
     ###################################
-    #refresh token
-    scope = ['https://spreadsheets.google.com/feeds']
-    creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
-    client = gspread.authorize(creds)
-    sheet = client.open_by_key(spreadsheet_key)
-    worksheet=sheet.worksheet('last_message_misaki')
     chat_id=update.message.chat_id
-    #record all message_id
     lmessage_id=update.message.message_id
     list=[str(chat_id),lmessage_id]
-    try:
-        #find chat_id
-        cell=worksheet.find(str(chat_id))
-    except:
-        #ERROR:not found
-        #creat new record
-        worksheet.insert_row(list, 2)
-    else:
-        #replace record
-        worksheet.update_cell(cell.row,cell.col+1,lmessage_id)
+    global last_message_list
+    fvalue=False
+    for i in last_message_list:
+        if i[0].find(list[0])!=-1:
+            fvalue=True
+            i[1]=list[1]
+            break
+    if fvalue==False:
+        last_message_list.append(list)
+
 
 def message_callback(bot, update):
 
@@ -750,8 +752,10 @@ def daily_reset(bot,job):
         if i[1].find('q') != -1:
             set_config(i[0],'q')
 
-def key_word_j_buffer(bot,job):
+def refresh_buffer(bot,job):
+    #key_word_j_buffer
     global kw_j_buffer
+    global kw_j_buffer_Plock
     kw_j_buffer_temp=[]
     k=[]
     key_word_j=get_sheet('key_word_j_m')
@@ -767,7 +771,32 @@ def key_word_j_buffer(bot,job):
                 pass
             else:
                 kw_j_buffer_temp.append(temp)
+    #lock
+    kw_j_buffer_Plock=True
     kw_j_buffer=kw_j_buffer_temp
+    kw_j_buffer_Plock=False
+    #unlock
+    
+    #config_buffer
+    global config_buffer
+    global config_buffer_Plock
+    config_sheet=get_sheet('config')
+    config_buffer_Plock=True
+    config_buffer=config_sheet.get_all_values()
+    config_buffer_Plock=False
+    
+    #refresh lstmessage
+    global last_message_list
+
+    worksheet=getsheet('last_message_misaki')
+    for i in last_message_list:
+        try:
+            cell=worksheet.find(i[0])
+        except:#not found
+            worksheet.insert_row(i, 1)
+        else:
+            worksheet.update_cell(cell.row,cell.col+1,i[1])
+    
 ################################################
 #                   main                       #
 ################################################
@@ -793,7 +822,7 @@ def main():
     #mission refresh daily gasya
     updater.job_queue.run_daily(daily_reset,stime(14,59,59))
     #refresh buffer
-    updater.job_queue.run_repeating(key_word_j_buffer, interval=60, first=0)
+    updater.job_queue.run_repeating(refresh_buffer, interval=60, first=0)
     # ---Command answer---
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start))
