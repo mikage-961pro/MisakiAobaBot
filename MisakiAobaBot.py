@@ -271,7 +271,7 @@ def state(bot, update):
     """Send a message when the command /state is issued."""
     if update.message.date > init_time:
         total_count=bot.get_chat_members_count(update.message.chat.id)
-        bot_count=3
+        bot_count=2
         human_count=total_count-bot_count
         bot.send_message(chat_id=update.message.chat_id,
         text='目前室內人數：{}'.format(str(human_count))+'\n'+
@@ -362,6 +362,14 @@ def which(bot, update, args):
             text="わたしは〜♬［$res］が良いと思うよ〜えへへ。".replace('$res',result)
             bot.send_message(chat_id=update.message.chat_id, text=text)
             yuunou(bot,update)
+
+def nanikore(bot, update):
+    """Send a message when the command /nanikore is issued."""
+    rec_msg=[かまぼこエミリー,メタル桃子,巨乳可奈,育ゴーレム,ロコたろう,
+    イキリ金魚,マツダムシ,ユリケラトプス,アンナス,ユリコーン,ジュニオール箱崎]
+    if update.message.date > init_time:
+        bot.send_message(chat_id=update.message.chat_id, text=rec_msg[randrange(len(rec_msg))])
+        
 
 def dice(bot,update,args):
     """Send a message when the command /dice is issued."""
@@ -905,6 +913,7 @@ def main():
     dp.add_handler(CommandHandler("which", which, pass_args=True))
     dp.add_handler(CommandHandler("dice", dice, pass_args=True))
     dp.add_handler(CommandHandler("quote",quote))
+    dp.add_handler(CommandHandler("nanikore",nanikore))
     dp.add_handler(CommandHandler("sendmsg", sendmsg, pass_args=True))
     # dp.add_handler(CommandHandler("title", title, pass_args=True))
 
