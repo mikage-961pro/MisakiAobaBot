@@ -189,7 +189,7 @@ def set_config(id,command):
         worksheet.update_cell(cell.row,cell.col+1,setting)
     global config_buffer
     global config_buffer_Plock
-    if config_buffer_Plock=True:
+    if config_buffer_Plock==True:
         time.sleep(0.5)
     config_buffer_Plock=True
     config_buffer=worksheet.get_all_values()
