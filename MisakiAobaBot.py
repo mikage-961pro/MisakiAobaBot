@@ -201,7 +201,7 @@ def get_config(id,setting):
     if config_buffer_Plock==True:
         time.sleep(0.5)
     for i in config_buffer:
-        if i[0].find(id)!=-1:
+        if i[0].find(str(id))!=-1:
             if i[1].find(setting)!=-1:
                 return True
             else:
@@ -788,7 +788,7 @@ def refresh_buffer(bot,job):
     #refresh lstmessage
     global last_message_list
 
-    worksheet=getsheet('last_message_misaki')
+    worksheet=get_sheet('last_message_misaki')
     for i in last_message_list:
         try:
             cell=worksheet.find(i[0])
