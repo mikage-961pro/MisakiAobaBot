@@ -25,7 +25,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 # User Module
 from global_words import GLOBAL_WORDS
-
+from postgre import dbDump,dbrandGet
 ################################################
 #                     init                     #
 ################################################
@@ -550,6 +550,13 @@ def quote(bot,update):
     text='<pre>'+quote[num][0]+'</pre>\n'+'-----<b>'+quote[num][1]+'</b> より'
     msg=bot.send_message(chat_id=update.message.chat_id,text=text,parse_mode='HTML')
 
+def randchihaya(bot,update):
+    url=dbrandGet('randchihaya','url')
+    bot.send_photo(chat_id=update.message.chat_id,photo=url)
+
+def randtsumugi(bot,update):
+    url=dbrandGet('randtsumugi','url')
+    bot.send_photo(chat_id=update.message.chat_id,photo=url)
 # other command
 def error(bot, update, error):
     """Log Errors caused by Updates."""
@@ -758,6 +765,20 @@ def key_word_reaction(bot,update):
     find_word(passArg=[misaki_pass],words=['なんなん'], photo=open('nannnann.jpg', 'rb'))
 
     ###################################
+    #               NAZO              #
+    ###################################
+    test=update.message.text
+    if test.find('tumu@db')!=-1:
+        rmsg=update.message.reply_to_message
+        if rmsg.photo!=None:
+            col=['name','url']
+            data=['adph',rmsg.photo[len(rmsg.photo)-1].file_id]
+            dbDump('randtsumugi',data,col)
+            return
+        data=['adp',rmsg.text]
+        dbDump('randtsumugi',data,col)
+    
+    ###################################
     #          quote collector        #
     ###################################
     record=False
@@ -951,6 +972,8 @@ def main():
     dp.add_handler(CommandHandler("dice", dice, pass_args=True))
     dp.add_handler(CommandHandler("quote",quote))
     dp.add_handler(CommandHandler("nanikore",nanikore))
+    dp.add_handler(CommandHandler("randChihaya",randchihaya))
+    dp.add_handler(CommandHandler("randTsumugi",randtsumugi))
     dp.add_handler(CommandHandler("sendmsg", sendmsg, pass_args=True))
     # dp.add_handler(CommandHandler("title", title, pass_args=True))
 
