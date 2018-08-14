@@ -31,9 +31,6 @@ def dbrandGet(table,col):
     str=''
     try:
         curs.execute(q1)
-        #curs.execute("""SELECT url FROM randchihaya
-        #                ORDER BY RANDOM()
-        #               LIMIT 1""")
     except:
         conn.rollback()
     else:
