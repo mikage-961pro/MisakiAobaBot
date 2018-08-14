@@ -770,13 +770,15 @@ def key_word_reaction(bot,update):
     test=update.message.text
     if test.find('tumu@db')!=-1:
         rmsg=update.message.reply_to_message
+        col=['name','url']
+        if rmsg.text.find('http')!=-1:
+            data=['adp',rmsg.text]
+            dbDump('randtsumugi',data,col)
+            return
         if rmsg.photo!=None:
-            col=['name','url']
             data=['adph',rmsg.photo[len(rmsg.photo)-1].file_id]
             dbDump('randtsumugi',data,col)
             return
-        data=['adp',rmsg.text]
-        dbDump('randtsumugi',data,col)
     
     ###################################
     #          quote collector        #
