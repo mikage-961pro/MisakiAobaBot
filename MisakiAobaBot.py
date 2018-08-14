@@ -768,7 +768,7 @@ def key_word_reaction(bot,update):
     #               NAZO              #
     ###################################
     test=update.message.text
-    if test.find('tsumu@db')!=-1:
+    if test.find('tumu@db')!=-1:
         rmsg=update.message.reply_to_message
         if rmsg.photo!=None:
             col=['name','url']
