@@ -13,7 +13,7 @@ nanto-なんとぉ！
 dice-N粒公正的骰子
 quote-每日一句
 nanikore-召喚神奇的東西
-randChihaya-召喚千早
-randTsumugi-召喚紬
+randchihaya-召喚千早
+randtsumugi-召喚紬
 sendmsg-Send msg.Only for admin use.
 """
