@@ -774,12 +774,8 @@ def key_word_reaction(bot,update):
         if rmsg.text.find('http')!=-1:
             data=['adp',rmsg.text]
             dbDump('randtsumugi',data,col)
+            bot.send_message(chat_id=update.message.chat_id,text='ok~~')
             return
-        if rmsg.photo!=None:
-            data=['adph',rmsg.photo[len(rmsg.photo)-1].file_id]
-            dbDump('randtsumugi',data,col)
-            return
-    
     ###################################
     #          quote collector        #
     ###################################
