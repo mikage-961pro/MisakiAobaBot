@@ -37,3 +37,10 @@ def dbrandGet(table,col):
     else:
         str=curs.fetchone()[0]
     return str
+
+def dbDelete(table,key):
+    q1=sql.SQL("DELETE FROM {} WHERE ID in ({})").format(sql.Identifier(table),sql.SQL(', ').join(sql.Placeholder() * len(key)))
+        try:
+            curs.execute(q1,key)
+        except:
+            print('error')        
