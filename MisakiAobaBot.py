@@ -54,16 +54,6 @@ config_buffer=[]
 config_buffer_Plock=False
 last_message_list=[]
 
-
-################################################
-#                     class                    #
-################################################
-class remind():
-    def __init__(self,stime,text,day=7):
-        self.stime=dt.datetime.strptime(stime, '%H:%M').time()
-        #str to stime()
-        self.text=text
-        self.day=day
 ################################################
 #                   tool kits                  #
 ################################################
