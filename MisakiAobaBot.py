@@ -940,6 +940,8 @@ def refresh_buffer(bot,job):
             worksheet.insert_row(i, 1)
         else:
             worksheet.update_cell(cell.row,cell.col+1,i[1])
+
+def change_title(bot,job):
     
 ################################################
 #                   main                       #
