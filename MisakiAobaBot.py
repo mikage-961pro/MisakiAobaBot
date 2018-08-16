@@ -25,7 +25,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 # User Module
 from global_words import GLOBAL_WORDS
-from postgre import dbDump,dbrandGet
+from postgre import dbDump,dbrandGet,dbGet
 ################################################
 #                     init                     #
 ################################################
@@ -557,6 +557,19 @@ def randchihaya(bot,update):
 def randtsumugi(bot,update):
     url=dbrandGet('randtsumugi','url')
     bot.send_photo(chat_id=update.message.chat_id,photo=url)
+    
+def sticker_matome(bot,update):
+    link=dbGet('sticker',['setname','about'])
+    slink=''
+    for i in link:
+        slink=slink+'<a href="https://telegram.me/addstickers/'+i[0]+'">'+i[1]+'</a>\n'
+    try:
+        bot.send_message(chat_id=update.message.from_user.id,text=slink,parse_mode='HTML')
+    except:
+        startme='<a href="https://telegram.me/MisakiAobaBot?start=sticker">請先在私訊START♪</a>'
+        bot.send_message(chat_id=update.message.chat_id,text=startme,parse_mode='HTML')
+    else:
+        bot.send_message(chat_id=update.message.chat_id,text='看私訊～～♪')
 # other command
 def error(bot, update, error):
     """Log Errors caused by Updates."""
