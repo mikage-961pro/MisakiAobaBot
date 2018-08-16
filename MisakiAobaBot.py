@@ -93,13 +93,14 @@ def is_admin(bot,update):
                 is_admin=True
         return is_admin
 
-def bot_is_admin(bot,update):
+def bot_is_admin(bot,chat_Id):
     """Dectect bot if admin, return boolen value"""
+    chat=bot.get_chat(chat_Id)
     bot_auth=False
-    if update.message.chat.type=='private':
+    if chat.type=='private':
         return bot_auth
     else:
-        adminlist=update.message.chat.get_administrators()
+        adminlist=chat.get_administrators()
         me=bot.get_me()
         for b in adminlist:
                 if me.id==b.user.id:
@@ -108,7 +109,7 @@ def bot_is_admin(bot,update):
 
 def del_cmd(bot,update):
     """Dectect bot if admin, if True, del cmd"""
-    if bot_is_admin(bot,update):
+    if bot_is_admin(bot,update.message.chat_id):
         try:
             bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
         except:
@@ -505,37 +506,6 @@ def title(bot,update,args):
         else:
             bot.send_message(chat_id=update.message.chat_id,text='申し訳ございませんが、このコマンドは、管理者しか使いません\nOops!Only admin can change title.')
 
-#mention that bot need to be an admin of sgroup
-#should change automatically and get title from DB,though JOBquece
-#function for test
-
-def set_remind_time(bot,update,args):
-    if update.message.date > init_time:
-        #do not test public cause there's no auth check yet
-        #check auth
-        #if is_admin(bot,update)==True:
-        scope = ['https://spreadsheets.google.com/feeds']
-        creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
-        #got from google api
-        #attach mine for example
-        #try to set in environ values but got fail
-        client = gspread.authorize(creds)
-        sheet = client.open_by_key(spreadsheet_key)
-        if not args:
-            return
-        
-        text=' '.join(args)
-        l_text=text.split('%%')
-        tsheet=sheet.worksheet('time')
-        cell=get_cell(l_text[0],tsheet)
-        if cell==None:
-            tsheet.insert_row([l_text[0],l_text[1],l_text[2],update.message.from_user.id], 2)
-        else:
-            tsheet.update_cell(cell.row,cell.col+1,l_text[1])
-            tsheet.update_cell(cell.row,cell.col+2,l_text[2])
-            tsheet.update_cell(cell.row,cell.col+3,update.message.from_user.id)
-
-            
 def quote(bot,update):
     #daily quote
     if get_config(update.message.from_user.id,'q')==True:
@@ -941,7 +911,14 @@ def refresh_buffer(bot,job):
         else:
             worksheet.update_cell(cell.row,cell.col+1,i[1])
 
-#def change_title(bot,job):
+def change_title(bot,job):
+    #check bot auth
+    id='your group id'
+    new_title=''
+    if bot_auth(bot,id):
+    #access database and get the title of song
+        pass
+    #change title
     
 ################################################
 #                   main                       #
@@ -977,7 +954,6 @@ def main():
     dp.add_handler(CommandHandler("tbgame", tbgame))
     dp.add_handler(CommandHandler("state", state))
     dp.add_handler(CommandHandler("config", config, pass_args=True))
-    dp.add_handler(CommandHandler("set_remind_time", set_remind_time, pass_args=True))
     dp.add_handler(CommandHandler("nanto", nanto, pass_args=True))
     dp.add_handler(CommandHandler("tiger", tiger))
     dp.add_handler(CommandHandler("notiger", notiger))
