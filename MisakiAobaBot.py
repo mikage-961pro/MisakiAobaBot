@@ -941,7 +941,7 @@ def refresh_buffer(bot,job):
         else:
             worksheet.update_cell(cell.row,cell.col+1,i[1])
 
-def change_title(bot,job):
+#def change_title(bot,job):
     
 ################################################
 #                   main                       #
@@ -987,6 +987,7 @@ def main():
     dp.add_handler(CommandHandler("nanikore",nanikore))
     dp.add_handler(CommandHandler("randChihaya",randchihaya))
     dp.add_handler(CommandHandler("randTsumugi",randtsumugi))
+    dp.add_handler(CommandHandler("sticker",sticker_matome))
     dp.add_handler(CommandHandler("sendmsg", sendmsg, pass_args=True))
     # dp.add_handler(CommandHandler("title", title, pass_args=True))
 
