@@ -25,7 +25,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 # User Module
 from global_words import GLOBAL_WORDS
-from postgre import dbDump,dbrandGet
+from postgre import dbDump,dbrandGet,dbGet
 ################################################
 #                     init                     #
 ################################################
@@ -54,16 +54,6 @@ config_buffer=[]
 config_buffer_Plock=False
 last_message_list=[]
 
-
-################################################
-#                     class                    #
-################################################
-class remind():
-    def __init__(self,stime,text,day=7):
-        self.stime=dt.datetime.strptime(stime, '%H:%M').time()
-        #str to stime()
-        self.text=text
-        self.day=day
 ################################################
 #                   tool kits                  #
 ################################################
@@ -505,37 +495,6 @@ def title(bot,update,args):
         else:
             bot.send_message(chat_id=update.message.chat_id,text='申し訳ございませんが、このコマンドは、管理者しか使いません\nOops!Only admin can change title.')
 
-#mention that bot need to be an admin of sgroup
-#should change automatically and get title from DB,though JOBquece
-#function for test
-
-def set_remind_time(bot,update,args):
-    if update.message.date > init_time:
-        #do not test public cause there's no auth check yet
-        #check auth
-        #if is_admin(bot,update)==True:
-        scope = ['https://spreadsheets.google.com/feeds']
-        creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
-        #got from google api
-        #attach mine for example
-        #try to set in environ values but got fail
-        client = gspread.authorize(creds)
-        sheet = client.open_by_key(spreadsheet_key)
-        if not args:
-            return
-        
-        text=' '.join(args)
-        l_text=text.split('%%')
-        tsheet=sheet.worksheet('time')
-        cell=get_cell(l_text[0],tsheet)
-        if cell==None:
-            tsheet.insert_row([l_text[0],l_text[1],l_text[2],update.message.from_user.id], 2)
-        else:
-            tsheet.update_cell(cell.row,cell.col+1,l_text[1])
-            tsheet.update_cell(cell.row,cell.col+2,l_text[2])
-            tsheet.update_cell(cell.row,cell.col+3,update.message.from_user.id)
-
-            
 def quote(bot,update):
     #daily quote
     if get_config(update.message.from_user.id,'q')==True:
@@ -557,6 +516,19 @@ def randchihaya(bot,update):
 def randtsumugi(bot,update):
     url=dbrandGet('randtsumugi','url')
     bot.send_photo(chat_id=update.message.chat_id,photo=url)
+    
+def sticker_matome(bot,update):
+    link=dbGet('sticker',['setname','about'])
+    slink=''
+    for i in link:
+        slink=slink+'<a href="https://telegram.me/addstickers/'+i[0]+'">'+i[1]+'</a>\n'
+    try:
+        bot.send_message(chat_id=update.message.from_user.id,text=slink,parse_mode='HTML')
+    except:
+        startme='<a href="https://telegram.me/MisakiAobaBot?start=sticker">請先在私訊START♪</a>'
+        bot.send_message(chat_id=update.message.chat_id,text=startme,parse_mode='HTML')
+    else:
+        bot.send_message(chat_id=update.message.chat_id,text='看私訊～～♪')
 # other command
 def error(bot, update, error):
     """Log Errors caused by Updates."""
@@ -927,7 +899,7 @@ def refresh_buffer(bot,job):
             worksheet.insert_row(i, 1)
         else:
             worksheet.update_cell(cell.row,cell.col+1,i[1])
-    
+
 ################################################
 #                   main                       #
 ################################################
@@ -962,7 +934,6 @@ def main():
     dp.add_handler(CommandHandler("tbgame", tbgame))
     dp.add_handler(CommandHandler("state", state))
     dp.add_handler(CommandHandler("config", config, pass_args=True))
-    dp.add_handler(CommandHandler("set_remind_time", set_remind_time, pass_args=True))
     dp.add_handler(CommandHandler("nanto", nanto, pass_args=True))
     dp.add_handler(CommandHandler("tiger", tiger))
     dp.add_handler(CommandHandler("notiger", notiger))
@@ -972,6 +943,7 @@ def main():
     dp.add_handler(CommandHandler("nanikore",nanikore))
     dp.add_handler(CommandHandler("randChihaya",randchihaya))
     dp.add_handler(CommandHandler("randTsumugi",randtsumugi))
+    dp.add_handler(CommandHandler("sticker",sticker_matome))
     dp.add_handler(CommandHandler("sendmsg", sendmsg, pass_args=True))
     # dp.add_handler(CommandHandler("title", title, pass_args=True))
 

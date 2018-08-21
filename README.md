@@ -17,3 +17,6 @@ ID:@MisakiAobaBot
 - **tiger** - 老虎
 - **notiger** - 警察
 - **dice** - 公正的骰子
+- **randChihaya** - 召喚千早
+- **randTsumugi** - 召喚紬
+- **sticker** - STICKERまとめ
