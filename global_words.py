@@ -20,11 +20,15 @@ class GLOBAL_WORDS:
 /nanto - なんとっ！+(名字#事件)
 /quote - 每日一句
 /sticker - Stickerまとめ
+/randtsumugi - 隨機紬貼圖
+/randchihaya - 隨機千早貼圖
+/nanikore - 我也不知道這是什麼
 
 【みんなのリンク】
 <a href="https://t.me/joinchat/IFtWTxKu7x6vuSK8HsFgsQ">〔765技術部〕</a>：技術部開放對BOT的意見以及回饋
 <a href="https://t.me/imas_zhsc">〔SC TELE討論群〕</a>：SC分群，歡迎加入
 <a href="https://twitter.com/imasml_theater">〔ML Twitter〕</a>：MLTD官方推特
+<a href="https://t.me/imas_notify">〔アイマス注意報〕</a>：MLTD官方推特轉發頻道
 <a href="https://twitter.com/imassc_official">〔SC Twitter〕</a>：SC官方推特
 <a href="https://twitter.com/imascg_stage">〔CG Twitter〕</a>：CGSS官方推特
 """
