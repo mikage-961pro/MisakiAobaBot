@@ -1,4 +1,4 @@
-# BotFather-commend setting
+﻿# BotFather-commend setting
 """
 start-我是765事務所的事務員，青羽美咲
 help-由青羽小姐提供您幫助
@@ -15,5 +15,6 @@ quote-每日一句
 nanikore-召喚神奇的東西
 randchihaya-召喚千早
 randtsumugi-召喚紬
+sticker-召喚貼圖集
 sendmsg-Send msg.Only for admin use.
 """
