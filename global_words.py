@@ -19,6 +19,7 @@ class GLOBAL_WORDS:
 /notiger - 警察
 /nanto - なんとっ！+(名字#事件)
 /quote - 每日一句
+/sticker - Stickerまとめ
 
 【みんなのリンク】
 <a href="https://t.me/joinchat/IFtWTxKu7x6vuSK8HsFgsQ">〔765技術部〕</a>：技術部開放對BOT的意見以及回饋
