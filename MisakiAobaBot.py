@@ -83,14 +83,13 @@ def is_admin(bot,update):
                 is_admin=True
         return is_admin
 
-def bot_is_admin(bot,chat_Id):
+def bot_is_admin(bot,update):
     """Dectect bot if admin, return boolen value"""
-    chat=bot.get_chat(chat_Id)
     bot_auth=False
-    if chat.type=='private':
+    if update.message.chat.type=='private':
         return bot_auth
     else:
-        adminlist=chat.get_administrators()
+        adminlist=update.message.chat.get_administrators()
         me=bot.get_me()
         for b in adminlist:
                 if me.id==b.user.id:
@@ -99,7 +98,7 @@ def bot_is_admin(bot,chat_Id):
 
 def del_cmd(bot,update):
     """Dectect bot if admin, if True, del cmd"""
-    if bot_is_admin(bot,update.message.chat_id):
+    if bot_is_admin(bot,update):
         try:
             bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
         except:
@@ -901,15 +900,6 @@ def refresh_buffer(bot,job):
         else:
             worksheet.update_cell(cell.row,cell.col+1,i[1])
 
-def change_title(bot,job):
-    #check bot auth
-    id='your group id'
-    new_title=''
-    if bot_auth(bot,id):
-    #access database and get the title of song
-        pass
-    #change title
-    
 ################################################
 #                   main                       #
 ################################################
