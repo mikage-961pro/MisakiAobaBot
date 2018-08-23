@@ -21,6 +21,6 @@ ID:@MisakiAobaBot
 - **randTsumugi** - 召喚紬
 - **sticker** - STICKERまとめ
 
-## Contributing
+### Contributing
 
 Contributions are [Welcome!!](https://www.project-imas.com/wiki/Welcome!!)
