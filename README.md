@@ -20,3 +20,7 @@ ID:@MisakiAobaBot
 - **randChihaya** - 召喚千早
 - **randTsumugi** - 召喚紬
 - **sticker** - STICKERまとめ
+
+## Contributing
+
+Contributions are [Welcome!!](https://www.project-imas.com/wiki/Welcome!!)
