@@ -1,8 +1,11 @@
 # MisakiAobaBot
 
 ### Platform
-This bot is running on telegram.
-ID:@MisakiAobaBot
+This bot is running on telegram.  
+ID: [@MisakiAobaBot](https://t.me/MisakiAobaBot)
+
+### About
+This bot is specialized for our [im@s group](https://t.me/imas_zh)
 
 ### Function
 
