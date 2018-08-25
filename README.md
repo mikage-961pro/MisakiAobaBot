@@ -7,7 +7,7 @@ ID: [@MisakiAobaBot](https://t.me/MisakiAobaBot)
 ### About
 This bot is specialized for our [im@s group](https://t.me/imas_zh)
 
-### Function
+### Command
 
 - **start** - 我是765事務所的事務員，青羽美咲
 - **help** - 由青羽小姐提供您幫助
@@ -23,6 +23,12 @@ This bot is specialized for our [im@s group](https://t.me/imas_zh)
 - **randChihaya** - 召喚千早
 - **randTsumugi** - 召喚紬
 - **sticker** - STICKERまとめ
+
+### Function
+
+- **quote:** Record words that you interest, which will show when **/quote** command entered.
+- **words reaction:** Bot will say something when user enter some specific words.
+- **group state record:** Record the member and message number every time.
 
 ### Contributing
 
