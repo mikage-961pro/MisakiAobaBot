@@ -34,6 +34,7 @@ from postgre import dbDump,dbrandGet,dbGet
 bot_name='@MisakiAobaBot'
 token = os.environ['TELEGRAM_TOKEN']
 spreadsheet_key=os.environ['SPREAD_TOKEN']
+SendMsgToken='misakiisgood'
 # token will taken by heroku
 updater = Updater(token,workers=16)
 
@@ -54,9 +55,18 @@ config_buffer=[]
 config_buffer_Plock=False
 last_message_list=[]
 
+# do once var
+do_once_value=True
+
 ################################################
 #                   tool kits                  #
 ################################################
+def do_once(function):
+    global do_once_value
+    if do_once_value:
+        do_once_value=False
+        return function
+
 def c_tz(datetime,tz):
     t=datetime+timedelta(hours=tz)#轉換時區 tz為加減小時
     return t#datetime object
@@ -250,13 +260,12 @@ def rule(bot, update):
 def sendmsg(bot, update, args):
     """Send a message to chat when the command /sendmsg is issued."""
     """Only for admin use"""
-    t_pw='misakiisgood'
     if update.message.date > init_time:
         if not args:
             bot.send_message(chat_id=update.message.chat_id, text="Please enter message and password.")
         else:
             t=' '.join(args).split('#')
-            if t[0] != t_pw:
+            if t[0] != SendMsgToken:
                 bot.send_message(chat_id=update.message.chat_id, text="Uncorrect password.")
             else:
                 text=t[1]
@@ -906,13 +915,22 @@ def refresh_buffer(bot,job):
             worksheet.update_cell(cell.row,cell.col+1,i[1])
 
 ################################################
+#                   init                       #
+################################################
+@do_once
+def initialization():
+    # ---Record init time---
+    global init_time
+    init_time = datetime.now()
+
+################################################
 #                   main                       #
 ################################################
 def main():
     """Start the bot."""
-    # ---Record init time---
-    global init_time
-    init_time = datetime.now()
+
+    # <initialization>
+    initialization()
 
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
