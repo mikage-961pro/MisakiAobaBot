@@ -543,6 +543,21 @@ def sticker_matome(bot,update):
         bot.send_message(chat_id=update.message.chat_id,text=startme,parse_mode='HTML')
     else:
         bot.send_message(chat_id=update.message.chat_id,text='看私訊～～♪')
+
+def set_title_timer(bot,update,args):
+    """Record cmd when the command set_title_timer is issued."""
+    if update.message.date > init_time:
+        if not args:
+            text="Please enter time and text seperated by []#].\nTime form = YY/MM/DD hours:minute"
+            bot.send_message(chat_id=update.message.chat_id, text=text)
+        else:
+            text=' '.join(args).split('#')
+            # time_form = YY/MM/DD hours:minute
+            data=[text[0],text[1]]
+            # data = TIME#TITLE
+            work_sheet_push(data,'title_timer')
+
+
 # other command
 def error(bot, update, error):
     """Log Errors caused by Updates."""
@@ -633,7 +648,7 @@ def key_word_reaction(bot,update):
     ###################################
     #        key word reaction        #
     ###################################
-    def find_word(words, echo=None, prob=1000, els=None,photo =None, video=None, allco=False, passArg=[]):
+    def find_word(words, echo=None, prob=1000, els=None,photo =None, video=None, allco=False, passArg=[], echo_list=False):
         # words: words need to reaction
         # echo, photo, video: msg send after reaction
         # prob: probability, if not, send els msg (1 for 0.1%)
@@ -662,7 +677,11 @@ def key_word_reaction(bot,update):
                 key_words_value=False
         if echo != None:
             if key_words_value==True and num<prob:
-                bot.send_message(chat_id=cid,text=echo)
+                if echo_list:
+                    ts=echo[randrange(len(echo))]
+                    bot.send_message(chat_id=cid,text=ts)
+                else:
+                    bot.send_message(chat_id=cid,text=echo)
                 yuunou(bot,update)
             if key_words_value==True and num>=prob and els!=None:
                 if els.find('https://')!=-1:
@@ -676,9 +695,9 @@ def key_word_reaction(bot,update):
                 try:
                     vd=video[randrange(len(video))]
                     bot.send_video(chat_id=cid, video=vd)
-                    yuunou(bot,update)
                 except:
                     bot.send_video(chat_id=cid, video=video)
+                finally:
                     yuunou(bot,update)
         elif photo != None:
             if key_words_value==True and num<prob:
@@ -749,6 +768,7 @@ def key_word_reaction(bot,update):
     find_word(passArg=[misaki_pass],words=['真美'], echo='真美？いないよ')
     find_word(passArg=[misaki_pass],words=['双海'], echo='亜美真美？先に外へ行きました')
     find_word(passArg=[misaki_pass],words=['なんなん'], photo=open('nannnann.jpg', 'rb'))
+    find_word(passArg=[misaki_pass],words=['Position zero'], echo=GLOBAL_WORDS.word_positionzero, echo_list=True)
 
     ###################################
     #               NAZO              #
@@ -914,6 +934,11 @@ def refresh_buffer(bot,job):
         else:
             worksheet.update_cell(cell.row,cell.col+1,i[1])
 
+def nrtTimer(bot,job):
+    # This block is for which need to check everytime
+
+    pass
+
 ################################################
 #                   init                       #
 ################################################
@@ -937,7 +962,7 @@ def main():
 
     # <function start>
 
-    # ---daily jobs---
+    # ---repeating jobs---
     # mission_callback every 22:30 daily
     updater.job_queue.run_daily(mission_callback,stime(14,30))
     # mission_show record every 8 hours
@@ -949,6 +974,9 @@ def main():
     updater.job_queue.run_daily(daily_reset,stime(14,59,59))
     #refresh buffer
     updater.job_queue.run_repeating(refresh_buffer, interval=60, first=0)
+    # timer
+    updater.job_queue.run_repeating(nrtTimer, interval=10)
+
     # ---Command answer---
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start))
@@ -968,6 +996,7 @@ def main():
     dp.add_handler(CommandHandler("randTsumugi",randtsumugi))
     dp.add_handler(CommandHandler("sticker",sticker_matome))
     dp.add_handler(CommandHandler("sendmsg", sendmsg, pass_args=True))
+    dp.add_handler(CommandHandler("stt", set_title_timer, pass_args=True))
     # dp.add_handler(CommandHandler("title", title, pass_args=True))
 
     # ---Message answer---
