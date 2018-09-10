@@ -11,18 +11,14 @@ class GLOBAL_WORDS:
     word_help = """
 /help - 由青羽小姐提供您幫助
 /rule - 本群規則瀏覽
-/state - 群狀態
-/config - 設定
+/config - 設定，情報
 /tbgame - 765プロゲーム部入口，進去跟大家玩桌遊吧
 /which - 想不到的事情就交由我決定！（用#井字號分隔 apple#banana）
-/tiger - 老虎
-/notiger - 警察
 /nanto - なんとっ！+(名字#事件)
 /quote - 每日一句
 /sticker - Stickerまとめ
 /randtsumugi - 隨機紬貼圖
 /randchihaya - 隨機千早貼圖
-/nanikore - 我也不知道這是什麼
 
 【みんなのリンク】
 <a href="https://t.me/joinchat/IFtWTxKu7x6vuSK8HsFgsQ">〔765技術部〕</a>：技術部開放對BOT的意見以及回饋
@@ -76,63 +72,23 @@ class GLOBAL_WORDS:
 明日もログインすると、きっといいことがあると思いますよぉ～。えへへぇ♪
     """
 
-    word_test="""
-<b>bold</b>, <strong>bold</strong>
-<i>italic</i>, <em>italic</em>
-<a href="http://www.example.com/">inline URL</a>
-<code>inline fixed-width code</code>
-<pre>pre-formatted fixed-width code block</pre>
-    """
-
     word_state="""
 目前室內人數：$user_number
-This program has been running for
-$runtime
-
-版本：Beta 0.1
-開發者：Dephilia（蝶芙）
+開機時間：$root_time
+"""
+    word_about="""
+Version：Beta 1.0
+Release time:2018/09/10
+Developer：765技術部成員
+    Dephilia（蝶芙）/TAKE（他Ｋ）
+Base Language:Python
+Database:MongoDB/postgresql/google sheet
 telegramID：@Dephilia
 <a href="https://dephilia.github.io/MisakiAobaBot/">〔github link〕</a>
 <a href="https://www.plurk.com/Dephillia">〔噗浪〕</a>
     """
 
-    word_notiger="""
-<pre>    ジャンプをしない！
-    ミックスしない！
-    クラップしない！～叫ばない！
-    マナーを守ろう ｲｪｯﾀｲｶﾞｰ！
-    ﾀｲｶﾞｰ!ﾌｧｲﾔｰ!ｻｲﾊﾞｰ!ﾌｧｲﾊﾞｰ!ﾀﾞｲﾊﾞｰ!ﾊﾞｲﾊﾞｰ!ｼﾞｬｰｼﾞｬｰ!!</pre>
-    """
-
-    word_kachikoi_1="""
-<pre>    言いたいことがあるんだよ
-    やっぱり$nameはかわいいよ
-    すきすき大好き、やっぱ好き</pre>
-    """
-    word_kachikoi_2="""
-<pre>    やっと見つけたお姫様
-    俺が生まれてきた理由
-    それはお前に出会うため</pre>
-    """
-    word_kachikoi_3="""
-<pre>    俺と一緒に人生歩もう
-    世界で一番愛してる
-
-    ア・イ・シ・テ・ル</pre>
-    """
     word_do_mission="""
 美咲提醒你：剩下３０分鐘換日呦～
 注意你的每日任務！
     """
-
-    word_positionzero=[
-    'みんなをスタァライトしちゃいます！ --愛城華恋',
-    '掴んで見せます！自分星！ --星見純那',
-    'This is 天堂真矢。頂に煌めく星は一つ。 --天堂真矢',
-    '見とき、うちかって舞台少女や。必ずもう一花咲かせて、ぎゃふんと言わせたるわ！ --花柳香子',
-    '気合い入れて突っ走ります！ --石動双葉',
-    '天堂真矢という迷宮の中で私は光を浴びてやるわ！ --西條クロディーヌ',
-    '輝き… --大場なな',
-    '大切な人たちを笑顔に出来るようなあたたかいスタァになりたいです！ --露崎まひる',
-    'クラゲ… --神楽ひかり'
-    ]
