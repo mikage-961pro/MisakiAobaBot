@@ -179,12 +179,15 @@ def which(bot, update, args):
 
 @do_after_root
 def quote(bot,update):
+    global config_buffer
+    global config_buffer_Plock
     #daily quote
-    if get_config(update.message.from_user.id,'q')==True:
+    if get_config(update.message.from_user.id,'q',config_buffer,config_buffer_Plock)==True:
         del_cmd_func(bot,update)
         return
     else:
-        set_config(update.message.from_user.id,'q')
+        
+        config_buffer=set_config(update.message.from_user.id,'q')
         del_cmd_func(bot,update)
     worksheet=get_sheet('quote_main')
     quote=worksheet.get_all_values()

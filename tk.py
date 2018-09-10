@@ -226,17 +226,12 @@ def set_config(id,command):
         else:
             setting=setting+command
         worksheet.update_cell(cell.row,cell.col+1,setting)
-    global config_buffer
-    global config_buffer_Plock
-    if config_buffer_Plock==True:
-        time.sleep(0.5)
-    config_buffer_Plock=True
-    config_buffer=worksheet.get_all_values()
-    config_buffer_Plock=False
 
-def get_config(id,setting):
-    global config_buffer
-    global config_buffer_Plock
+    config_buffer=worksheet.get_all_values()
+    return config_buffer
+
+
+def get_config(id,setting,config_buffer,config_buffer_Plock):
     if config_buffer_Plock==True:
         time.sleep(0.5)
     for i in config_buffer:
