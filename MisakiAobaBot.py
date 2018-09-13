@@ -186,7 +186,7 @@ def quote(bot,update):
         del_cmd_func(bot,update)
         return
     else:
-        
+
         config_buffer=set_config(update.message.from_user.id,'q')
         del_cmd_func(bot,update)
     worksheet=get_sheet('quote_main')
@@ -585,7 +585,7 @@ def menu_actions(bot, update):
         fin_text()
         temp=Template(GLOBAL_WORDS.word_state)
         un=str(room_member_num(bot,update=query))
-        rt=str(init_time)
+        rt=str((init_time+timedelta(hours=8)).strftime("%y/%m/%d %H:%M:%S"))
         text=temp.substitute(user_number=un,root_time=rt)
         bot.send_message(text=text,chat_id=query.message.chat_id)
     elif query_text == "cmd_about":

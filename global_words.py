@@ -32,19 +32,17 @@ class GLOBAL_WORDS:
 　　　　<b>【台湾アイマスTelegram鯖ルール】</b>
 
 <b>〖宗旨〗</b>
-　　本群組為提供アイマス愛好者交流之群組，主要討論包含偶像大師本家、ML、CG、SC等等系列之討論，但<b>不限於此</b>。
+　　本群組為提供華語圈アイマス愛好者交流之群組，
+　　包含偶像大師本家、ML、CG、SC等等系列之討論，但<b>不限於此</b>。
 　　也就是說任何討論皆可，但請注意不要太專注在自我小世界。
 
 <b>〖討論限制〗</b>
 　　A. 不得含有任意<b>辱罵、侮辱、挑撥、等侵害他人言論</b>
 　　B. 禁止惡意的<b>廣告文</b>投放
 　　C. 禁止任何違反<b>中華民國法律</b>之言論
-　　D. 圖片限制：目前設定為<b>中度</b>限制
-
-    <b>露點，擦邊，遮住但仍能辨識的R18圖皆一率禁止。</b>
-
+　　D. 圖片限制：<b>露點，擦邊，遮住但仍能辨識的R18圖皆一率禁止。</b>
 　　E. 為求言論自由性，A、B二條款為告訴乃論。
-　　F. 若有以上違規事由者，管理者有權利停止其發言，停止時間一率為一週，視情況嚴重可以加重至一個月。
+　　F. 若有以上違規事由者，管理者有權利停止其發言權利。
 　　G. 群內不能打棒球
 　　H. 也不能踢足球
 
@@ -77,13 +75,14 @@ class GLOBAL_WORDS:
 開機時間：$root_time
 """
     word_about="""
-Version：Beta 1.0
-Release time:2018/09/10
-Developer：765技術部成員
+Version:Beta 1.1
+Last update:2018/09/13
+Developer:765技術部成員
     Dephilia（蝶芙）/TAKE（他Ｋ）
 Base Language:Python
-Database:MongoDB/postgresql/google sheet
-telegramID：@Dephilia
+Database:
+    MongoDB/postgresql/google sheet
+telegramID:@Dephilia
 <a href="https://dephilia.github.io/MisakiAobaBot/">〔github link〕</a>
 <a href="https://www.plurk.com/Dephillia">〔噗浪〕</a>
     """
