@@ -77,7 +77,7 @@ last_message_list=[]
 @del_cmd
 def tq(bot,update):
     a=MisaMongo.randget()
-    bot.send_message(chat_id=update.message.chat_id,text=a[0])
+    bot.send_message(chat_id=update.message.chat_id,text=a[0]['quote'])
 
 @do_after_root
 def start(bot, update):
