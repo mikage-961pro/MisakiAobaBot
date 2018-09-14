@@ -22,3 +22,7 @@ def randget(Collection='quote_main',size=1):
         result.append(i)
     
     return result
+def insert_data(Collection,dict):
+    op_ins=db[Collection]
+    op_ins.insert_one(dict)
+    

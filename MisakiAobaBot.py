@@ -430,12 +430,16 @@ def key_word_reaction(bot,update):
         if update.message.reply_to_message==None and update.message.from_user.is_bot==False:
             test=test.replace(' #名言','').replace('#名言 ','')
             qlist=[test,update.message.from_user.first_name]
+            qdict={'quote': test, 'said': update.message.from_user.first_name, 'tag': '','said_id':update.message.from_user.id}
             work_sheet_push(qlist,'quote_main')
+            MisaMongo.insert_data('quote_main',qdict)
             record=True
     if test.find('#名言')!=-1 and record==False:
         if update.message.reply_to_message is not None and update.message.reply_to_message.from_user.is_bot==False:
             qlist=[update.message.reply_to_message.text,update.message.reply_to_message.from_user.first_name]
+            qdict={'quote': update.message.reply_to_message.text, 'said': update.message.reply_to_message.from_user.first_name, 'tag': '','said_id':update.message.reply_to_message.from_user.id}
             work_sheet_push(qlist,'quote_main')
+            MisaMongo.insert_data('quote_main',qdict)
 
 
     ###################################
