@@ -594,7 +594,7 @@ def menu_actions(bot, update):
         bot.send_message(text=text,chat_id=query.message.chat_id,parse_mode=ParseMode.HTML)
     elif query_text == "cmd_resp_check":
         data_value = MisaMongo.display_data('config',{'id':query.from_user.id},'reply')
-        if not data_value:
+        if data_value is None:
             data_value=True#default open
         text='{}P目前狀態：{}'.format(query.from_user.first_name,bool2text(data_value))
         bot.edit_message_text(chat_id=query.message.chat_id,
