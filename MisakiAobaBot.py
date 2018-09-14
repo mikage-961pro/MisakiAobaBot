@@ -225,7 +225,7 @@ def savepic(bot, update):
     """Send msg to ask user and save pic"""
     #f=ForceReply(force_reply=True, selective=False)
     rpl=bot.send_message(chat_id=update.message.chat_id,
-        text='何がご用事ですか？',reply_markup=ForceReply)
+        text='何がご用事ですか？',reply_markup=ForceReply())
 
 ################################################
 #               not command                    #
