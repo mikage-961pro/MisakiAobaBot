@@ -27,7 +27,7 @@ def insert_data(Collection,dict):
     op_ins=db[Collection]
     op_ins.insert_one(dict)
 
-def display_data(Collection,pipeline,key)
+def display_data(Collection,pipeline,key):
     op_ins=db[Collection]
     ins=op_ins.find_one(pipeline)
     if ins is None:
