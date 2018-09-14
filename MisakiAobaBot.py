@@ -61,7 +61,7 @@ from tk import do_once, del_cmd, do_after_root, admin_cmd, del_cmd_func
 from tk import db_switch_one_value, bool2text, room_member_num, bot_is_admin, is_admin, c_tz
 from tk import init_time
 from tk import get_config, set_config, work_sheet_pop, work_sheet_push, get_sheet
-
+import MisaMongo
 # ---Buffers
 #悲觀鎖
 kw_j_buffer=[]
@@ -73,6 +73,12 @@ last_message_list=[]
 ################################################
 #                   command                    #
 ################################################
+@do_after_root
+@del_cmd
+def tq(bot,update):
+    a=MisaMongo.randget()
+    bot.send_message(chat_id=update.message.chat_id,text=a[0])
+
 @do_after_root
 def start(bot, update):
     """Send a message when the command /start is issued."""
@@ -675,6 +681,7 @@ def main():
     dp.add_handler(CommandHandler("randChihaya",randchihaya))
     dp.add_handler(CommandHandler("randTsumugi",randtsumugi))
     dp.add_handler(CommandHandler("sticker",sticker_matome))
+    dp.add_handler(CommandHandler("test",tq))
     dp.add_handler(CallbackQueryHandler(menu_actions))
 
     # ---Message answer---
