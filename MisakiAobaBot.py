@@ -593,23 +593,24 @@ def menu_actions(bot, update):
         text=GLOBAL_WORDS.word_about
         bot.send_message(text=text,chat_id=query.message.chat_id,parse_mode=ParseMode.HTML)
     elif query_text == "cmd_resp_check":
-        data_value = db.misaki_setting.find_one({'tag': 'response_value'})
-        text='目前狀態：{}'.format(bool2text(data_value['value']))
+        data_value = MisaMongo.display_data('config',{'id':query.from_user.id},'reply')
+        if not data_value:
+            data_value=True#default open
+        text='{}P目前狀態：{}'.format(query.from_user.first_name,bool2text(data_value))
         bot.edit_message_text(chat_id=query.message.chat_id,
-            message_id=query.message.message_id,
-            text=text,
-            reply_markup=sub_menu_keyboard())
-    elif query_text == "cmd_resp_switch":
-        result=db_switch_one_value('response_value')
-        if result:
-            bot.edit_message_text(chat_id=query.message.chat_id,
                 message_id=query.message.message_id,
-                text="開啟回話功能。")
-        else:
-            bot.edit_message_text(chat_id=query.message.chat_id,
+                text=text,
+                reply_markup=sub_menu_keyboard(data_value))
+    elif query_text == "cmd_resp_switch_off":
+        MisaMongo.modify_data('config',pipeline={'id':query.from_user.id},key='reply',update_value=False)
+        bot.edit_message_text(chat_id=query.message.chat_id,
                 message_id=query.message.message_id,
-                text="停止回話功能。")
-
+                text="停止{}的回話功能。".format(query.from_user.first_name))
+    elif query_text == "cmd_resp_switch_on":
+        MisaMongo.modify_data('config',pipeline={'id':query.from_user.id},key='reply',update_value=True)
+        bot.edit_message_text(chat_id=query.message.chat_id,
+                message_id=query.message.message_id,
+                text="開啟{}的回話功能。".format(query.from_user.first_name))
 
 # Keyboards
 def main_menu_keyboard():
@@ -618,8 +619,8 @@ def main_menu_keyboard():
               [InlineKeyboardButton(text='關於美咲',callback_data="cmd_about")]]
     return InlineKeyboardMarkup(keyboard)
 
-def sub_menu_keyboard():
-    keyboard = [[InlineKeyboardButton(text='切換',callback_data='cmd_resp_switch')],
+def sub_menu_keyboard(state):
+    keyboard = [[InlineKeyboardButton(text='關閉回話' if state else '開啟回話',callback_data='cmd_resp_switch_off' if state else 'cmd_resp_switch_on')],
                 [InlineKeyboardButton(text='取消',callback_data='main')]]
     return InlineKeyboardMarkup(keyboard)
 

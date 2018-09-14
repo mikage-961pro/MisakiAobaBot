@@ -26,4 +26,28 @@ def randget(Collection='quote_main',size=1):
 def insert_data(Collection,dict):
     op_ins=db[Collection]
     op_ins.insert_one(dict)
+
+def display_data(Collection,pipeline,key)
+    op_ins=db[Collection]
+    ins=op_ins.find_one(pipeline)
+    if ins is None:
+        return None
+    return ins[key]
+
+def modify_data(Collection,pipeline=None,key=None,update_value=None):
+    op_ins=db[Collection]
+
+    if pipeline is not None:
+        pass
+    else:
+        return
+    
+    ins=op_ins.find_one(pipeline)
+    if ins is not None:
+        op_ins.update_one(pipline,
+        {'$set':{key:update_value}})
+    else:
+        dict=pipeline
+        pipeline[key]=update_value
+        op_ins.insert_one(dict)
     
