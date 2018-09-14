@@ -355,7 +355,7 @@ def key_word_reaction(bot,update):
         return key_words_value
 
     # switch
-    switch=MisaMongo.display_data('config',{id:update.message.from_user.id},'reply')
+    switch=MisaMongo.display_data('config',{'id':update.message.from_user.id},'reply')
 
     # word_pass
     try_pass=find_word(words=['天','ナンス','もちょ'],allco=True)
