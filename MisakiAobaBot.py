@@ -181,13 +181,13 @@ def which(bot, update, args):
 def quote(bot,update):
     global config_buffer
     global config_buffer_Plock
-    xxx=False
+
     #daily quote
-    if xxx==True:
+    if get_config(update.message.from_user.id,'q',config_buffer,config_buffer_Plock)==True:
         del_cmd_func(bot,update)
         return
     else:
-        #config_buffer=set_config(update.message.from_user.id,'q')
+        config_buffer=set_config(update.message.from_user.id,'q')
         del_cmd_func(bot,update)
     quote=MisaMongo.randget()[0]
     text='<pre>'+quote['quote']+'</pre>\n'+'-----<b>'+quote['said']+'</b> より'
@@ -673,7 +673,6 @@ def main():
     dp.add_handler(CommandHandler("randChihaya",randchihaya))
     dp.add_handler(CommandHandler("randTsumugi",randtsumugi))
     dp.add_handler(CommandHandler("sticker",sticker_matome))
-    #dp.add_handler(CommandHandler("test",tq))
     dp.add_handler(CallbackQueryHandler(menu_actions))
 
     # ---Message answer---
