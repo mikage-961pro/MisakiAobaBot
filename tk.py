@@ -28,10 +28,6 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 spreadsheet_key=os.environ['SPREAD_TOKEN']
 
-# ---postgresql
-from postgre import dbDump,dbrandGet,dbGet
-
-
 # do once var
 do_once_value=True
 
