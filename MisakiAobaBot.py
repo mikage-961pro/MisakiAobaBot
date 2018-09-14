@@ -355,7 +355,7 @@ def key_word_reaction(bot,update):
         return key_words_value
 
     # switch
-    switch=data_value = db.misaki_setting.find_one({'tag': 'response_value'})['value']
+    switch=MisaMongo.display_data('config',{id:update.message.from_user.id},'reply')
 
     # word_pass
     try_pass=find_word(words=['天','ナンス','もちょ'],allco=True)

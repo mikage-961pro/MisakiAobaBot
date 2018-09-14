@@ -31,8 +31,11 @@ def display_data(Collection,pipeline,key):
     op_ins=db[Collection]
     ins=op_ins.find_one(pipeline)
     if ins is None:
-        return None
-    return ins[key]
+        return True
+    try:
+        return ins[key]
+    except KeyError:
+        return True
 
 def modify_data(Collection,pipeline=None,key=None,update_value=None):
     op_ins=db[Collection]
