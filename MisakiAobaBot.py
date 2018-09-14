@@ -21,7 +21,7 @@ from string import Template
 from functools import wraps
 
 # ---Telegram
-from telegram import Bot, Chat, Sticker, ReplyKeyboardMarkup,ForceReply
+from telegram import Bot, Chat, Sticker, ReplyKeyboardMarkup
 from telegram import ReplyKeyboardRemove, ParseMode
 from telegram import InlineQueryResultArticle, InputTextMessageContent,InlineKeyboardMarkup,InlineKeyboardButton
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters,JobQueue,CallbackQueryHandler
