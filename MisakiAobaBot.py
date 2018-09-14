@@ -219,6 +219,13 @@ def sticker_matome(bot,update):
     else:
         bot.send_message(chat_id=update.message.chat_id,text='看私訊～～♪')
 
+@do_after_root
+def savepic(bot, update):
+    """Send a message when the command /savepic is issued."""
+    """Send msg to ask user and save pic"""
+    bot.send_message(chat_id=update.message.chat_id,
+        text='何がご用事ですか？')
+
 ################################################
 #               not command                    #
 ################################################
@@ -585,12 +592,13 @@ def menu_actions(bot, update):
         fin_text()
         temp=Template(GLOBAL_WORDS.word_state)
         un=str(room_member_num(bot,update=query))
-        rt=str((init_time+timedelta(hours=8)).strftime("%y/%m/%d %H:%M:%S"))
-        text=temp.substitute(user_number=un,root_time=rt)
+        text=temp.substitute(user_number=un)
         bot.send_message(text=text,chat_id=query.message.chat_id)
     elif query_text == "cmd_about":
         fin_text()
-        text=GLOBAL_WORDS.word_about
+        temp=Template(GLOBAL_WORDS.word_about)
+        rt=str((init_time+timedelta(hours=8)).strftime("%y/%m/%d %H:%M:%S"))
+        text=temp.substitute(boot_time=rt)
         bot.send_message(text=text,chat_id=query.message.chat_id,parse_mode=ParseMode.HTML)
     elif query_text == "cmd_resp_check":
         data_value = db.misaki_setting.find_one({'tag': 'response_value'})
@@ -676,6 +684,8 @@ def main():
     dp.add_handler(CommandHandler("randTsumugi",randtsumugi))
     dp.add_handler(CommandHandler("sticker",sticker_matome))
     dp.add_handler(CallbackQueryHandler(menu_actions))
+    # test function
+    dp.add_handler(CommandHandler("savepic",savepic))
 
     # ---Message answer---
     dp.add_handler(MessageHandler(Filters.text, key_word_reaction))

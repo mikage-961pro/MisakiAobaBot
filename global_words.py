@@ -72,13 +72,13 @@ class GLOBAL_WORDS:
 
     word_state="""
 目前室內人數：$user_number
-開機時間：$root_time
 """
     word_about="""
 Version:Beta 1.1
+Boot Time:$boot_time
 Last update:2018/09/13
 Developer:765技術部成員
-    Dephilia（蝶芙）/TAKE（他Ｋ）
+    Dephilia（蝶芙）／TAKE（他Ｋ）
 Base Language:Python
 Database:
     MongoDB/postgresql/google sheet
