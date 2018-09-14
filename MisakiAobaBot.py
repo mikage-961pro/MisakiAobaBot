@@ -673,7 +673,7 @@ def main():
     dp.add_handler(CommandHandler("randChihaya",randchihaya))
     dp.add_handler(CommandHandler("randTsumugi",randtsumugi))
     dp.add_handler(CommandHandler("sticker",sticker_matome))
-    dp.add_handler(CommandHandler("test",tq))
+    #dp.add_handler(CommandHandler("test",tq))
     dp.add_handler(CallbackQueryHandler(menu_actions))
 
     # ---Message answer---
