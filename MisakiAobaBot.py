@@ -223,7 +223,7 @@ def sticker_matome(bot,update):
 def savepic(bot, update):
     """Send a message when the command /savepic is issued."""
     """Send msg to ask user and save pic"""
-    bot.send_message(chat_id=update.message.chat_id,
+    rpl=bot.send_message(chat_id=update.message.chat_id,
         text='何がご用事ですか？',reply_markup=ForceReply(force_reply=True, selective=False))
 
 ################################################
