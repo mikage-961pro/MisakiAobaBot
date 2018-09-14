@@ -22,7 +22,7 @@ from functools import wraps
 
 # ---Telegram
 from telegram import Bot, Chat, Sticker, ReplyKeyboardMarkup
-from telegram import ReplyKeyboardRemove, ParseMode
+from telegram import ReplyKeyboardRemove, ParseMode,ForceReply
 from telegram import InlineQueryResultArticle, InputTextMessageContent,InlineKeyboardMarkup,InlineKeyboardButton
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters,JobQueue,CallbackQueryHandler
 from telegram.ext.dispatcher import run_async
