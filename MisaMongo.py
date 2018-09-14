@@ -1,6 +1,7 @@
 # coding=utf-8
 #operation involve mongodb will be placed here
 from string import Template
+import os
 # ---MongoDB
 import pymongo
 from pymongo import MongoClient
