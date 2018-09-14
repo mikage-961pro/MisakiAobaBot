@@ -44,7 +44,7 @@ def modify_data(Collection,pipeline=None,key=None,update_value=None):
     
     ins=op_ins.find_one(pipeline)
     if ins is not None:
-        op_ins.update_one(pipline,
+        op_ins.update_one(pipeline,
         {'$set':{key:update_value}})
     else:
         dict=pipeline
