@@ -74,12 +74,6 @@ last_message_list=[]
 #                   command                    #
 ################################################
 @do_after_root
-@del_cmd
-def tq(bot,update):
-    a=MisaMongo.randget()
-    bot.send_message(chat_id=update.message.chat_id,text=a[0]['quote'])
-
-@do_after_root
 def start(bot, update):
     """Send a message when the command /start is issued."""
     bot.send_message(chat_id=update.message.chat_id,
@@ -192,13 +186,10 @@ def quote(bot,update):
         del_cmd_func(bot,update)
         return
     else:
-        
         config_buffer=set_config(update.message.from_user.id,'q')
         del_cmd_func(bot,update)
-    worksheet=get_sheet('quote_main')
-    quote=worksheet.get_all_values()
-    num=random.randint(0,len(quote)-1)
-    text='<pre>'+quote[num][0]+'</pre>\n'+'-----<b>'+quote[num][1]+'</b> より'
+    quote=MisaMongo.randget()[0]
+    text='<pre>'+quote[quote]+'</pre>\n'+'-----<b>'+quote[said]+'</b> より'
     msg=bot.send_message(chat_id=update.message.chat_id,text=text,parse_mode='HTML')
 
 @do_after_root
