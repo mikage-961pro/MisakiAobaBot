@@ -190,7 +190,7 @@ def quote(bot,update):
         #config_buffer=set_config(update.message.from_user.id,'q')
         del_cmd_func(bot,update)
     quote=MisaMongo.randget()[0]
-    text='<pre>'+quote[quote]+'</pre>\n'+'-----<b>'+quote[said]+'</b> より'
+    text='<pre>'+quote['quote']+'</pre>\n'+'-----<b>'+quote['said']+'</b> より'
     msg=bot.send_message(chat_id=update.message.chat_id,text=text,parse_mode='HTML')
 
 @do_after_root
