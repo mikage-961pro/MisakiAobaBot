@@ -685,9 +685,10 @@ def main():
     dp.add_handler(CommandHandler("randChihaya",randchihaya))
     dp.add_handler(CommandHandler("randTsumugi",randtsumugi))
     dp.add_handler(CommandHandler("sticker",sticker_matome))
+    dp.add_handler(CommandHandler("savepic",savepic))
     dp.add_handler(CallbackQueryHandler(menu_actions))
     # test function
-    dp.add_handler(CommandHandler("savepic",savepic))
+    
 
     # ---Message answer---
     dp.add_handler(MessageHandler(Filters.text, key_word_reaction))
