@@ -10,19 +10,6 @@ from functools import wraps
 
 from telegram import Bot, Chat, Sticker, ReplyKeyboardMarkup
 
-# MongoDB
-import pymongo
-from pymongo import MongoClient
-
-url = "mongodb://$dbuser:$dbpassword@ds149732.mlab.com:49732/heroku_jj2sv6sm"
-mongo_us = 'admin'
-mongo_ps = os.environ['MONGO_PSW']
-temp=Template(url)
-mongo_url=temp.substitute(dbuser=mongo_us,dbpassword=mongo_ps)
-client = MongoClient(mongo_url)
-db = client['heroku_jj2sv6sm']
-collect = db['misaki_setting']
-
 # ---Google Database
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
@@ -237,3 +224,6 @@ def get_config(id,setting,config_buffer,config_buffer_Plock):
             else:
                 return False
     return False
+
+def utc8now():
+    return (datetime.now()+timedelta(hours=8)).strftime("%y/%m/%d %H:%M:%S")

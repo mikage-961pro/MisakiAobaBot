@@ -59,8 +59,10 @@ collect = db['misaki_setting']
 from global_words import GLOBAL_WORDS
 from tk import do_once, del_cmd, do_after_root, admin_cmd, del_cmd_func
 from tk import db_switch_one_value, bool2text, room_member_num, bot_is_admin, is_admin, c_tz
-from tk import init_time
+
+from tk import init_time, utc8now
 from tk import  work_sheet_pop, work_sheet_push, get_sheet
+
 import MisaMongo
 # ---Buffers
 #悲觀鎖
@@ -227,7 +229,7 @@ def savepic(bot, update):
         text=text,reply_to_message=update.message,reply_markup=f,parse_mode='HTML')
     global reply_pair
     reply_pair[update.message.from_user.id]=rpl
-    
+
 
 ################################################
 #               not command                    #
@@ -310,19 +312,24 @@ def key_word_reaction(bot,update):
     ###################################
     #        key word reaction        #
     ###################################
-    def find_word(words, echo=None, prob=1000, els=None,photo=None,
-        video=None, allco=False, passArg=[], echo_list=False):
-        # words: words need to reaction
-        # echo, photo, video: msg send after reaction
-        # prob: probability, if not, send els msg (1 for 0.1%)
-        # els: if not in prob
-        # allco: if words are all correct will go
-        # passArg: if true, the function will never go; default is false
+    def find_word(words, echo=None, photo=None, video=None,
+        prob=1000, els=None,allco=False, passArg=[], echo_list=False):
+        """
+        words: words need to reaction, need to be a list.
+        echo, photo, video: msg send after reaction
+            If echo is multiple, will show random averagely
+        prob: probability, if not, send els msg (1 for 0.1%)
+        els: if not in prob, show it
+        allco: words are all correct will go
+        passArg: if true, the function will never go; default is false
+        """
         key_words=update.message.text
         cid=update.message.chat_id
         # a random number from 0 to 999
         num = randrange(1000)
+
         key_words_value=False
+
         for check in words:
             if allco == False:
                 "one word correct will go"
@@ -378,7 +385,7 @@ def key_word_reaction(bot,update):
     pic_trys=['https://img.gifmagazine.net/gifmagazine/images/2289135/original.mp4',
     'https://i.imgur.com/b9s69iK.mp4',
     'https://img.gifmagazine.net/gifmagazine/images/1333179/original.mp4']
-    
+
     global reply_pair
     try:
         m=reply_pair[update.message.from_user.id]
@@ -388,7 +395,7 @@ def key_word_reaction(bot,update):
         if update.message.reply_to_message==m:
             bot.send_message(chat_id=update.message.chat_id,text=update.message.text)
         del reply_pair[update.message.from_user.id]
-    
+
     # word_echo
     if switch == True:
         find_word(words=['大老','dalao','ㄉㄚˋㄌㄠˇ','巨巨','Dalao','大 佬'],echo='你才大佬！你全家都大佬！', prob=200)
@@ -598,7 +605,7 @@ def menu_actions(bot, update):
     elif query_text == "cmd_about":
         fin_text()
         temp=Template(GLOBAL_WORDS.word_about)
-        rt=str((init_time+timedelta(hours=8)).strftime("%y/%m/%d %H:%M:%S"))
+        rt=utc8now()
         text=temp.substitute(boot_time=rt)
         bot.send_message(text=text,chat_id=query.message.chat_id,parse_mode=ParseMode.HTML)
     elif query_text == "cmd_resp_check":
@@ -620,12 +627,17 @@ def menu_actions(bot, update):
         bot.edit_message_text(chat_id=query.message.chat_id,
                 message_id=query.message.message_id,
                 text="開啟{}的回話功能。".format(query.from_user.first_name))
+    elif query_text == "cmd_canceled":
+        bot.edit_message_text(chat_id=query.message.chat_id,
+                message_id=query.message.message_id,
+                text="まだね〜")
 
 # Keyboards
 def main_menu_keyboard():
     keyboard = [[InlineKeyboardButton(text='回話設定',callback_data='cmd_resp_check'),
                InlineKeyboardButton(text='群組狀態',callback_data="cmd_state")],
-              [InlineKeyboardButton(text='關於美咲',callback_data="cmd_about")]]
+              [InlineKeyboardButton(text='關於美咲',callback_data="cmd_about")],
+              [InlineKeyboardButton(text='取消',callback_data="cmd_canceled")]]
     return InlineKeyboardMarkup(keyboard)
 
 def sub_menu_keyboard(state):
@@ -685,10 +697,10 @@ def main():
     dp.add_handler(CommandHandler("randChihaya",randchihaya))
     dp.add_handler(CommandHandler("randTsumugi",randtsumugi))
     dp.add_handler(CommandHandler("sticker",sticker_matome))
-    dp.add_handler(CommandHandler("savepic",savepic))
+    dp.add_handler(CommandHandler("savepic",savepic, pass_job_queue=True))
     dp.add_handler(CallbackQueryHandler(menu_actions))
     # test function
-    
+
 
     # ---Message answer---
     dp.add_handler(MessageHandler(Filters.text, key_word_reaction))
