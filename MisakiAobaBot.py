@@ -379,8 +379,8 @@ def key_word_reaction(bot,update):
     'https://i.imgur.com/b9s69iK.mp4',
     'https://img.gifmagazine.net/gifmagazine/images/1333179/original.mp4']
     
-    if update.message.text.find('666'):
-        MisaMongo.modify_many_data('config',pipeline={"day_quote":False},key='day_quote',update_value=True)
+    if update.message.text.find('666') != -1:
+        MisaMongo.modify_many_data('config',pipeline={'day_quote':False},key='day_quote',update_value=True)
     global reply_pair
     try:
         m=reply_pair[update.message.from_user.id]
