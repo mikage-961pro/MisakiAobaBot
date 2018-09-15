@@ -180,7 +180,7 @@ def quote(bot,update,args):
             result=""
             for i in find_result:
                 result=result+'<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n'
-            bot.send_message(chat_id=update.message.chat_id,text=result,parse_mode='HTML')
+            bot.send_message(chat_id=update.message.from_user.id,text=result,parse_mode='HTML')
         else:
             try:
                 result=[]
@@ -190,10 +190,10 @@ def quote(bot,update,args):
                         t=""
                         for j in result:
                             t+=j
-                        bot.send_message(chat_id=update.message.chat_id,text=t,parse_mode='HTML')
+                        bot.send_message(chat_id=update.message.from_user.id,text=t,parse_mode='HTML')
                         result=[]
             except:
-                bot.send_message(chat_id=update.message.chat_id,text="Unexpected error.")
+                bot.send_message(chat_id=update.message.from_user.id,text="Unexpected error.")
             finally:
                 pass
         return
