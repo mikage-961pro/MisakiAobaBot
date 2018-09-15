@@ -218,7 +218,7 @@ def sticker_matome(bot,update):
         bot.send_message(chat_id=update.message.chat_id,text=startme,parse_mode='HTML')
     else:
         bot.send_message(chat_id=update.message.chat_id,text='看私訊～～♪')
-
+reply_pair={}
 @do_after_root
 def savepic(bot, update):
     """Send a message when the command /savepic is issued."""
@@ -226,6 +226,8 @@ def savepic(bot, update):
     f=ForceReply(force_reply=True, selective=True)
     rpl=bot.send_message(chat_id=update.message.chat_id,
         text='何がご用事ですか？',reply_to_message=update.message,reply_markup=f)
+    global reply_pair
+    reply_pair[update.message.from_user.id]=rpl
     
 
 ################################################
@@ -377,10 +379,11 @@ def key_word_reaction(bot,update):
     pic_trys=['https://img.gifmagazine.net/gifmagazine/images/2289135/original.mp4',
     'https://i.imgur.com/b9s69iK.mp4',
     'https://img.gifmagazine.net/gifmagazine/images/1333179/original.mp4']
-
-    if update.message.reply_to_message.reply_markup is not None:
-        bot.send_message(chat_id=update.message.chat_id,text='true')
-    
+    '''
+    global reply_pair
+    try:
+        m=reply_pair[update.message.from_user.id]
+    '''
     # word_echo
     if switch == True:
         find_word(words=['大老','dalao','ㄉㄚˋㄌㄠˇ','巨巨','Dalao','大 佬'],echo='你才大佬！你全家都大佬！', prob=200)
