@@ -379,6 +379,8 @@ def key_word_reaction(bot,update):
     'https://i.imgur.com/b9s69iK.mp4',
     'https://img.gifmagazine.net/gifmagazine/images/1333179/original.mp4']
     
+    if update.message.text.find('666'):
+        MisaMongo.modify_many_data('config',pipeline={"day_quote":False},key='day_quote',update_value=True)
     global reply_pair
     try:
         m=reply_pair[update.message.from_user.id]
@@ -535,10 +537,7 @@ def daily_reset(bot,job):
     creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
     client = gspread.authorize(creds)
     sheet = client.open_by_key(spreadsheet_key)
-    user_config=sheet.worksheet('config').get_all_values()
-    for i in user_config:
-        if i[1].find('q') != -1:
-            set_config(i[0],'q')
+    MisaMongo.modify_many_data('config',pipeline={"day_quote":False},key='day_quote',update_value=True)
 
 def refresh_buffer(bot,job):
     #key_word_j_buffer
