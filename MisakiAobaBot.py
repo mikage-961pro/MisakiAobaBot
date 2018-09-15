@@ -226,8 +226,8 @@ def savepic(bot, update):
     mention_url='tg://user?id={}'.format(update.message.from_user.id)
     first_name=update.message.from_user.first_name
     m_ent=[MessageEntity('mention',offset=0, length=len(first_name),user=update.message.from_user)]
-    text='<a href="{}">{}さん</a>、何がご用事ですか？'.format(mention_url,first_name)
-    f=ForceReply(force_reply=True)
+    text='<a href="{}">{}</a>さん、何がご用事ですか？'.format(mention_url,first_name)
+    f=ForceReply(force_reply=True,selective=True)
     rpl=bot.send_message(chat_id=update.message.chat_id,
         text=text,reply_to_message=update.message,reply_markup=f,parse_mode='HTML')
     global reply_pair
