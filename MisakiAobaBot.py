@@ -379,11 +379,16 @@ def key_word_reaction(bot,update):
     pic_trys=['https://img.gifmagazine.net/gifmagazine/images/2289135/original.mp4',
     'https://i.imgur.com/b9s69iK.mp4',
     'https://img.gifmagazine.net/gifmagazine/images/1333179/original.mp4']
-    '''
+    
     global reply_pair
     try:
         m=reply_pair[update.message.from_user.id]
-    '''
+    except KeyError:
+        pass
+    else:
+        if update.message.reply_to_message==m:
+            bot.send_message(chat_id=update.message.chat_id,text=update.message.text)
+    
     # word_echo
     if switch == True:
         find_word(words=['大老','dalao','ㄉㄚˋㄌㄠˇ','巨巨','Dalao','大 佬'],echo='你才大佬！你全家都大佬！', prob=200)
