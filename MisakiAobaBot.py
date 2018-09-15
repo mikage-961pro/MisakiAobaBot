@@ -60,7 +60,7 @@ from global_words import GLOBAL_WORDS
 from tk import do_once, del_cmd, do_after_root, admin_cmd, del_cmd_func
 from tk import db_switch_one_value, bool2text, room_member_num, bot_is_admin, is_admin, c_tz
 from tk import init_time
-from tk import get_config, set_config, work_sheet_pop, work_sheet_push, get_sheet
+from tk import  work_sheet_pop, work_sheet_push, get_sheet
 import MisaMongo
 # ---Buffers
 #悲觀鎖
@@ -379,8 +379,6 @@ def key_word_reaction(bot,update):
     'https://i.imgur.com/b9s69iK.mp4',
     'https://img.gifmagazine.net/gifmagazine/images/1333179/original.mp4']
     
-    if update.message.text.find('666') != -1:
-        MisaMongo.modify_many_data('config',pipeline={'day_quote':False},key='day_quote',update_value=True)
     global reply_pair
     try:
         m=reply_pair[update.message.from_user.id]
@@ -533,10 +531,6 @@ def group_history(bot,job):
     bot.send_message(chat_id=-1001290696540,text=rate)
 
 def daily_reset(bot,job):
-    scope = ['https://spreadsheets.google.com/feeds']
-    creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
-    client = gspread.authorize(creds)
-    sheet = client.open_by_key(spreadsheet_key)
     MisaMongo.modify_many_data('config',pipeline={"day_quote":False},key='day_quote',update_value=True)
 
 def refresh_buffer(bot,job):
