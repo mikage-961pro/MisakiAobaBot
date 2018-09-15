@@ -183,7 +183,7 @@ def quote(bot,update):
         return
     else:
 
-        MisaMongo.modify_data('config',pipeline={'id':query.from_user.id},key='day_quote',update_value=False)
+        MisaMongo.modify_data('config',pipeline={'id':update.message.from_user.id},key='day_quote',update_value=False)
 
         del_cmd_func(bot,update)
     quote=MisaMongo.randget()[0]
