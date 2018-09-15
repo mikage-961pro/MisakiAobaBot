@@ -21,8 +21,8 @@ from string import Template
 from functools import wraps
 
 # ---Telegram
-from telegram import Bot, Chat, Sticker, ReplyKeyboardMarkup
-from telegram import ReplyKeyboardRemove, ParseMode
+from telegram import Bot, Chat, Sticker, ReplyKeyboardMarkup,MessageEntity
+from telegram import ReplyKeyboardRemove, ParseMode,ForceReply
 from telegram import InlineQueryResultArticle, InputTextMessageContent,InlineKeyboardMarkup,InlineKeyboardButton
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters,JobQueue,CallbackQueryHandler
 from telegram.ext.dispatcher import run_async
@@ -218,13 +218,21 @@ def sticker_matome(bot,update):
         bot.send_message(chat_id=update.message.chat_id,text=startme,parse_mode='HTML')
     else:
         bot.send_message(chat_id=update.message.chat_id,text='看私訊～～♪')
-
+reply_pair={}
 @do_after_root
 def savepic(bot, update):
     """Send a message when the command /savepic is issued."""
     """Send msg to ask user and save pic"""
-    bot.send_message(chat_id=update.message.chat_id,
-        text='何がご用事ですか？')
+    mention_url='tg://user?id={}'.format(update.message.from_user.id)
+    first_name=update.message.from_user.first_name
+    m_ent=[MessageEntity('mention',offset=0, length=len(first_name),user=update.message.from_user)]
+    text='<a href="{}">{}</a>さん、何がご用事ですか？'.format(mention_url,first_name)
+    f=ForceReply(force_reply=True,selective=True)
+    rpl=bot.send_message(chat_id=update.message.chat_id,
+        text=text,reply_to_message=update.message,reply_markup=f,parse_mode='HTML')
+    global reply_pair
+    reply_pair[update.message.from_user.id]=rpl
+    
 
 ################################################
 #               not command                    #
@@ -375,7 +383,17 @@ def key_word_reaction(bot,update):
     pic_trys=['https://img.gifmagazine.net/gifmagazine/images/2289135/original.mp4',
     'https://i.imgur.com/b9s69iK.mp4',
     'https://img.gifmagazine.net/gifmagazine/images/1333179/original.mp4']
-
+    
+    global reply_pair
+    try:
+        m=reply_pair[update.message.from_user.id]
+    except KeyError:
+        pass
+    else:
+        if update.message.reply_to_message==m:
+            bot.send_message(chat_id=update.message.chat_id,text=update.message.text)
+        del reply_pair[update.message.from_user.id]
+    
     # word_echo
     if switch == True:
         find_word(words=['大老','dalao','ㄉㄚˋㄌㄠˇ','巨巨','Dalao','大 佬'],echo='你才大佬！你全家都大佬！', prob=200)
@@ -684,9 +702,10 @@ def main():
     dp.add_handler(CommandHandler("randChihaya",randchihaya))
     dp.add_handler(CommandHandler("randTsumugi",randtsumugi))
     dp.add_handler(CommandHandler("sticker",sticker_matome))
+    dp.add_handler(CommandHandler("savepic",savepic))
     dp.add_handler(CallbackQueryHandler(menu_actions))
     # test function
-    dp.add_handler(CommandHandler("savepic",savepic))
+    
 
     # ---Message answer---
     dp.add_handler(MessageHandler(Filters.text, key_word_reaction))
