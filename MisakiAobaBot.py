@@ -229,7 +229,7 @@ def savepic(bot, update):
     text='<a href="{}">{}さん</a>、何がご用事ですか？'.format(mention_url,first_name)
     f=ForceReply(force_reply=True)
     rpl=bot.send_message(chat_id=update.message.chat_id,
-        text=text,reply_to_message=update.message,reply_markup=f,parse_mode=HTML)
+        text=text,reply_to_message=update.message,reply_markup=f,parse_mode='HTML')
     global reply_pair
     reply_pair[update.message.from_user.id]=rpl
     
