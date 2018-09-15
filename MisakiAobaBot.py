@@ -223,7 +223,7 @@ reply_pair={}
 def savepic(bot, update):
     """Send a message when the command /savepic is issued."""
     """Send msg to ask user and save pic"""
-    f=ForceReply(force_reply=True, selective=True)
+    f=ForceReply(force_reply=True)
     rpl=bot.send_message(chat_id=update.message.chat_id,
         text='何がご用事ですか？',reply_to_message=update.message,reply_markup=f)
     global reply_pair
@@ -388,6 +388,7 @@ def key_word_reaction(bot,update):
     else:
         if update.message.reply_to_message==m:
             bot.send_message(chat_id=update.message.chat_id,text=update.message.text)
+        del reply_pair[update.message.from_user.id]
     
     # word_echo
     if switch == True:
