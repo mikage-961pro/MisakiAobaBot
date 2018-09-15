@@ -668,7 +668,7 @@ def menu_actions(bot, update):
                 message_id=query.message.message_id,
                 text="まだね〜")
     def menu_ruleSetting():
-        admin_access=is_admin(bot,query)
+        admin_access=is_admin(bot,update)
         if admin_access == False:
             bot.edit_message_text(chat_id=query.message.chat_id,
                     message_id=query.message.message_id,
