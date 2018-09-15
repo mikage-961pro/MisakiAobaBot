@@ -61,7 +61,7 @@ from tk import do_once, del_cmd, do_after_root, admin_cmd, del_cmd_func
 from tk import db_switch_one_value, bool2text, room_member_num, bot_is_admin, is_admin, c_tz
 from tk import init_time
 from tk import get_config, set_config, work_sheet_pop, work_sheet_push, get_sheet
-
+import MisaMongo
 # ---Buffers
 #悲觀鎖
 kw_j_buffer=[]
@@ -181,6 +181,7 @@ def which(bot, update, args):
 def quote(bot,update):
     global config_buffer
     global config_buffer_Plock
+
     #daily quote
     if get_config(update.message.from_user.id,'q',config_buffer,config_buffer_Plock)==True:
         del_cmd_func(bot,update)
@@ -188,11 +189,10 @@ def quote(bot,update):
     else:
 
         config_buffer=set_config(update.message.from_user.id,'q')
+
         del_cmd_func(bot,update)
-    worksheet=get_sheet('quote_main')
-    quote=worksheet.get_all_values()
-    num=random.randint(0,len(quote)-1)
-    text='<pre>'+quote[num][0]+'</pre>\n'+'-----<b>'+quote[num][1]+'</b> より'
+    quote=MisaMongo.randget()[0]
+    text='<pre>'+quote['quote']+'</pre>\n'+'-----<b>'+quote['said']+'</b> より'
     msg=bot.send_message(chat_id=update.message.chat_id,text=text,parse_mode='HTML')
 
 @do_after_root
@@ -362,7 +362,7 @@ def key_word_reaction(bot,update):
         return key_words_value
 
     # switch
-    switch=data_value = db.misaki_setting.find_one({'tag': 'response_value'})['value']
+    switch=MisaMongo.display_data('config',{'id':update.message.from_user.id},'reply')
 
     # word_pass
     try_pass=find_word(words=['天','ナンス','もちょ'],allco=True)
@@ -430,13 +430,13 @@ def key_word_reaction(bot,update):
     if test.find(' #名言')!=-1 or test.find('#名言 ')!=-1:
         if update.message.reply_to_message==None and update.message.from_user.is_bot==False:
             test=test.replace(' #名言','').replace('#名言 ','')
-            qlist=[test,update.message.from_user.first_name]
-            work_sheet_push(qlist,'quote_main')
+            qdict={'quote': test, 'said': update.message.from_user.first_name, 'tag': '','said_id':update.message.from_user.id}
+            MisaMongo.insert_data('quote_main',qdict)
             record=True
     if test.find('#名言')!=-1 and record==False:
         if update.message.reply_to_message is not None and update.message.reply_to_message.from_user.is_bot==False:
-            qlist=[update.message.reply_to_message.text,update.message.reply_to_message.from_user.first_name]
-            work_sheet_push(qlist,'quote_main')
+            qdict={'quote': update.message.reply_to_message.text, 'said': update.message.reply_to_message.from_user.first_name, 'tag': '','said_id':update.message.reply_to_message.from_user.id}
+            MisaMongo.insert_data('quote_main',qdict)
 
 
     ###################################
@@ -601,23 +601,24 @@ def menu_actions(bot, update):
         text=temp.substitute(boot_time=rt)
         bot.send_message(text=text,chat_id=query.message.chat_id,parse_mode=ParseMode.HTML)
     elif query_text == "cmd_resp_check":
-        data_value = db.misaki_setting.find_one({'tag': 'response_value'})
-        text='目前狀態：{}'.format(bool2text(data_value['value']))
+        data_value = MisaMongo.display_data('config',{'id':query.from_user.id},'reply')
+        if data_value is None:
+            data_value=True#default open
+        text='{}P目前狀態：{}'.format(query.from_user.first_name,bool2text(data_value))
         bot.edit_message_text(chat_id=query.message.chat_id,
-            message_id=query.message.message_id,
-            text=text,
-            reply_markup=sub_menu_keyboard())
-    elif query_text == "cmd_resp_switch":
-        result=db_switch_one_value('response_value')
-        if result:
-            bot.edit_message_text(chat_id=query.message.chat_id,
                 message_id=query.message.message_id,
-                text="開啟回話功能。")
-        else:
-            bot.edit_message_text(chat_id=query.message.chat_id,
+                text=text,
+                reply_markup=sub_menu_keyboard(data_value))
+    elif query_text == "cmd_resp_switch_off":
+        MisaMongo.modify_data('config',pipeline={'id':query.from_user.id},key='reply',update_value=False)
+        bot.edit_message_text(chat_id=query.message.chat_id,
                 message_id=query.message.message_id,
-                text="停止回話功能。")
-
+                text="停止{}的回話功能。".format(query.from_user.first_name))
+    elif query_text == "cmd_resp_switch_on":
+        MisaMongo.modify_data('config',pipeline={'id':query.from_user.id},key='reply',update_value=True)
+        bot.edit_message_text(chat_id=query.message.chat_id,
+                message_id=query.message.message_id,
+                text="開啟{}的回話功能。".format(query.from_user.first_name))
 
 # Keyboards
 def main_menu_keyboard():
@@ -626,8 +627,8 @@ def main_menu_keyboard():
               [InlineKeyboardButton(text='關於美咲',callback_data="cmd_about")]]
     return InlineKeyboardMarkup(keyboard)
 
-def sub_menu_keyboard():
-    keyboard = [[InlineKeyboardButton(text='切換',callback_data='cmd_resp_switch')],
+def sub_menu_keyboard(state):
+    keyboard = [[InlineKeyboardButton(text='關閉回話' if state else '開啟回話',callback_data='cmd_resp_switch_off' if state else 'cmd_resp_switch_on')],
                 [InlineKeyboardButton(text='取消',callback_data='main')]]
     return InlineKeyboardMarkup(keyboard)
 
