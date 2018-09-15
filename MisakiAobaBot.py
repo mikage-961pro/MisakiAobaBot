@@ -223,12 +223,13 @@ reply_pair={}
 def savepic(bot, update):
     """Send a message when the command /savepic is issued."""
     """Send msg to ask user and save pic"""
+    mention_url='tg://user?id={}'.format(update.message.from_user.id)
     first_name=update.message.from_user.first_name
     m_ent=[MessageEntity('mention',offset=0, length=len(first_name),user=update.message.from_user)]
-    text='{}さん、何がご用事ですか？'.format(first_name)
+    text='<a href="{}">{}さん</a>、何がご用事ですか？'.format(mention_url,first_name)
     f=ForceReply(force_reply=True)
     rpl=bot.send_message(chat_id=update.message.chat_id,
-        text=text,reply_to_message=update.message,reply_markup=f,entities=m_ent)
+        text=text,reply_to_message=update.message,reply_markup=f,parse_mode=HTML)
     global reply_pair
     reply_pair[update.message.from_user.id]=rpl
     
