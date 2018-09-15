@@ -66,8 +66,6 @@ import MisaMongo
 #悲觀鎖
 kw_j_buffer=[]
 kw_j_buffer_Plock=False
-config_buffer=[]
-config_buffer_Plock=False
 last_message_list=[]
 
 ################################################
@@ -179,16 +177,13 @@ def which(bot, update, args):
 
 @do_after_root
 def quote(bot,update):
-    global config_buffer
-    global config_buffer_Plock
-
     #daily quote
-    if get_config(update.message.from_user.id,'q',config_buffer,config_buffer_Plock)==True:
+    if MisaMongo.display_data('config',{'id':update.message.from_user.id},'day_quote')==False:
         del_cmd_func(bot,update)
         return
     else:
 
-        config_buffer=set_config(update.message.from_user.id,'q')
+        MisaMongo.modify_data('config',pipeline={'id':query.from_user.id},key='day_quote',update_value=False)
 
         del_cmd_func(bot,update)
     quote=MisaMongo.randget()[0]
@@ -571,12 +566,7 @@ def refresh_buffer(bot,job):
     #unlock
 
     #config_buffer
-    global config_buffer
-    global config_buffer_Plock
-    config_sheet=get_sheet('config')
-    config_buffer_Plock=True
-    config_buffer=config_sheet.get_all_values()
-    config_buffer_Plock=False
+
 
     #refresh lstmessage
     global last_message_list
