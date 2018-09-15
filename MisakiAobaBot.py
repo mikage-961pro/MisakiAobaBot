@@ -42,19 +42,6 @@ spreadsheet_key=os.environ['SPREAD_TOKEN']
 # ---postgresql
 from postgre import dbDump,dbrandGet,dbGet
 
-# ---MongoDB
-import pymongo
-from pymongo import MongoClient
-
-url = "mongodb://$dbuser:$dbpassword@ds149732.mlab.com:49732/heroku_jj2sv6sm"
-mongo_us = 'admin'
-mongo_ps = os.environ['MONGO_PSW']
-temp=Template(url)
-mongo_url=temp.substitute(dbuser=mongo_us,dbpassword=mongo_ps)
-client = MongoClient(mongo_url)
-db = client['heroku_jj2sv6sm']
-collect = db['misaki_setting']
-
 # ---User Module
 from global_words import GLOBAL_WORDS
 from tk import do_once, del_cmd, do_after_root, admin_cmd, del_cmd_func
@@ -62,6 +49,7 @@ from tk import db_switch_one_value, bool2text, room_member_num, bot_is_admin, is
 from tk import init_time, utc8now
 from tk import get_config, set_config, work_sheet_pop, work_sheet_push, get_sheet
 import MisaMongo
+
 # ---Buffers
 #悲觀鎖
 kw_j_buffer=[]
@@ -178,7 +166,36 @@ def which(bot, update, args):
             bot.send_message(chat_id=update.message.chat_id, text=text)
 
 @do_after_root
-def quote(bot,update):
+def quote(bot,update,args):
+    context=' '.join(args)
+    if '-f=' in context:
+        context=context.replace('-f=','')
+        find_result=MisaMongo.quote_finder(context)
+        if len(find_result)==0:
+            bot.send_message(chat_id=update.message.chat_id,text="No search result.")
+        elif len(find_result)<10:
+            result=""
+            for i in find_result:
+                result=result+'<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n'
+            bot.send_message(chat_id=update.message.chat_id,text=result,parse_mode='HTML')
+        else:
+            try:
+                result=[]
+                for i in find_result:
+                    result.append('<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n')
+                    if len(result) == 10:
+                        t=""
+                        for j in result:
+                            t+=j
+                        bot.send_message(chat_id=update.message.chat_id,text=t,parse_mode='HTML')
+                        result=[]
+            except:
+                bot.send_message(chat_id=update.message.chat_id,text="Unexpected error.")
+            finally:
+                pass
+        return
+
+
     global config_buffer
     global config_buffer_Plock
 
@@ -453,12 +470,24 @@ def key_word_reaction(bot,update):
     if test.find(' #名言')!=-1 or test.find('#名言 ')!=-1:
         if update.message.reply_to_message==None and update.message.from_user.is_bot==False:
             test=test.replace(' #名言','').replace('#名言 ','')
-            qdict={'quote': test, 'said': update.message.from_user.first_name, 'tag': '','said_id':update.message.from_user.id}
+            qdict={
+                'quote': test,
+                'said': update.message.from_user.first_name,
+                'tag': '',
+                'said_id':update.message.from_user.id,
+                'date':utc8now()
+                }
             MisaMongo.insert_data('quote_main',qdict)
             record=True
     if test.find('#名言')!=-1 and record==False:
         if update.message.reply_to_message is not None and update.message.reply_to_message.from_user.is_bot==False:
-            qdict={'quote': update.message.reply_to_message.text, 'said': update.message.reply_to_message.from_user.first_name, 'tag': '','said_id':update.message.reply_to_message.from_user.id}
+            qdict={
+                'quote': update.message.reply_to_message.text,
+                'said': update.message.reply_to_message.from_user.first_name,
+                'tag': '',
+                'said_id':update.message.reply_to_message.from_user.id,
+                'date':utc8now()
+                }
             MisaMongo.insert_data('quote_main',qdict)
 
 
@@ -606,24 +635,24 @@ def menu_actions(bot, update):
         bot.edit_message_text(text="了解しました♪",
                               chat_id=query.message.chat_id,
                               message_id=query.message.message_id)
-    if query_text == "main":
+    def menu_main():
         bot.edit_message_text(chat_id=query.message.chat_id,
             message_id=query.message.message_id,
             text='何がご用事ですか？',
             reply_markup=main_menu_keyboard())
-    elif query_text == "cmd_state":
+    def menu_state():
         fin_text()
         temp=Template(GLOBAL_WORDS.word_state)
         un=str(room_member_num(bot,update=query))
         text=temp.substitute(user_number=un)
         bot.send_message(text=text,chat_id=query.message.chat_id)
-    elif query_text == "cmd_about":
+    def menu_about():
         fin_text()
         temp=Template(GLOBAL_WORDS.word_about)
         rt=utc8now()
         text=temp.substitute(boot_time=rt)
         bot.send_message(text=text,chat_id=query.message.chat_id,parse_mode=ParseMode.HTML)
-    elif query_text == "cmd_resp_check":
+    def menu_resp_check():
         data_value = MisaMongo.display_data('config',{'id':query.from_user.id},'reply')
         if data_value is None:
             data_value=True#default open
@@ -632,26 +661,78 @@ def menu_actions(bot, update):
                 message_id=query.message.message_id,
                 text=text,
                 reply_markup=sub_menu_keyboard(data_value))
-    elif query_text == "cmd_resp_switch_off":
+    def menu_crsoff():
         MisaMongo.modify_data('config',pipeline={'id':query.from_user.id},key='reply',update_value=False)
         bot.edit_message_text(chat_id=query.message.chat_id,
                 message_id=query.message.message_id,
                 text="停止{}的回話功能。".format(query.from_user.first_name))
-    elif query_text == "cmd_resp_switch_on":
+    def menu_crson():
         MisaMongo.modify_data('config',pipeline={'id':query.from_user.id},key='reply',update_value=True)
         bot.edit_message_text(chat_id=query.message.chat_id,
                 message_id=query.message.message_id,
                 text="開啟{}的回話功能。".format(query.from_user.first_name))
-    elif query_text == "cmd_canceled":
+    def menu_canceled():
         bot.edit_message_text(chat_id=query.message.chat_id,
                 message_id=query.message.message_id,
                 text="まだね〜")
+    def menu_ruleSetting():
+        admin_access=is_admin(bot,query)
+        if admin_access == False:
+            bot.edit_message_text(chat_id=query.message.chat_id,
+                    message_id=query.message.message_id,
+                    text="只有管理員擁有此權限。")
+            return
+        room_config={}
+        room_config['room_id']=query.message.chat_id
+        room_config['room_name']=query.message['chat']['title']
+        room_config['update_time']=query.message.date
+
+        print(room_config)
+        bot.edit_message_text(chat_id=query.message.chat_id,
+                message_id=query.message.message_id,
+                text="更新完成。")
+        """
+        mention_url='tg://user?id={}'.format(update.message.from_user.id)
+        first_name=update.message.from_user.first_name
+        m_ent=[MessageEntity('mention',offset=0, length=len(first_name),user=update.message.from_user)]
+        text='<a href="{}">{}</a>さん、何がご用事ですか？'.format(mention_url,first_name)
+        f=ForceReply(force_reply=True,selective=True)
+        rpl=bot.send_message(chat_id=update.message.chat_id,
+            text=text,reply_to_message=update.message,reply_markup=f,parse_mode='HTML')
+        global reply_pair
+        reply_pair[update.message.from_user.id]=rpl
+        """
+    # Switch
+    if query_text == "main":
+        """Main menu"""
+        menu_main()
+    elif query_text == "cmd_state":
+        """Show room state"""
+        menu_state()
+    elif query_text == "cmd_about":
+        """Show bot info"""
+        menu_about()
+    elif query_text == "cmd_resp_check":
+        """User resp setting"""
+        menu_resp_check()
+    elif query_text == "cmd_resp_switch_off":
+        menu_crsoff()
+    elif query_text == "cmd_resp_switch_on":
+        menu_crson()
+    elif query_text == "cmd_ruleSetting":
+        """set/edit room rule"""
+        """admin only"""
+        menu_ruleSetting()
+    elif query_text == "cmd_canceled":
+        """Cancel menu"""
+        menu_canceled()
 
 # Keyboards
 def main_menu_keyboard():
     keyboard = [[InlineKeyboardButton(text='回話設定',callback_data='cmd_resp_check'),
-               InlineKeyboardButton(text='群組狀態',callback_data="cmd_state")],
-              [InlineKeyboardButton(text='關於美咲',callback_data="cmd_about")],
+               InlineKeyboardButton(text='群龜設定',callback_data="cmd_ruleSetting")],
+              [InlineKeyboardButton(text='群組狀態',callback_data="cmd_state")
+              ,InlineKeyboardButton(text='關於美咲',callback_data="cmd_about")],
               [InlineKeyboardButton(text='取消',callback_data="cmd_canceled")]]
     return InlineKeyboardMarkup(keyboard)
 
@@ -708,7 +789,7 @@ def main():
     dp.add_handler(CommandHandler("config", config))
     dp.add_handler(CommandHandler("nanto", nanto, pass_args=True))
     dp.add_handler(CommandHandler("which", which, pass_args=True))
-    dp.add_handler(CommandHandler("quote",quote))
+    dp.add_handler(CommandHandler("quote",quote, pass_args=True))
     dp.add_handler(CommandHandler("randChihaya",randchihaya))
     dp.add_handler(CommandHandler("randTsumugi",randtsumugi))
     dp.add_handler(CommandHandler("sticker",sticker_matome))

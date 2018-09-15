@@ -37,18 +37,14 @@ def c_tz(datetime,tz):
 def is_admin(bot,update):
     """Dectect user if admin, return boolen value"""
     is_admin=False
-    try:
-        if update.message.chat.type=='private':
-            return is_admin
-        else:
-            adminlist=update.message.chat.get_administrators()
-            for i in adminlist:
-                if update.message.from_user.id==i.user.id:
-                    is_admin=True
-            return is_admin
-    except:
-        if update.callback_query.message.chat.type=='private':
-            return is_admin
+    if update.message.chat.type=='private':
+        return is_admin
+    else:
+        adminlist=update.message.chat.get_administrators()
+        for i in adminlist:
+            if update.message.from_user.id==i.user.id:
+                is_admin=True
+        return is_admin
 
 def bot_is_admin(bot,update):
     """Dectect bot if admin, return boolen value"""
