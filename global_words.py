@@ -82,7 +82,6 @@ Developer:765技術部成員
 Base Language:Python
 Database:
     MongoDB/postgresql/google sheet
-telegramID:@Dephilia
 <a href="https://dephilia.github.io/MisakiAobaBot/">〔github link〕</a>
 <a href="https://www.plurk.com/Dephillia">〔噗浪〕</a>
     """
