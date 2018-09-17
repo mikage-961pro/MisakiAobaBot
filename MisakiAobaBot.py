@@ -167,20 +167,24 @@ def which(bot, update, args):
 
 @do_after_root
 def quote(bot,update,args):
-    context=' '.join(args)
-    if '-f=' in context:
-        context=context.replace('-f=','')
+    context=tk.formula('f',' '.join(args))
+    if context != False:
+        if context=="":
+            bot.send_message(chat_id=update.message.chat_id,text="Please enter word.")
+            return
         find_result=MisaMongo.quote_finder(context)
         result_length=len(find_result)
         if result_length==0:
             bot.send_message(chat_id=update.message.chat_id,text="No search result.")
         elif result_length<10:
+            bot.send_message(chat_id=update.message.chat_id,text="結果將顯示於私人對話。")
             result=""
             for i in find_result:
                 result=result+'<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n'
-            bot.send_message(chat_id=update.message.chat_id,text=result,parse_mode='HTML')
+            bot.send_message(chat_id=update.message.from_user.id,text=result,parse_mode='HTML')
         else:
             try:
+                bot.send_message(chat_id=update.message.chat_id,text="結果將顯示於私人對話。")
                 result=[]
                 for i in find_result:
                     result.append('<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n')
@@ -188,13 +192,13 @@ def quote(bot,update,args):
                         t=""
                         for j in result:
                             t+=j
-                        bot.send_message(chat_id=update.message.chat_id,text=t,parse_mode='HTML')
+                        bot.send_message(chat_id=update.message.from_user.id,text=t,parse_mode='HTML')
                         result=[]
             except:
-                bot.send_message(chat_id=update.message.chat_id,text="Unexpected error.")
+                bot.send_message(chat_id=update.message.from_user.id,text="Unexpected error.")
             finally:
                 t="結束搜尋。共有{}筆資料。".format(result_length)
-                bot.send_message(chat_id=update.message.chat_id,text=t,parse_mode='HTML')
+                bot.send_message(chat_id=update.message.from_user.id,text=t,parse_mode='HTML')
         return
 
 
@@ -575,6 +579,21 @@ def mission_callback(bot,job):
 
     # 玩人狼玩到忘記每日
     bot.send_message(chat_id='-1001290696540',text=GLOBAL_WORDS.word_do_mission)
+
+def save_room_state(bot, job):
+    ######################
+    #put in your group id#
+    ######################
+    chat_id=-1001290696540
+    msg=bot.send_message(chat_id=chat_id,text='Room state has been save.')
+    room_data={
+        'room_id':msg.chat_id,
+        'room_name':msg['chat']['title'],
+        'update_time':msg.date,
+        'total_message':msg.message_id,
+        'members_count':msg.chat.get_members_count()
+        }
+    MisaMongo.insert_data('room_state',room_data)
 
 def group_history(bot,job):
     ######################

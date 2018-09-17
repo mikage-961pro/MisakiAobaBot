@@ -224,6 +224,9 @@ def get_config(id,setting,config_buffer,config_buffer_Plock):
 def utc8now():
     return (datetime.now()+timedelta(hours=8)).strftime("%y/%m/%d %H:%M:%S")
 
+def utc8now_datetime():
+    return datetime.now()+timedelta(hours=8)
+
 def formula(key,text,if_list=False):
     """
     To make function has add function.
