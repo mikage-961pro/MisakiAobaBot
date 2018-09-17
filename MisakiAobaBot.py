@@ -53,7 +53,7 @@ from tk import init_time, utc8now, randList
 from tk import get_config, set_config, work_sheet_pop, work_sheet_push, get_sheet
 import MisaMongo,tk
 
-r
+
 
 # ---Buffers
 #悲觀鎖
