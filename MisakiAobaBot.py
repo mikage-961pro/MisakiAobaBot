@@ -48,11 +48,12 @@ from tk import do_once, del_cmd, do_after_root, admin_cmd, del_cmd_func
 from tk import db_switch_one_value, bool2text, room_member_num, bot_is_admin, is_admin, c_tz
 
 
-from tk import work_sheet_pop, work_sheet_push, get_sheet
 
-from tk import init_time, utc8now
+from tk import init_time, utc8now, randList
+from tk import get_config, set_config, work_sheet_pop, work_sheet_push, get_sheet
+import MisaMongo,tk
 
-import MisaMongo
+r
 
 # ---Buffers
 #悲觀鎖
@@ -174,9 +175,10 @@ def quote(bot,update,args):
     if '-f=' in context:
         context=context.replace('-f=','')
         find_result=MisaMongo.quote_finder(context)
-        if len(find_result)==0:
+        result_length=len(find_result)
+        if result_length==0:
             bot.send_message(chat_id=update.message.chat_id,text="No search result.")
-        elif len(find_result)<10:
+        elif result_length<10:
             result=""
             for i in find_result:
                 result=result+'<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n'
@@ -195,7 +197,8 @@ def quote(bot,update,args):
             except:
                 bot.send_message(chat_id=update.message.from_user.id,text="Unexpected error.")
             finally:
-                pass
+                t="結束搜尋。共有{}筆資料。".format(result_length)
+                bot.send_message(chat_id=update.message.chat_id,text=t,parse_mode='HTML')
         return
 
 
@@ -254,7 +257,39 @@ def savepic(bot, update):
     global reply_pair
     reply_pair[update.message.from_user.id]=rpl
 
+def save_room_state(bot, update):
+    room_data={
+        'room_id':update.message.chat_id,
+        'room_name':update.message['chat']['title'],
+        'update_time':update.message.date,
+        'total_message':update.message.message_id,
+        'members_count':update.message.chat.get_members_count()
+        }
+    MisaMongo.insert_data('room_state',room_data)
+    bot.send_message(chat_id=update.message.chat_id,text='Room state has been save.')
 
+def addecho(bot, update, args):
+    context=' '.join(args)
+    """
+    words, echo=None, photo=None, video=None,prob=1000, els=None,allco=False, echo_list=False
+    words=['夏川','椎菜','ナンス'], echo='(*>△<)<ナーンナーンっ',els='https://imgur.com/AOfQWWS.mp4',prob=300
+    """
+    data={
+        'words':tk.formula('w',context,if_list=True),
+        'echo':tk.formula('e',context),
+        'photo':tk.formula('p',context),
+        'video':tk.formula('v',context),
+        'prob':tk.formula('p',context),
+        'els':tk.formula('els',context),
+        'allco':tk.formula('al',context),
+        'echo_list':tk.formula('eli',context)
+        }
+    print(data)
+
+
+def testfunc(bot, update):
+    """print something"""
+    pass
 ################################################
 #               not command                    #
 ################################################
@@ -337,7 +372,7 @@ def key_word_reaction(bot,update):
     #        key word reaction        #
     ###################################
     def find_word(words, echo=None, photo=None, video=None,
-        prob=1000, els=None,allco=False, passArg=[], echo_list=False):
+        prob=1000, els=None,allco=False, echo_list=False):
         """
         words: words need to reaction, need to be a list.
         echo, photo, video: msg send after reaction
@@ -349,11 +384,18 @@ def key_word_reaction(bot,update):
         """
         key_words=update.message.text
         cid=update.message.chat_id
+        def msgSend(words):
+            bot.send_message(chat_id=cid,text=words)
+        def videoSend(vid):
+            bot.send_video(chat_id=cid, video=vid)
+        def picSend(pic):
+            bot.send_photo(chat_id=cid, photo=pic)
         # a random number from 0 to 999
         num = randrange(1000)
 
         key_words_value=False
 
+        """check if all word correct will go"""
         for check in words:
             if allco == False:
                 "one word correct will go"
@@ -366,41 +408,35 @@ def key_word_reaction(bot,update):
                 else:
                     key_words_value=False
                     break
-        for fp in passArg:
-            if fp==True:
-                key_words_value=False
-        if echo != None:
-            if key_words_value==True and num<prob:
+
+        if key_words_value==True:
+            if echo != None:
+                if num<prob:
+                    if echo_list:
+                        msgSend(randList(echo))
+                    else:
+                        msgSend(echo)
+                if num>=prob and els!=None:
+                    if els.find('https://')!=-1:
+                        videoSend(els)
+                    else:
+                        msgSend(els)
+            elif video != None and num<prob:
                 if echo_list:
-                    ts=echo[randrange(len(echo))]
-                    bot.send_message(chat_id=cid,text=ts)
+                    videoSend(randList(video))
                 else:
-                    bot.send_message(chat_id=cid,text=echo)
-            if key_words_value==True and num>=prob and els!=None:
-                if els.find('https://')!=-1:
-                    bot.send_video(chat_id=cid, video=els)
+                    videoSend(video)
+            elif photo != None and num<prob:
+                if echo_list:
+                    picSend(randList(photo))
                 else:
-                    bot.send_message(chat_id=cid,text=els)
-        elif video != None:
-            if key_words_value==True and num<prob:
-                try:
-                    vd=video[randrange(len(video))]
-                    bot.send_video(chat_id=cid, video=vd)
-                except:
-                    bot.send_video(chat_id=cid, video=video)
-                finally:
-                    pass
-        elif photo != None:
-            if key_words_value==True and num<prob:
-                bot.send_photo(chat_id=cid, photo=photo)
+                    picSend(photo)
+
+
         return key_words_value
 
     # switch
     switch=MisaMongo.display_data('config',{'id':update.message.from_user.id},'reply')
-
-    # word_pass
-    try_pass=find_word(words=['天','ナンス','もちょ'],allco=True)
-
 
     # long url
     pic_ten=['https://i.imgur.com/XmWYqS1.mp4',
@@ -410,15 +446,7 @@ def key_word_reaction(bot,update):
     'https://i.imgur.com/b9s69iK.mp4',
     'https://img.gifmagazine.net/gifmagazine/images/1333179/original.mp4']
 
-    global reply_pair
-    try:
-        m=reply_pair[update.message.from_user.id]
-    except KeyError:
-        pass
-    else:
-        if update.message.reply_to_message==m:
-            bot.send_message(chat_id=update.message.chat_id,text=update.message.text)
-        del reply_pair[update.message.from_user.id]
+
 
     # word_echo
     if switch == True:
@@ -428,10 +456,10 @@ def key_word_reaction(bot,update):
         find_word(words=['ころあず'], echo='ありがサンキュー！')
         find_word(words=['この歌声が'], echo='MILLLLLIIIONNNNNN',els='UNIIIIIOOONNNNN',prob=500)
         find_word(words=['天','ナンス','もちょ'],video=pic_trys,allco=True)
-        find_word(passArg=[try_pass],words=['麻倉','もも','もちょ'], echo='(●･▽･●)',els='(o・∇・o)もちー！もちもちもちもちもちーーーもちぃ！',prob=900)
-        find_word(passArg=[try_pass],words=['夏川','椎菜','ナンス'], echo='(*>△<)<ナーンナーンっ',els='https://imgur.com/AOfQWWS.mp4',prob=300)
-        find_word(passArg=[try_pass],words=['雨宮','てん','天ちゃん'], video=pic_ten)
-        find_word(passArg=[try_pass],words=['天'], prob=15, video=pic_ten)
+        find_word(words=['麻倉','もも','もちょ'], echo='(●･▽･●)',els='(o・∇・o)もちー！もちもちもちもちもちーーーもちぃ！',prob=900)
+        find_word(words=['夏川','椎菜','ナンス'], echo='(*>△<)<ナーンナーンっ',els='https://imgur.com/AOfQWWS.mp4',prob=300)
+        find_word(words=['雨宮','てん','天ちゃん'], video=pic_ten)
+        find_word(words=['天'], prob=15, video=pic_ten)
         find_word(words=['終わり','結束','沒了','完結'], echo='終わりだよ(●･▽･●)')
         find_word(words=['小鳥'], echo='もしかして〜♪ 音無先輩についてのお話ですか')
         find_word(words=['誰一百'], echo='咖嘎雅哭')
@@ -448,12 +476,26 @@ def key_word_reaction(bot,update):
         find_word(words=['秋月','律子'], echo='律子さんは毎日仕事するで、大変ですよね〜')
         find_word(words=['三浦','あずさ'], echo='え？あずささんは今北海道に！？')
         find_word(words=['水瀬','伊織'], echo='このショコラは今朝水瀬さんからの、みな一緒に食べろう！')
-        find_word(words=['菊地','真'], echo='真さんは今、王子役の仕事をしていますよ。',els='真さんは今、ヒーロー役の仕事をしていますよ～～激しい光は黒の衝撃 VERTEX BLACK!!!!',prob=700,allco=True)
+        find_word(words=['菊地','真'], echo='真さんは今、王子役の仕事をしていますよ。',
+            els='真さんは今、ヒーロー役の仕事をしていますよ～～激しい光は黒の衝撃 VERTEX BLACK!!!!',prob=700,allco=True)
         find_word(words=['我那覇','響'], echo='ハム蔵はどこでしょうか？探していますね',els='弾ける光は浅葱の波濤 VERTEX LIGHTBLUE!!',prob=700,allco=True)
         find_word(words=['四条','貴音'], echo='昨日〜貴音さんがわたしに色々な美味しい麺屋を紹介しました！',els='秘めたり光は臙脂の炎 VERTEX CARMINE〜〜',prob=700)
         find_word(words=['亜美'], echo='亜美？あそこよ')
         find_word(words=['真美'], echo='真美？いないよ')
         find_word(words=['双海'], echo='亜美真美？先に外へ行きました')
+
+    ###################################
+    #          reply_pair             #
+    ###################################
+    global reply_pair
+    try:
+        m=reply_pair[update.message.from_user.id]
+    except KeyError:
+        pass
+    else:
+        if update.message.reply_to_message==m:
+            bot.send_message(chat_id=update.message.chat_id,text=update.message.text)
+        del reply_pair[update.message.from_user.id]
     ###################################
     #               NAZO              #
     ###################################
@@ -755,21 +797,22 @@ def main():
 
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
+    dj = updater.job_queue
 
     # <function start>
 
     # ---repeating jobs---
     # mission_callback every 22:30 daily
-    updater.job_queue.run_daily(mission_callback,stime(14,30))
+    dj.run_daily(mission_callback,stime(14,30))
     # mission_show record every 8 hours
     m_history=[stime(7,0,0),stime(15,0,0),stime(23,0,0)]
     for t in m_history:
         #plug in mission time with loop
-        updater.job_queue.run_daily(group_history,t)
+        dj.run_daily(save_room_state,t)
     #mission refresh daily gasya
-    updater.job_queue.run_daily(daily_reset,stime(14,59,59))
+    dj.run_daily(daily_reset,stime(14,59,59))
     #refresh buffer
-    updater.job_queue.run_repeating(refresh_buffer, interval=60, first=0)
+    dj.run_repeating(refresh_buffer, interval=60, first=0)
 
 
     # ---Command answer---
@@ -785,10 +828,17 @@ def main():
     dp.add_handler(CommandHandler("randChihaya",randchihaya))
     dp.add_handler(CommandHandler("randTsumugi",randtsumugi))
     dp.add_handler(CommandHandler("sticker",sticker_matome))
-    dp.add_handler(CommandHandler("savepic",savepic, pass_job_queue=True))
-    dp.add_handler(CallbackQueryHandler(menu_actions))
-    # test function
 
+    # beta version function
+    dp.add_handler(CommandHandler("forcesave",save_room_state))
+    dp.add_handler(CommandHandler("addecho", addecho, pass_args=True))
+
+    # test function
+    dp.add_handler(CommandHandler("savepic",savepic, pass_job_queue=True))
+    dp.add_handler(CommandHandler("testfunc",testfunc))
+
+    # ---Menu function---
+    dp.add_handler(CallbackQueryHandler(menu_actions))
 
     # ---Message answer---
     dp.add_handler(MessageHandler(Filters.text, key_word_reaction))

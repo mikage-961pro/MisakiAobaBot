@@ -29,4 +29,8 @@ This bot is specialized for our [im@s group](https://t.me/imas_zh)
 
 ### Contributing
 
-Contributions are [Welcome!!](https://www.project-imas.com/wiki/Welcome!!)
+Contributions are [Welcome!!](https://www.project-imas.com/wiki/Welcome!!)  
+Please join the [Telegram Group](https://t.me/joinchat/IFtWTxKu7x6vuSK8HsFgsQ) for more information.
+
+### License
+You may copy, distribute and modify the software provided that modifications are described and licensed for free under [LGPL-3](https://www.gnu.org/licenses/lgpl-3.0.html). Derivatives works (including modifications or anything statically linked to the library) can only be redistributed under LGPL-3, but applications that use the library don't have to be.
