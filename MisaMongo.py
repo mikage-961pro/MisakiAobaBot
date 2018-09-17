@@ -63,3 +63,16 @@ def modify_data(Collection,pipeline=None,key=None,update_value=None):
         dict=pipeline
         pipeline[key]=update_value
         op_ins.insert_one(dict)
+
+
+def modify_many_data(Collection,pipeline=None,key=None,update_value=None):
+    op_ins=db[Collection]
+
+    if pipeline is not None:
+        pass
+    else:
+        return
+
+    op_ins.update_many(pipeline,
+    {'$set':{key:update_value}})
+

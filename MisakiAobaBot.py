@@ -46,16 +46,17 @@ from postgre import dbDump,dbrandGet,dbGet
 from global_words import GLOBAL_WORDS
 from tk import do_once, del_cmd, do_after_root, admin_cmd, del_cmd_func
 from tk import db_switch_one_value, bool2text, room_member_num, bot_is_admin, is_admin, c_tz
+
+
 from tk import init_time, utc8now, randList
 from tk import get_config, set_config, work_sheet_pop, work_sheet_push, get_sheet
 import MisaMongo,tk
+
 
 # ---Buffers
 #悲觀鎖
 kw_j_buffer=[]
 kw_j_buffer_Plock=False
-config_buffer=[]
-config_buffer_Plock=False
 last_message_list=[]
 
 ################################################
@@ -201,13 +202,14 @@ def quote(bot,update,args):
     global config_buffer
     global config_buffer_Plock
 
+
     #daily quote
-    if get_config(update.message.from_user.id,'q',config_buffer,config_buffer_Plock)==True:
+    if MisaMongo.display_data('config',{'id':update.message.from_user.id},'day_quote')==False:
         del_cmd_func(bot,update)
         return
     else:
 
-        config_buffer=set_config(update.message.from_user.id,'q')
+        MisaMongo.modify_data('config',pipeline={'id':update.message.from_user.id},key='day_quote',update_value=False)
 
         del_cmd_func(bot,update)
     quote=MisaMongo.randget()[0]
@@ -611,14 +613,7 @@ def group_history(bot,job):
     bot.send_message(chat_id=-1001290696540,text=rate)
 
 def daily_reset(bot,job):
-    scope = ['https://spreadsheets.google.com/feeds']
-    creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
-    client = gspread.authorize(creds)
-    sheet = client.open_by_key(spreadsheet_key)
-    user_config=sheet.worksheet('config').get_all_values()
-    for i in user_config:
-        if i[1].find('q') != -1:
-            set_config(i[0],'q')
+    MisaMongo.modify_many_data('config',pipeline={"day_quote":False},key='day_quote',update_value=True)
 
 def refresh_buffer(bot,job):
     #key_word_j_buffer
@@ -646,12 +641,7 @@ def refresh_buffer(bot,job):
     #unlock
 
     #config_buffer
-    global config_buffer
-    global config_buffer_Plock
-    config_sheet=get_sheet('config')
-    config_buffer_Plock=True
-    config_buffer=config_sheet.get_all_values()
-    config_buffer_Plock=False
+
 
     #refresh lstmessage
     global last_message_list
