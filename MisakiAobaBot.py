@@ -53,13 +53,6 @@ from tk import init_time, utc8now, randList
 from tk import get_config, set_config, work_sheet_pop, work_sheet_push, get_sheet
 import MisaMongo,tk
 
-
-# ---Buffers
-#悲觀鎖
-kw_j_buffer=[]
-kw_j_buffer_Plock=False
-last_message_list=[]
-
 ################################################
 #                   command                    #
 ################################################
@@ -168,7 +161,7 @@ def which(bot, update, args):
             bot.send_message(chat_id=update.message.chat_id, text=text)
 
 @do_after_root
-
+@run_async
 def quote(bot,update,args):
     context=tk.formula('f',' '.join(args))
     if context != False:
@@ -184,11 +177,27 @@ def quote(bot,update,args):
             result=""
             for i in find_result:
                 result=result+'<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n'
-            bot.send_message(chat_id=update.message.from_user.id,text=result,parse_mode='HTML')
+            try:
+                bot.send_message(chat_id=update.message.from_user.id,text=result,parse_mode='HTML')
+            except:
+                bot.send_message(chat_id=update.message.chat_id,
+                text='<a href="https://telegram.me/MisakiAobaBot?start=sticker">請先在私訊START</a>',
+                parse_mode='HTML')
+                return
+            finally:
+                t="結束搜尋。共有{}筆資料。".format(result_length)
+                bot.send_message(chat_id=update.message.from_user.id,text=t,parse_mode='HTML')
         else:
             try:
                 bot.send_message(chat_id=update.message.chat_id,text="結果將顯示於私人對話。")
                 result=[]
+                try:
+                    bot.send_message(chat_id=update.message.from_user.id,text='恩、太多ㄌㄅ我看看')
+                except:
+                    bot.send_message(chat_id=update.message.chat_id,
+                    text='<a href="https://telegram.me/MisakiAobaBot?start=sticker">請先在私訊START</a>',
+                    parse_mode='HTML')
+                    return
                 for i in find_result:
                     result.append('<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n')
                     if len(result) == 10:
