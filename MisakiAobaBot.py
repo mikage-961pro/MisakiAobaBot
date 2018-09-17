@@ -53,14 +53,6 @@ from tk import init_time, utc8now, randList
 from tk import get_config, set_config, work_sheet_pop, work_sheet_push, get_sheet
 import MisaMongo,tk
 
-
-
-# ---Buffers
-#悲觀鎖
-kw_j_buffer=[]
-kw_j_buffer_Plock=False
-last_message_list=[]
-
 ################################################
 #                   command                    #
 ################################################
