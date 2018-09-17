@@ -185,11 +185,20 @@ def quote(bot,update,args):
             result=""
             for i in find_result:
                 result=result+'<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n'
-            bot.send_message(chat_id=update.message.from_user.id,text=result,parse_mode='HTML')
+            try:
+                bot.send_message(chat_id=update.message.from_user.id,text=result,parse_mode='HTML')
+            except:
+                bot.send_message(chat_id=update.message.chat_id,text="先在私訊/start我")
+                return
         else:
             try:
                 bot.send_message(chat_id=update.message.chat_id,text="結果將顯示於私人對話。")
                 result=[]
+                try:
+                    bot.send_message(chat_id=update.message.from_user.id,text='恩、哈小百合')
+                except:
+                    bot.send_message(chat_id=update.message.chat_id,text="先在私訊/start我")
+                    return
                 for i in find_result:
                     result.append('<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n')
                     if len(result) == 10:
