@@ -169,7 +169,7 @@ def which(bot, update, args):
             bot.send_message(chat_id=update.message.chat_id, text=text)
 
 @do_after_root
-
+@run_async
 def quote(bot,update,args):
     context=tk.formula('f',' '.join(args))
     if context != False:
