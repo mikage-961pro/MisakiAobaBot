@@ -223,3 +223,48 @@ def get_config(id,setting,config_buffer,config_buffer_Plock):
 
 def utc8now():
     return (datetime.now()+timedelta(hours=8)).strftime("%y/%m/%d %H:%M:%S")
+
+def formula(key,text,if_list=False):
+    """
+    To make function has add function.
+    Ex. If /funcion -h
+    Help funcion will return true.
+    Or
+    Ex. /funcion -f=123
+    will return '123'
+
+    this funcion support many formula
+    if user input /funcion -f=123 -d -w=abc
+    formula('f',text) will return '123'
+    """
+    # key is what you want to dectect
+    key_len=len(key)
+    key_total='-'+key
+    key_position=text.find(key_total)
+    value=False
+    if key_position>=0:
+        start_point=key_position+key_len+1
+        if start_point>(len(text)-1):
+            value=True
+        else:
+            try:
+                if text[start_point] == '=':
+                    start_point+=1
+                    return_value=""
+                    while(start_point<len(text)):
+                        if text[start_point]==' ':
+                            break
+                        return_value+=text[start_point]
+                        start_point+=1
+                    value=return_value
+                    if if_list:
+                        """input data like -data=a,b,c"""
+                        value=[]
+                        for i in return_value.split(','):
+                            value.append(i)
+
+                else:
+                    value=True
+            finally:
+                pass
+    return value
