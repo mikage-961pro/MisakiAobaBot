@@ -26,13 +26,32 @@ def randget(Collection='quote_main',size=1):
 
 def quote_finder(key,Collection='quote_main'):
     op_ins=db[Collection]
+    cmd_cursor=op_ins.find({})
+    all_cont=[]
+    result=[]
+    for i in cmd_cursor:
+        all_cont.append(i)
+    for i in all_cont:
+        index=i.values()
+        for j in index:
+            try:
+                pos=j.find(key)
+            except:
+                pass
+            else:
+                if pos!=-1:
+                    result.append(i)
+                    break
+    return result
+    '''
+    op_ins=db[Collection]
     pipeline={ '$text': { '$search': key }}
     selected=op_ins.find(pipeline)
     result=[]
     for i in selected:
         result.append(i)
     return result
-
+'''
 def insert_data(Collection,dict):
     op_ins=db[Collection]
     op_ins.insert_one(dict)
@@ -63,7 +82,6 @@ def modify_data(Collection,pipeline=None,key=None,update_value=None):
         dict=pipeline
         pipeline[key]=update_value
         op_ins.insert_one(dict)
-
 
 def modify_many_data(Collection,pipeline=None,key=None,update_value=None):
     op_ins=db[Collection]

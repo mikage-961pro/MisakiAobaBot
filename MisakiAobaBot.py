@@ -48,10 +48,12 @@ from tk import do_once, del_cmd, do_after_root, admin_cmd, del_cmd_func
 from tk import db_switch_one_value, bool2text, room_member_num, bot_is_admin, is_admin, c_tz
 
 
+
 from tk import init_time, utc8now, randList
 from tk import get_config, set_config, work_sheet_pop, work_sheet_push, get_sheet
 import MisaMongo,tk
 
+r
 
 # ---Buffers
 #悲觀鎖
@@ -167,6 +169,7 @@ def which(bot, update, args):
             bot.send_message(chat_id=update.message.chat_id, text=text)
 
 @do_after_root
+
 def quote(bot,update,args):
     context=tk.formula('f',' '.join(args))
     if context != False:
@@ -726,7 +729,7 @@ def menu_actions(bot, update):
                 message_id=query.message.message_id,
                 text="まだね〜")
     def menu_ruleSetting():
-        admin_access=is_admin(bot,query)
+        admin_access=is_admin(bot,update)
         if admin_access == False:
             bot.edit_message_text(chat_id=query.message.chat_id,
                     message_id=query.message.message_id,
