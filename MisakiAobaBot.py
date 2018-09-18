@@ -183,7 +183,7 @@ def quote(bot,update,args):
                 bot.send_message(chat_id=update.message.chat_id,text="結果將顯示於私人對話。")
             result=""
             for i in find_result:
-                result=result+'<pre>'+i['quote']+'</pre>'+' -- '+i['said']
+                result=result+'<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n'
             try:
                 bot.send_message(chat_id=update.message.from_user.id,text=result,parse_mode='HTML')
             except:
@@ -210,7 +210,7 @@ def quote(bot,update,args):
                     parse_mode='HTML')
                     return
                 for i in find_result:
-                    result_sub.append('<pre>'+i['quote']+'</pre>'+' -- '+i['said'])
+                    result_sub.append('<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n')
                     if len(result_sub) == 10:
                         t=""
                         for j in result_sub:
@@ -236,7 +236,7 @@ def quote(bot,update,args):
                 bot.send_message(chat_id=update.message.from_user.id,text="Unexpected error.")
             finally:
                 search_total_time=(datetime.now()-search_init_time).total_seconds()
-                t="結束搜尋。共有{}筆資料共{}頁。\n共耗時{}秒。".format(result_length,int(result_length/10)+1,search_total_time)
+                t="結束搜尋。共有{}筆資料共{}頁。\n共耗時{}秒。".format(result_length,int((result_length-1)/10)+1,search_total_time)
                 bot.send_message(chat_id=update.message.from_user.id,text=t,parse_mode='HTML')
         return
 
@@ -305,7 +305,7 @@ def save_room_state(bot, update):
         'members_count':update.message.chat.get_members_count()
         }
     MisaMongo.insert_data('room_state',room_data)
-    bot.send_message(chat_id=update.message.chat_id,text='Room state has been save.')
+    bot.send_message(chat_id=update.message.chat_id,text='Room state has been saved.')
 
 def addecho(bot, update, args):
     context=' '.join(args)
@@ -625,7 +625,7 @@ def save_room_state(bot, job):
     #put in your group id#
     ######################
     chat_id=-1001290696540
-    msg=bot.send_message(chat_id=chat_id,text='Room state has been save.')
+    msg=bot.send_message(chat_id=chat_id,text='Room state has been saved.')
     room_data={
         'room_id':msg.chat_id,
         'room_name':msg['chat']['title'],
@@ -874,17 +874,17 @@ def page_keyboard(list,page):
     if page==1:
         keyboard = [[InlineKeyboardButton(text='||',callback_data='None'),
                      InlineKeyboardButton(text='P{}'.format(page),callback_data='None'),
-                     InlineKeyboardButton(text='⮕',callback_data='cmd_turn_right'+str(page))],
+                     InlineKeyboardButton(text='>>',callback_data='cmd_turn_right'+str(page))],
                     [InlineKeyboardButton(text='結束',callback_data='cmd_quote_search_exit')]]
     elif page==total_page:
-        keyboard = [[InlineKeyboardButton(text='⬅︎',callback_data='cmd_turn_left'+str(page)),
+        keyboard = [[InlineKeyboardButton(text='<<',callback_data='cmd_turn_left'+str(page)),
                      InlineKeyboardButton(text='P{}'.format(page),callback_data='None'),
                      InlineKeyboardButton(text='||',callback_data='None')],
                     [InlineKeyboardButton(text='結束',callback_data='cmd_quote_search_exit')]]
     else:
-        keyboard = [[InlineKeyboardButton(text='⬅︎',callback_data='cmd_turn_left'+str(page)),
+        keyboard = [[InlineKeyboardButton(text='<<',callback_data='cmd_turn_left'+str(page)),
                      InlineKeyboardButton(text='P{}'.format(page),callback_data='None'),
-                     InlineKeyboardButton(text='⮕',callback_data='cmd_turn_right'+str(page))],
+                     InlineKeyboardButton(text='>>',callback_data='cmd_turn_right'+str(page))],
                     [InlineKeyboardButton(text='結束',callback_data='cmd_quote_search_exit')]]
     return InlineKeyboardMarkup(keyboard)
 
