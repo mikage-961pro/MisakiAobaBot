@@ -160,6 +160,7 @@ def which(bot, update, args):
             text="わたしは〜♬［$res］が良いと思うよ〜えへへ。".replace('$res',result)
             bot.send_message(chat_id=update.message.chat_id, text=text)
 
+quote_search={}
 @do_after_root
 @run_async
 def quote(bot,update,args):
@@ -182,7 +183,7 @@ def quote(bot,update,args):
                 bot.send_message(chat_id=update.message.chat_id,text="結果將顯示於私人對話。")
             result=""
             for i in find_result:
-                result=result+'<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n'
+                result=result+'<pre>'+i['quote']+'</pre>'+' -- '+i['said']
             try:
                 bot.send_message(chat_id=update.message.from_user.id,text=result,parse_mode='HTML')
             except:
@@ -200,6 +201,7 @@ def quote(bot,update,args):
                 if tk.if_int_negative(update.message.chat_id):
                     bot.send_message(chat_id=update.message.chat_id,text="結果將顯示於私人對話。")
                 result=[]
+                result_sub=[]
                 try:
                     bot.send_message(chat_id=update.message.from_user.id,text='恩、太多ㄌㄅ我看看')
                 except:
@@ -208,20 +210,28 @@ def quote(bot,update,args):
                     parse_mode='HTML')
                     return
                 for i in find_result:
-                    result.append('<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n')
-                    if len(result) == 10:
+                    result_sub.append('<pre>'+i['quote']+'</pre>'+' -- '+i['said'])
+                    if len(result_sub) == 10:
                         t=""
-                        for j in result:
+                        for j in result_sub:
                             t+=j
-                        bot.send_message(chat_id=update.message.from_user.id,text=t,parse_mode='HTML')
-                        result=[]
+                        result.append(t)
+                        result_sub=[]
                 # last message
                 t=""
-                for j in result:
+                for j in result_sub:
                     t+=j
-                bot.send_message(chat_id=update.message.from_user.id,text=t,parse_mode='HTML')
-                result=[]
+                result.append(t)
+                result_sub=[]
 
+                global quote_search
+                quote_search[update.message.from_user.id]=result
+                # save to globle var
+
+                bot.send_message(chat_id=update.message.from_user.id,
+                    text=result[0],
+                    reply_markup=page_keyboard(result,1),
+                    parse_mode='HTML')
             except:
                 bot.send_message(chat_id=update.message.from_user.id,text="Unexpected error.")
             finally:
@@ -780,10 +790,31 @@ def menu_actions(bot, update):
         global reply_pair
         reply_pair[update.message.from_user.id]=rpl
         """
-    def menu_turn_left():
-        pass
-    def menu_turn_right():
-        pass
+    def menu_turn_left(page):
+        result=quote_search[query.from_user.id]
+        new_page=page-1
+        bot.edit_message_text(chat_id=query.from_user.id,
+                message_id=query.message.message_id,
+                text=result[new_page-1],
+                reply_markup=page_keyboard(result,new_page),
+                parse_mode='HTML')
+    def menu_turn_right(page):
+        result=quote_search[query.from_user.id]
+        new_page=page+1
+        bot.edit_message_text(chat_id=query.from_user.id,
+                message_id=query.message.message_id,
+                text=result[new_page-1],
+                reply_markup=page_keyboard(result,new_page),
+                parse_mode='HTML')
+    def menu_quote_search_exit():
+        try:
+            global quote_search
+            del quote_search[query.from_user.id]
+        except:
+            pass
+        finally:
+            bot.delete_message(chat_id=query.message.chat_id,
+                    message_id=query.message.message_id)
 
     # Switch
     if query_text == "main":
@@ -809,12 +840,17 @@ def menu_actions(bot, update):
     elif query_text == "cmd_canceled":
         """Cancel menu"""
         menu_canceled()
-    elif query_text == "cmd_turn_left":
+    elif query_text.find("cmd_turn_left")!=-1:
         """Last page"""
-        menu_turn_left()
-    elif query_text == "cmd_turn_right":
+        page=query_text.replace('cmd_turn_left','')
+        menu_turn_left(int(page))
+    elif query_text.find("cmd_turn_right")!=-1:
         """Right page"""
-        menu_turn_right()
+        page=query_text.replace('cmd_turn_right','')
+        menu_turn_right(int(page))
+    elif query_text == "cmd_quote_search_exit":
+        """Clear template data"""
+        menu_quote_search_exit()
 
 # Keyboards
 def main_menu_keyboard():
@@ -830,17 +866,18 @@ def sub_menu_keyboard(state):
                 [InlineKeyboardButton(text='取消',callback_data='main')]]
     return InlineKeyboardMarkup(keyboard)
 
-def page_keyboard(page,total_page):
+def page_keyboard(list,page):
+    total_page=len(list)
     if page==1:
-        keyboard = [[InlineKeyboardButton(text='⮕',callback_data='cmd_turn_right')],
-                    [InlineKeyboardButton(text='結束',callback_data='cmd_canceled')]]
+        keyboard = [[InlineKeyboardButton(text='⮕',callback_data='cmd_turn_right'+str(page))],
+                    [InlineKeyboardButton(text='結束',callback_data='cmd_quote_search_exit')]]
     elif page==total_page:
-        keyboard = [[InlineKeyboardButton(text='⬅︎',callback_data='cmd_turn_left')],
-                    [InlineKeyboardButton(text='結束',callback_data='cmd_canceled')]]
+        keyboard = [[InlineKeyboardButton(text='⬅︎',callback_data='cmd_turn_left'+str(page))],
+                    [InlineKeyboardButton(text='結束',callback_data='cmd_quote_search_exit')]]
     else:
-        keyboard = [[InlineKeyboardButton(text='⬅︎',callback_data='cmd_turn_left'),
-                    InlineKeyboardButton(text='⮕',callback_data='cmd_turn_right')],
-                    [InlineKeyboardButton(text='結束',callback_data='cmd_canceled')]]
+        keyboard = [[InlineKeyboardButton(text='⬅︎',callback_data='cmd_turn_left'+str(page)),
+                     InlineKeyboardButton(text='⮕',callback_data='cmd_turn_right'+str(page))],
+                    [InlineKeyboardButton(text='結束',callback_data='cmd_quote_search_exit')]]
     return InlineKeyboardMarkup(keyboard)
 
 # error logs
