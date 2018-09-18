@@ -206,6 +206,10 @@ def quote(bot,update,args):
                             t+=j
                         bot.send_message(chat_id=update.message.from_user.id,text=t,parse_mode='HTML')
                         result=[]
+                    t=""
+                    for j in result:
+                        t+=j
+                        bot.send_message(chat_id=update.message.from_user.id,text=t,parse_mode='HTML')
             except:
                 bot.send_message(chat_id=update.message.from_user.id,text="Unexpected error.")
             finally:
