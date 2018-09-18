@@ -74,9 +74,9 @@ class GLOBAL_WORDS:
 目前室內人數：$user_number
 """
     word_about="""
-Version:Beta 1.3
+Version:Beta 1.4
 Boot Time:$boot_time
-Last update:2018/09/17
+Last update:2018/09/18
 Developer:765技術部成員
     Dephilia（蝶芙）／TAKE（他Ｋ）
 Base Language:Python

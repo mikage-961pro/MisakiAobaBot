@@ -233,7 +233,7 @@ def if_int_negative(interval):
     else:
         return False
 
-def formula(key,text,if_list=False):
+def formula(key,text,if_list=False,parameter_preword='-',sep_word=' '):
     """
     To make function has add function.
     Ex. If /funcion -h
@@ -248,7 +248,7 @@ def formula(key,text,if_list=False):
     """
     # key is what you want to dectect
     key_len=len(key)
-    key_total='-'+key
+    key_total=parameter_preword+key
     key_position=text.find(key_total)
     value=False
     if key_position>=0:
@@ -261,7 +261,7 @@ def formula(key,text,if_list=False):
                     start_point+=1
                     return_value=""
                     while(start_point<len(text)):
-                        if text[start_point]==' ':
+                        if text[start_point]==sep_word:
                             break
                         return_value+=text[start_point]
                         start_point+=1

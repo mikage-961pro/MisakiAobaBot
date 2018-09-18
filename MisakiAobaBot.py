@@ -524,11 +524,11 @@ def key_word_reaction(bot,update):
         find_word(words=['青羽','美咲'], echo='お疲れ様でした！')
         find_word(words=['ころあず'], echo='ありがサンキュー！')
         find_word(words=['この歌声が'], echo='MILLLLLIIIONNNNNN',els='UNIIIIIOOONNNNN',prob=500)
-        find_word(words=['天','ナンス','もちょ'],video=pic_trys,allco=True)
+        find_word(words=['天','ナンス','もちょ'],video=pic_trys,allco=True,echo_list=True)
         find_word(words=['麻倉','もも','もちょ'], echo='(●･▽･●)',els='(o・∇・o)もちー！もちもちもちもちもちーーーもちぃ！',prob=900)
         find_word(words=['夏川','椎菜','ナンス'], echo='(*>△<)<ナーンナーンっ',els='https://imgur.com/AOfQWWS.mp4',prob=300)
-        find_word(words=['雨宮','てん','天ちゃん'], video=pic_ten)
-        find_word(words=['天'], prob=15, video=pic_ten)
+        find_word(words=['雨宮','てん','天ちゃん'], video=pic_ten,echo_list=True)
+        find_word(words=['天'], prob=15, video=pic_ten,echo_list=True)
         find_word(words=['終わり','結束','沒了','完結'], echo='終わりだよ(●･▽･●)')
         find_word(words=['小鳥'], echo='もしかして〜♪ 音無先輩についてのお話ですか')
         find_word(words=['誰一百'], echo='咖嘎雅哭')
@@ -821,7 +821,11 @@ def menu_actions(bot, update):
         reply_pair[update.message.from_user.id]=rpl
         """
     def menu_turn_left(page):
-        result=quote_search[query.from_user.id]
+        try:
+            result=quote_search[query.from_user.id]
+        except KeyError:
+            # Some error flag
+            pass
         new_page=page-1
         bot.edit_message_text(chat_id=query.from_user.id,
                 message_id=query.message.message_id,
@@ -829,7 +833,11 @@ def menu_actions(bot, update):
                 reply_markup=page_keyboard(result,new_page),
                 parse_mode='HTML')
     def menu_turn_right(page):
-        result=quote_search[query.from_user.id]
+        try:
+            result=quote_search[query.from_user.id]
+        except KeyError:
+            # Some error flag
+            pass
         new_page=page+1
         bot.edit_message_text(chat_id=query.from_user.id,
                 message_id=query.message.message_id,
@@ -873,11 +881,13 @@ def menu_actions(bot, update):
     elif query_text.find("cmd_turn_left")!=-1:
         """Last page"""
         page=query_text.replace('cmd_turn_left','')
-        menu_turn_left(int(page))
+        if page!='':
+            menu_turn_left(int(page))
     elif query_text.find("cmd_turn_right")!=-1:
         """Right page"""
         page=query_text.replace('cmd_turn_right','')
-        menu_turn_right(int(page))
+        if page!='':
+         menu_turn_right(int(page))
     elif query_text == "cmd_quote_search_exit":
         """Clear template data"""
         menu_quote_search_exit()
@@ -904,7 +914,7 @@ def page_keyboard(list,page):
     if len(list)==1:
         keyboard = [[InlineKeyboardButton(text='||',callback_data='None'),
                      InlineKeyboardButton(text='P{}'.format(page),callback_data='None'),
-                     InlineKeyboardButton(text='||',callback_data='cmd_turn_right')],
+                     InlineKeyboardButton(text='||',callback_data='None')],
                     [InlineKeyboardButton(text='結束',callback_data='cmd_quote_search_exit')]]
     elif page==1:
         keyboard = [[InlineKeyboardButton(text='||',callback_data='None'),
