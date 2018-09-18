@@ -171,69 +171,99 @@ def quote(bot,update,args):
             """Case 1: No words"""
             bot.send_message(chat_id=update.message.chat_id,text="Please enter word.")
             return
+        # Search initialization
         find_result=MisaMongo.quote_finder(search_para)
         result_length=len(find_result)
         search_init_time=datetime.now()
+        global quote_search
+
         if result_length==0:
             """Case 2: No search result"""
             bot.send_message(chat_id=update.message.chat_id,text="No search result.")
+
         elif result_length<10:
             """Case 3: Result is less than 10"""
+            # Hint user that result is in PM
             if tk.if_int_negative(update.message.chat_id):
                 bot.send_message(chat_id=update.message.chat_id,text="結果將顯示於私人對話。")
-            result=""
-            for i in find_result:
-                result=result+'<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n'
+
+            # Test user has start bot
             try:
-                bot.send_message(chat_id=update.message.from_user.id,text=result,parse_mode='HTML')
+                bot.send_message(chat_id=update.message.from_user.id,
+                    text="以下為【{}】的搜尋結果".format(search_para))
             except:
                 bot.send_message(chat_id=update.message.chat_id,
                         text='<a href="https://telegram.me/MisakiAobaBot?start=sticker">請先在私訊START</a>',
                         parse_mode='HTML')
                 return
-            finally:
-                search_total_time=(datetime.now()-search_init_time).total_seconds()
-                t="結束搜尋。共有{}筆資料。\n共耗時{}秒。".format(result_length,search_total_time)
-                bot.send_message(chat_id=update.message.from_user.id,text=t,parse_mode='HTML')
-        else:
-            """Case 4: Result is more than 10"""
-            try:
-                if tk.if_int_negative(update.message.chat_id):
-                    bot.send_message(chat_id=update.message.chat_id,text="結果將顯示於私人對話。")
-                result=[]
-                result_sub=[]
-                try:
-                    bot.send_message(chat_id=update.message.from_user.id,text='恩、太多ㄌㄅ我看看')
-                except:
-                    bot.send_message(chat_id=update.message.chat_id,
-                    text='<a href="https://telegram.me/MisakiAobaBot?start=sticker">請先在私訊START</a>',
-                    parse_mode='HTML')
-                    return
-                for i in find_result:
-                    result_sub.append('<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n')
-                    if len(result_sub) == 10:
-                        t=""
-                        for j in result_sub:
-                            t+=j
-                        result.append(t)
-                        result_sub=[]
-                # last message
-                t=""
-                for j in result_sub:
-                    t+=j
-                result.append(t)
-                result_sub=[]
 
-                global quote_search
+            # Package result
+            result=[]
+            t=""
+            for i in find_result:
+                t=t+'<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n'
+            result.append(t)
+
+            # Sending result
+            try:
                 quote_search[update.message.from_user.id]=result
                 # save to globle var
-
                 bot.send_message(chat_id=update.message.from_user.id,
                     text=result[0],
                     reply_markup=page_keyboard(result,1),
                     parse_mode='HTML')
             except:
-                bot.send_message(chat_id=update.message.from_user.id,text="Unexpected error.")
+                bot.send_message(chat_id=update.message.from_user.id,text="ぜ")
+                return
+            finally:
+                search_total_time=(datetime.now()-search_init_time).total_seconds()
+                t="結束搜尋。共有{}筆資料。\n共耗時{}秒。".format(result_length,search_total_time)
+                bot.send_message(chat_id=update.message.from_user.id,text=t,parse_mode='HTML')
+
+        else:
+            """Case 4: Result is more than 10"""
+            # Hint user that result is in PM
+            if tk.if_int_negative(update.message.chat_id):
+                bot.send_message(chat_id=update.message.chat_id,text="結果將顯示於私人對話。")
+
+            # Test user has start bot
+            try:
+                bot.send_message(chat_id=update.message.from_user.id,
+                    text="以下為【{}】的搜尋結果".format(search_para))
+            except:
+                bot.send_message(chat_id=update.message.chat_id,
+                        text='<a href="https://telegram.me/MisakiAobaBot?start=sticker">請先在私訊START</a>',
+                        parse_mode='HTML')
+                return
+
+            # Package result
+            result=[]
+            result_sub=[]
+            for i in find_result:
+                result_sub.append('<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n')
+                if len(result_sub) == 10:
+                    t=""
+                    for j in result_sub:
+                        t+=j
+                    result.append(t)
+                    result_sub=[]
+            # last message
+            t=""
+            for j in result_sub:
+                t+=j
+            result.append(t)
+            result_sub=[]
+
+            try:
+                # Sending result
+                quote_search[update.message.from_user.id]=result # save to globle var
+                bot.send_message(chat_id=update.message.from_user.id,
+                    text=result[0],
+                    reply_markup=page_keyboard(result,1),
+                    parse_mode='HTML')
+            except:
+                bot.send_message(chat_id=update.message.from_user.id,text="ぜ")
+                return
             finally:
                 search_total_time=(datetime.now()-search_init_time).total_seconds()
                 t="結束搜尋。共有{}筆資料共{}頁。\n共耗時{}秒。".format(result_length,int((result_length-1)/10)+1,search_total_time)
@@ -871,7 +901,12 @@ def sub_menu_keyboard(state):
 
 def page_keyboard(list,page):
     total_page=len(list)
-    if page==1:
+    if len(list)==1:
+        keyboard = [[InlineKeyboardButton(text='||',callback_data='None'),
+                     InlineKeyboardButton(text='P{}'.format(page),callback_data='None'),
+                     InlineKeyboardButton(text='||',callback_data='cmd_turn_right')],
+                    [InlineKeyboardButton(text='結束',callback_data='cmd_quote_search_exit')]]
+    elif page==1:
         keyboard = [[InlineKeyboardButton(text='||',callback_data='None'),
                      InlineKeyboardButton(text='P{}'.format(page),callback_data='None'),
                      InlineKeyboardButton(text='>>',callback_data='cmd_turn_right'+str(page))],
