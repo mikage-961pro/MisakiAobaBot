@@ -851,6 +851,9 @@ def menu_actions(bot, update):
     elif query_text == "cmd_quote_search_exit":
         """Clear template data"""
         menu_quote_search_exit()
+    elif query_text == "None":
+        """No cmd, decoration"""
+        pass
 
 # Keyboards
 def main_menu_keyboard():
@@ -869,13 +872,18 @@ def sub_menu_keyboard(state):
 def page_keyboard(list,page):
     total_page=len(list)
     if page==1:
-        keyboard = [[InlineKeyboardButton(text='⮕',callback_data='cmd_turn_right'+str(page))],
+        keyboard = [[InlineKeyboardButton(text='||',callback_data='None'),
+                     InlineKeyboardButton(text='P{}'.format(page),callback_data='None'),
+                     InlineKeyboardButton(text='⮕',callback_data='cmd_turn_right'+str(page))],
                     [InlineKeyboardButton(text='結束',callback_data='cmd_quote_search_exit')]]
     elif page==total_page:
-        keyboard = [[InlineKeyboardButton(text='⬅︎',callback_data='cmd_turn_left'+str(page))],
+        keyboard = [[InlineKeyboardButton(text='⬅︎',callback_data='cmd_turn_left'+str(page)),
+                     InlineKeyboardButton(text='P{}'.format(page),callback_data='None'),
+                     InlineKeyboardButton(text='||',callback_data='None')],
                     [InlineKeyboardButton(text='結束',callback_data='cmd_quote_search_exit')]]
     else:
         keyboard = [[InlineKeyboardButton(text='⬅︎',callback_data='cmd_turn_left'+str(page)),
+                     InlineKeyboardButton(text='P{}'.format(page),callback_data='None'),
                      InlineKeyboardButton(text='⮕',callback_data='cmd_turn_right'+str(page))],
                     [InlineKeyboardButton(text='結束',callback_data='cmd_quote_search_exit')]]
     return InlineKeyboardMarkup(keyboard)
