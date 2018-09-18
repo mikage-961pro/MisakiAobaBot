@@ -248,11 +248,13 @@ def quote(bot,update,args):
                     result.append(t)
                     result_sub=[]
             # last message
-            t=""
-            for j in result_sub:
-                t+=j
-            result.append(t)
-            result_sub=[]
+            if result_sub!=[]:
+                # Issue: for length is times of 10, will have more 1 page
+                t=""
+                for j in result_sub:
+                    t+=j
+                result.append(t)
+                result_sub=[]
 
             try:
                 # Sending result
@@ -911,7 +913,7 @@ def sub_menu_keyboard(state):
 
 def page_keyboard(list,page):
     total_page=len(list)
-    if len(list)==1:
+    if total_page==1:
         keyboard = [[InlineKeyboardButton(text='||',callback_data='None'),
                      InlineKeyboardButton(text='P{}'.format(page),callback_data='None'),
                      InlineKeyboardButton(text='||',callback_data='None')],
