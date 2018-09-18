@@ -163,17 +163,23 @@ def which(bot, update, args):
 @do_after_root
 @run_async
 def quote(bot,update,args):
-    context=tk.formula('f',' '.join(args))
-    if context != False:
-        if context=="":
+    # search parameter
+    search_para=tk.formula('f',' '.join(args))
+    if search_para != False:
+        if search_para=="":
+            """Case 1: No words"""
             bot.send_message(chat_id=update.message.chat_id,text="Please enter word.")
             return
-        find_result=MisaMongo.quote_finder(context)
+        find_result=MisaMongo.quote_finder(search_para)
         result_length=len(find_result)
+        search_init_time=datetime.now()
         if result_length==0:
+            """Case 2: No search result"""
             bot.send_message(chat_id=update.message.chat_id,text="No search result.")
         elif result_length<10:
-            bot.send_message(chat_id=update.message.chat_id,text="結果將顯示於私人對話。")
+            """Case 3: Result is less than 10"""
+            if tk.if_int_negative(update.message.chat_id):
+                bot.send_message(chat_id=update.message.chat_id,text="結果將顯示於私人對話。")
             result=""
             for i in find_result:
                 result=result+'<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n'
@@ -181,15 +187,18 @@ def quote(bot,update,args):
                 bot.send_message(chat_id=update.message.from_user.id,text=result,parse_mode='HTML')
             except:
                 bot.send_message(chat_id=update.message.chat_id,
-                text='<a href="https://telegram.me/MisakiAobaBot?start=sticker">請先在私訊START</a>',
-                parse_mode='HTML')
+                        text='<a href="https://telegram.me/MisakiAobaBot?start=sticker">請先在私訊START</a>',
+                        parse_mode='HTML')
                 return
             finally:
-                t="結束搜尋。共有{}筆資料。".format(result_length)
+                search_total_time=(datetime.now()-search_init_time).total_seconds()
+                t="結束搜尋。共有{}筆資料。\n共耗時{}秒。".format(result_length,search_total_time)
                 bot.send_message(chat_id=update.message.from_user.id,text=t,parse_mode='HTML')
         else:
+            """Case 4: Result is more than 10"""
             try:
-                bot.send_message(chat_id=update.message.chat_id,text="結果將顯示於私人對話。")
+                if tk.if_int_negative(update.message.chat_id):
+                    bot.send_message(chat_id=update.message.chat_id,text="結果將顯示於私人對話。")
                 result=[]
                 try:
                     bot.send_message(chat_id=update.message.from_user.id,text='恩、太多ㄌㄅ我看看')
@@ -206,10 +215,18 @@ def quote(bot,update,args):
                             t+=j
                         bot.send_message(chat_id=update.message.from_user.id,text=t,parse_mode='HTML')
                         result=[]
+                # last message
+                t=""
+                for j in result:
+                    t+=j
+                bot.send_message(chat_id=update.message.from_user.id,text=t,parse_mode='HTML')
+                result=[]
+
             except:
                 bot.send_message(chat_id=update.message.from_user.id,text="Unexpected error.")
             finally:
-                t="結束搜尋。共有{}筆資料。".format(result_length)
+                search_total_time=(datetime.now()-search_init_time).total_seconds()
+                t="結束搜尋。共有{}筆資料共{}頁。\n共耗時{}秒。".format(result_length,int(result_length/10)+1,search_total_time)
                 bot.send_message(chat_id=update.message.from_user.id,text=t,parse_mode='HTML')
         return
 
@@ -548,7 +565,7 @@ def key_word_reaction(bot,update):
                 }
             MisaMongo.insert_data('quote_main',qdict)
 
-
+"""
     ###################################
     #          bot_historian          #
     ###################################
@@ -564,7 +581,7 @@ def key_word_reaction(bot,update):
             break
     if fvalue==False:
         last_message_list.append(list)
-
+"""
 
 def message_callback(bot, update):
 
@@ -763,6 +780,11 @@ def menu_actions(bot, update):
         global reply_pair
         reply_pair[update.message.from_user.id]=rpl
         """
+    def menu_turn_left():
+        pass
+    def menu_turn_right():
+        pass
+
     # Switch
     if query_text == "main":
         """Main menu"""
@@ -787,6 +809,12 @@ def menu_actions(bot, update):
     elif query_text == "cmd_canceled":
         """Cancel menu"""
         menu_canceled()
+    elif query_text == "cmd_turn_left":
+        """Last page"""
+        menu_turn_left()
+    elif query_text == "cmd_turn_right":
+        """Right page"""
+        menu_turn_right()
 
 # Keyboards
 def main_menu_keyboard():
@@ -802,6 +830,20 @@ def sub_menu_keyboard(state):
                 [InlineKeyboardButton(text='取消',callback_data='main')]]
     return InlineKeyboardMarkup(keyboard)
 
+def page_keyboard(page,total_page):
+    if page==1:
+        keyboard = [[InlineKeyboardButton(text='⮕',callback_data='cmd_turn_right')],
+                    [InlineKeyboardButton(text='結束',callback_data='cmd_canceled')]]
+    elif page==total_page:
+        keyboard = [[InlineKeyboardButton(text='⬅︎',callback_data='cmd_turn_left')],
+                    [InlineKeyboardButton(text='結束',callback_data='cmd_canceled')]]
+    else:
+        keyboard = [[InlineKeyboardButton(text='⬅︎',callback_data='cmd_turn_left'),
+                    InlineKeyboardButton(text='⮕',callback_data='cmd_turn_right')],
+                    [InlineKeyboardButton(text='結束',callback_data='cmd_canceled')]]
+    return InlineKeyboardMarkup(keyboard)
+
+# error logs
 def error(bot, update, error):
     """Log Errors caused by Updates."""
     logger.warning('Update "%s" caused error "%s"', update, error)
@@ -839,7 +881,7 @@ def main():
     #mission refresh daily gasya
     dj.run_daily(daily_reset,stime(14,59,59))
     #refresh buffer
-    dj.run_repeating(refresh_buffer, interval=60, first=0)
+    # dj.run_repeating(refresh_buffer, interval=60, first=0)
 
 
     # ---Command answer---

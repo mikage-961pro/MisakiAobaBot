@@ -227,6 +227,12 @@ def utc8now():
 def utc8now_datetime():
     return datetime.now()+timedelta(hours=8)
 
+def if_int_negative(interval):
+    if interval<0:
+        return True
+    else:
+        return False
+
 def formula(key,text,if_list=False):
     """
     To make function has add function.
