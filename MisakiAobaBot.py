@@ -284,8 +284,9 @@ def randPic(bot,update,args):
             url=MisaMongo.randget_idol('all')[0]['url']
         else:
             url=MisaMongo.randget_idol(idol_name)[0]['url']
-    finally:
         bot.send_photo(chat_id=update.message.chat_id,photo=url)
+    except:
+        bot.send_message(chat_id=update.message.chat_id,text='這位偶像還沒有圖喔！')
 
 
 
