@@ -14,11 +14,8 @@ from datetime import time as stime#specific time
 import logging
 import time
 import os
-from random import randrange
-import random
-import json
 from string import Template
-from functools import wraps
+from random import randrange
 
 # ---Telegram
 from telegram import Bot, Chat, Sticker, ReplyKeyboardMarkup,MessageEntity
@@ -155,7 +152,6 @@ def which(bot, update, args):
             text="わたしは〜♬［$res］が良いと思うよ〜えへへ。".replace('$res',result)
             bot.send_message(chat_id=update.message.chat_id, text=text)
 
-
 @do_after_root
 @run_async
 def quote(bot,update,args):
@@ -281,14 +277,17 @@ def quote(bot,update,args):
     msg=bot.send_message(chat_id=update.message.chat_id,text=text,parse_mode='HTML')
 
 @do_after_root
-def randchihaya(bot,update):
-    url=dbrandGet('randchihaya','url')
-    bot.send_photo(chat_id=update.message.chat_id,photo=url)
+def randPic(bot,update,args):
+    idol_name=' '.join(args)
+    try:
+        if idol_name=='':
+            url=MisaMongo.randget_idol('all')[0]['url']
+        else:
+            url=MisaMongo.randget_idol(idol_name)[0]['url']
+    finally:
+        bot.send_photo(chat_id=update.message.chat_id,photo=url)
 
-@do_after_root
-def randtsumugi(bot,update):
-    url=dbrandGet('randtsumugi','url')
-    bot.send_photo(chat_id=update.message.chat_id,photo=url)
+
 
 @do_after_root
 def sticker_matome(bot,update):
@@ -486,15 +485,21 @@ def key_word_reaction(bot,update):
     ###################################
     #               NAZO              #
     ###################################
-    test=update.message.text
-    if test.find('tumu@db')!=-1:
-        rmsg=update.message.reply_to_message
-        col=['name','url']
-        if rmsg.text.find('http')!=-1:
-            data=['adp',rmsg.text]
-            dbDump('randtsumugi',data,col)
-            bot.send_message(chat_id=update.message.chat_id,text='ok~~')
-            return
+    cmd_word_save=update.message.text
+    for idol_name in GLOBAL_WORDS.idol_list:
+        if cmd_word_save.find(idol_name+'@db')!=-1:
+            rmsg=update.message.reply_to_message
+            if rmsg.text.find('http')!=-1:
+                idol_db={
+                'name':idol_name,
+                'url':rmsg.text,
+                'date':tk.utc8now(),
+                'saved_by':update.message.from_user.id
+                }
+                MisaMongo.insert_data('ml_idol_pic_colle',idol_db)
+                echo_word='画像が保存しました！'
+                bot.send_message(chat_id=update.message.chat_id,text=echo_word)
+                return
     ###################################
     #          quote collector        #
     ###################################
@@ -808,8 +813,7 @@ def main():
     dp.add_handler(CommandHandler("nanto", nanto, pass_args=True))
     dp.add_handler(CommandHandler("which", which, pass_args=True))
     dp.add_handler(CommandHandler("quote",quote, pass_args=True))
-    dp.add_handler(CommandHandler("randChihaya",randchihaya))
-    dp.add_handler(CommandHandler("randTsumugi",randtsumugi))
+    dp.add_handler(CommandHandler("randpic",randPic, pass_args=True))
     dp.add_handler(CommandHandler("sticker",sticker_matome))
 
     # beta version function

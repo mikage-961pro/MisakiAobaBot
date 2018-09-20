@@ -74,9 +74,9 @@ class GLOBAL_WORDS:
 目前室內人數：$user_number
 """
     word_about="""
-Version:Beta 1.4.1
+Version:Beta 1.5
 Boot Time:$boot_time
-Last update:2018/09/18
+Last update:2018/09/20
 Developer:765技術部成員
     Dephilia（蝶芙）／TAKE（他Ｋ）
 Base Language:Python
@@ -90,3 +90,72 @@ Database:
 美咲提醒你：剩下３０分鐘換日呦～
 注意你的每日任務！
     """
+
+    idol_list_pr=[
+    'mirai',
+    'sayoko',
+    'kotoha',
+    'arisa',
+    'kana',
+    'emiri',
+    'umi',
+    'minako',
+    'noriko',
+    'nao',
+    'matsuri',
+    'iku',
+    'yuriko'
+    ]
+    idol_list_fr=[
+    'julia',
+    'tomoka',
+    'sizuka',
+    'subaru',
+    'ayumu',
+    'mizuki',
+    'rio',
+    'shiho',
+    'momoko',
+    'megumi',
+    'tizuru',
+    'roco',
+    'tsumugi'
+    ]
+    idol_list_ag=[
+    'hinata',
+    'serika',
+    'anna',
+    'tamaki',
+    'reika',
+    'erena',
+    'akane',
+    'konomi',
+    'tsubasa',
+    'karen',
+    'huuka',
+    'miya',
+    'kaori'
+    ]
+    idol_list_al=[
+    'haruka',
+    'chihaya',
+    'yukiho',
+    'yayoi',
+    'ritsuko',
+    'azusa',
+    'iori',
+    'makoto',
+    'ami',
+    'mami',
+    'miki',
+    'hibiki',
+    'takane'
+    ]
+    zimuinn=[
+    'misaki',
+    'kotori'
+    ]
+    idol_list_passion=[
+    'yoshino'
+    ]
+    idol_list=idol_list_pr+idol_list_fr+idol_list_ag+idol_list_al+zimuinn

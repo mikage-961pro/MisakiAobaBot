@@ -8,7 +8,6 @@ tbgame-765プロゲーム部入口，進去跟大家玩桌遊吧
 which-把事情丟給美咲決定（用#井字號分隔事情）
 nanto-なんとぉ！
 quote-每日一句
-randchihaya-召喚千早
-randtsumugi-召喚紬
+randpic-召喚偶像（空格+偶像名字可以指定）
 sticker-召喚貼圖集
 """
