@@ -40,9 +40,8 @@ from postgre import dbDump,dbrandGet,dbGet
 
 # ---User Module
 from global_words import GLOBAL_WORDS
-from tk import do_once, del_cmd, do_after_root, admin_cmd, del_cmd_func
-from tk import db_switch_one_value, bool2text, room_member_num, bot_is_admin, is_admin, c_tz
-from tk import init_time, utc8now, randList
+from tk import do_once, del_cmd, do_after_root, admin_cmd
+from tk import init_time
 import MisaMongo,tk
 
 ################################################
@@ -270,13 +269,13 @@ def quote(bot,update,args):
 
     #daily quote
     if MisaMongo.display_data('config',{'id':update.message.from_user.id},'day_quote')==False:
-        del_cmd_func(bot,update)
+        tk.del_cmd_func(bot,update)
         return
     else:
 
         MisaMongo.modify_data('config',pipeline={'id':update.message.from_user.id},key='day_quote',update_value=False)
 
-        del_cmd_func(bot,update)
+        tk.del_cmd_func(bot,update)
     quote=MisaMongo.randget()[0]
     text='<pre>'+quote['quote']+'</pre>\n'+'-----<b>'+quote['said']+'</b> より'
     msg=bot.send_message(chat_id=update.message.chat_id,text=text,parse_mode='HTML')
@@ -401,7 +400,7 @@ def key_word_reaction(bot,update):
             if echo != None:
                 if num<prob:
                     if echo_list:
-                        msgSend(randList(echo))
+                        msgSend(tk.randList(echo))
                     else:
                         msgSend(echo)
                 if num>=prob and els!=None:
@@ -411,12 +410,12 @@ def key_word_reaction(bot,update):
                         msgSend(els)
             elif video != None and num<prob:
                 if echo_list:
-                    videoSend(randList(video))
+                    videoSend(tk.randList(video))
                 else:
                     videoSend(video)
             elif photo != None and num<prob:
                 if echo_list:
-                    picSend(randList(photo))
+                    picSend(tk.randList(photo))
                 else:
                     picSend(photo)
 
@@ -509,7 +508,7 @@ def key_word_reaction(bot,update):
                 'said': update.message.from_user.first_name,
                 'tag': '',
                 'said_id':update.message.from_user.id,
-                'date':utc8now()
+                'date':tk.utc8now()
                 }
             MisaMongo.insert_data('quote_main',qdict)
             record=True
@@ -520,7 +519,7 @@ def key_word_reaction(bot,update):
                 'said': update.message.reply_to_message.from_user.first_name,
                 'tag': '',
                 'said_id':update.message.reply_to_message.from_user.id,
-                'date':utc8now()
+                'date':tk.utc8now()
                 }
             MisaMongo.insert_data('quote_main',qdict)
 
@@ -589,20 +588,20 @@ def menu_actions(bot, update):
     def menu_state():
         fin_text()
         temp=Template(GLOBAL_WORDS.word_state)
-        un=str(room_member_num(bot,update=query))
+        un=str(tk.room_member_num(bot,update=query))
         text=temp.substitute(user_number=un)
         bot.send_message(text=text,chat_id=query.message.chat_id)
     def menu_about():
         fin_text()
         temp=Template(GLOBAL_WORDS.word_about)
-        rt=utc8now()
+        rt=tk.utc8now()
         text=temp.substitute(boot_time=rt)
         bot.send_message(text=text,chat_id=query.message.chat_id,parse_mode=ParseMode.HTML)
     def menu_resp_check():
         data_value = MisaMongo.display_data('config',{'id':query.from_user.id},'reply')
         if data_value is None:
             data_value=True#default open
-        text='{}P目前狀態：{}'.format(query.from_user.first_name,bool2text(data_value))
+        text='{}P目前狀態：{}'.format(query.from_user.first_name,tk.bool2text(data_value))
         bot.edit_message_text(chat_id=query.message.chat_id,
                 message_id=query.message.message_id,
                 text=text,
@@ -622,7 +621,7 @@ def menu_actions(bot, update):
                 message_id=query.message.message_id,
                 text="まだね〜")
     def menu_ruleSetting():
-        admin_access=is_admin(bot,update)
+        admin_access=tk.is_admin(bot,update)
         if admin_access == False:
             bot.edit_message_text(chat_id=query.message.chat_id,
                     message_id=query.message.message_id,
