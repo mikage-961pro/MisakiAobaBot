@@ -1,5 +1,5 @@
 # coding=utf-8
-# global words
+# global words_zh
 
 class GLOBAL_WORDS:
 
@@ -74,14 +74,14 @@ class GLOBAL_WORDS:
 目前室內人數：$user_number
 """
     word_about="""
-Version:Beta 1.4
+Version:Beta 1.4.1
 Boot Time:$boot_time
 Last update:2018/09/18
 Developer:765技術部成員
     Dephilia（蝶芙）／TAKE（他Ｋ）
 Base Language:Python
 Database:
-    MongoDB/postgresql/google sheet
+    MongoDB/postgresql
 <a href="https://dephilia.github.io/MisakiAobaBot/">〔github link〕</a>
 <a href="https://www.plurk.com/Dephillia">〔噗浪〕</a>
     """

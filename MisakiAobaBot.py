@@ -29,15 +29,11 @@ from telegram.ext.dispatcher import run_async
 
 token = os.environ['TELEGRAM_TOKEN']
 updater = Updater(token,workers=16)
-# Enable logging
+
+# ---logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-# ---Google Database
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
-spreadsheet_key=os.environ['SPREAD_TOKEN']
 
 # ---postgresql
 from postgre import dbDump,dbrandGet,dbGet
@@ -46,13 +42,13 @@ from postgre import dbDump,dbrandGet,dbGet
 from global_words import GLOBAL_WORDS
 from tk import do_once, del_cmd, do_after_root, admin_cmd, del_cmd_func
 from tk import db_switch_one_value, bool2text, room_member_num, bot_is_admin, is_admin, c_tz
-
-
-
 from tk import init_time, utc8now, randList
-from tk import get_config, set_config, work_sheet_pop, work_sheet_push, get_sheet
 import MisaMongo,tk
 
+################################################
+#                 Gloval var                   #
+################################################
+quote_search={} # Use on /quote
 ################################################
 #                   command                    #
 ################################################
@@ -160,7 +156,7 @@ def which(bot, update, args):
             text="わたしは〜♬［$res］が良いと思うよ〜えへへ。".replace('$res',result)
             bot.send_message(chat_id=update.message.chat_id, text=text)
 
-quote_search={}
+
 @do_after_root
 @run_async
 def quote(bot,update,args):
@@ -272,11 +268,6 @@ def quote(bot,update,args):
                 bot.send_message(chat_id=update.message.from_user.id,text=t,parse_mode='HTML')
         return
 
-
-    global config_buffer
-    global config_buffer_Plock
-
-
     #daily quote
     if MisaMongo.display_data('config',{'id':update.message.from_user.id},'day_quote')==False:
         del_cmd_func(bot,update)
@@ -364,80 +355,6 @@ def testfunc(bot, update):
 ################################################
 #               not command                    #
 ################################################
-def find_word_TAKEVER(sentence,key_words, echo=None, prob=1000, els=None,photo =None, video=None,sticker=None, allco=False,passArg=[]):
-    #sentence:sentence user send
-    # words: words need to reaction
-    # echo: msg send after reaction
-    # prob: probability, if not, send els msg
-    # els: if not in prob
-    list_r=['','']
-    #represent type of return
-    # a random number from 0 to 99
-    num = randrange(1000)
-    key_words_value=False
-    for check in key_words:
-        if allco == False:
-             if sentence.find(check)!=-1:
-                key_words_value=True
-        if allco == True:
-            if sentence.find(check)!=-1:
-                key_words_value=True
-            else:
-                key_words_value=False
-                break
-    for i in passArg:
-        if i==True:
-            key_words_value=False
-
-    if echo != None:
-        if key_words_value==True and num<prob:
-            list_r[0]='t'
-            list_r[1]=echo
-            return list_r
-        if key_words_value==True and num>=prob and els!=None:
-            if els.find('http')!=-1:
-                list_r[0]='v'
-            else:
-                list_r[0]='t'
-            list_r[1]=els
-            return list_r
-    elif photo!=None:
-        if key_words_value==True and num<prob:
-            list_r[0]='p'
-            list_r[1]=photo[randrange(len(photo))]
-            return list_r
-    elif video != None:
-        if key_words_value==True and num<prob:
-            list_r[0]='v'
-            list_r[1]=video[randrange(len(video))]
-            return list_r
-    elif sticker != None:
-        if key_words_value==True and num<prob:
-            list_r[0]='s'
-            list_r[1]=stickerrandrange(len(sticker))
-            return list_r
-    lr=[None,key_words_value]
-    return lr
-
-def key_word_reaction_json(word):
-    global kw_j_buffer
-    global kw_j_buffer_Plock
-    list_k=[]
-
-    passArg={'misaki_pass':find_word_TAKEVER(word,['#美咲請安靜'])[1],'try_pass':find_word_TAKEVER(word,['天','ナンス','もちょ'],allco=True)[1]}
-    if kw_j_buffer_Plock==True:
-        time.sleep(1)
-    #if buffer is refreshing
-    for i in kw_j_buffer:
-        pl=[]
-        for j in i['passArg']:
-            pl.append(passArg[j])
-        temp_t=find_word_TAKEVER(word,i['key_words'],echo=i['echo'],prob=i['prob'],els=i['els'],allco=i['allco'],photo =i['photo'], video=i['video'],sticker=i['sticker'],passArg=pl)
-        if temp_t != None:
-            list_k.append(temp_t)
-    return list_k
-
-
 def key_word_reaction(bot,update):
     ###################################
     #        key word reaction        #
@@ -607,24 +524,6 @@ def key_word_reaction(bot,update):
                 }
             MisaMongo.insert_data('quote_main',qdict)
 
-"""
-    ###################################
-    #          bot_historian          #
-    ###################################
-    chat_id=update.message.chat_id
-    lmessage_id=update.message.message_id
-    list=[str(chat_id),lmessage_id]
-    global last_message_list
-    fvalue=False
-    for i in last_message_list:
-        if i[0].find(list[0])!=-1:
-            fvalue=True
-            i[1]=list[1]
-            break
-    if fvalue==False:
-        last_message_list.append(list)
-"""
-
 def message_callback(bot, update):
 
     ###################################
@@ -645,10 +544,11 @@ def message_callback(bot, update):
             text = text.replace('$username',update.message.left_chat_member.first_name)
             bot.send_message(chat_id=update.message.chat_id,text=text)
 
+################################################
+#              repeating command               #
+################################################
 
-def mission_callback(bot,job):
-    # somaction
-
+def misaki_changeday_alarm(bot,job):
     # 玩人狼玩到忘記每日
     bot.send_message(chat_id='-1001290696540',text=GLOBAL_WORDS.word_do_mission)
 
@@ -667,82 +567,8 @@ def save_room_state(bot, job):
         }
     MisaMongo.insert_data('room_state',room_data)
 
-def group_history(bot,job):
-    ######################
-    #put in your group id#
-    ######################
-    chat_id=-1001290696540
-    ######################
-    #put in your group id#
-    ######################
-    time = datetime.now().strftime("%y/%m/%d %H:%M:%S")#+0 time
-
-    #refresh token
-    scope = ['https://spreadsheets.google.com/feeds']
-    creds = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
-    client = gspread.authorize(creds)
-    sheet = client.open_by_key(spreadsheet_key)
-    #get last_message_id
-    worksheet=sheet.worksheet('last_message_misaki')
-    c=get_cell(str(chat_id),worksheet)
-    message_id=worksheet.cell(c.row,c.col+1).value
-    count=bot.get_chat_members_count(chat_id)
-    #create record and save it
-    list=[str(chat_id),time,message_id,str(count)]
-    work_sheet_push(list,'server')
-    #get info 'now'
-    worksheet=sheet.worksheet('server')
-    w=get_cell(str(chat_id),worksheet)
-    #calculate
-    water=int(worksheet.cell(w.row,w.col+2).value)-int(worksheet.cell(w.row+1,w.col+2).value)
-    human=int(worksheet.cell(w.row,w.col+3).value)-int(worksheet.cell(w.row+1,w.col+3).value)
-    rate='在過去的幾個小時內，本群組增加了$water則訊息、加入$human位成員'
-    rate=rate.replace('$water',str(water))
-    rate=rate.replace('$human',str(human))
-    bot.send_message(chat_id=-1001290696540,text=rate)
-
 def daily_reset(bot,job):
     MisaMongo.modify_many_data('config',pipeline={"day_quote":False},key='day_quote',update_value=True)
-
-def refresh_buffer(bot,job):
-    #key_word_j_buffer
-    global kw_j_buffer
-    global kw_j_buffer_Plock
-    kw_j_buffer_temp=[]
-    k=[]
-    key_word_j=get_sheet('key_word_j_m')
-    try:
-        k=key_word_j.get_all_values()
-    except:
-        return
-    else:
-        for i in k:
-            try:
-                temp=json.loads(i[0])
-            except:
-                pass
-            else:
-                kw_j_buffer_temp.append(temp)
-    #lock
-    kw_j_buffer_Plock=True
-    kw_j_buffer=kw_j_buffer_temp
-    kw_j_buffer_Plock=False
-    #unlock
-
-    #config_buffer
-
-
-    #refresh lstmessage
-    global last_message_list
-
-    worksheet=get_sheet('last_message_misaki')
-    for i in last_message_list:
-        try:
-            cell=worksheet.find(i[0])
-        except:#not found
-            worksheet.insert_row(i, 1)
-        else:
-            worksheet.update_cell(cell.row,cell.col+1,i[1])
 
 
 ################################################
@@ -964,17 +790,14 @@ def main():
 
     # ---repeating jobs---
     # mission_callback every 22:30 daily
-    dj.run_daily(mission_callback,stime(14,30))
+    dj.run_daily(misaki_changeday_alarm,stime(14,30))
     # mission_show record every 8 hours
     m_history=[stime(7,0,0),stime(15,0,0),stime(23,0,0)]
     for t in m_history:
         #plug in mission time with loop
         dj.run_daily(save_room_state,t)
-    #mission refresh daily gasya
+    # mission refresh daily gasya
     dj.run_daily(daily_reset,stime(14,59,59))
-    #refresh buffer
-    # dj.run_repeating(refresh_buffer, interval=60, first=0)
-
 
     # ---Command answer---
     # on different commands - answer in Telegram
