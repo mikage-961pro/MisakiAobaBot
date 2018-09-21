@@ -23,11 +23,13 @@ from telegram import ReplyKeyboardRemove, ParseMode,ForceReply
 from telegram import InlineQueryResultArticle, InputTextMessageContent,InlineKeyboardMarkup,InlineKeyboardButton
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters,JobQueue,CallbackQueryHandler
 from telegram.ext.dispatcher import run_async
+from telegram.error import (TelegramError, Unauthorized, BadRequest,
+                            TimedOut, ChatMigrated, NetworkError)
 
 token = os.environ['TELEGRAM_TOKEN']
 updater = Updater(token,workers=16)
 
-# ---logging
+# ---error log setting
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -192,8 +194,10 @@ def quote(bot,update,args):
             # Package result
             result=[]
             t=""
+            counter=1
             for i in find_result:
-                t=t+'<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n'
+                t=t+str(counter)+'. '+'<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n'
+                counter+=1
             result.append(t)
 
             # Sending result
@@ -231,8 +235,10 @@ def quote(bot,update,args):
             # Package result
             result=[]
             result_sub=[]
+            counter=1
             for i in find_result:
-                result_sub.append('<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n')
+                result_sub.append(str(counter)+'. '+'<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n')
+                counter+=1
                 if len(result_sub) == 10:
                     t=""
                     for j in result_sub:
@@ -284,11 +290,16 @@ def randPic(bot,update,args):
         url=MisaMongo.randget_idol('all')[0]['url']
     elif idol_name in GLOBAL_WORDS.idol_list:
         url=MisaMongo.randget_idol(idol_name)[0]['url']
+    elif idol_name not in GLOBAL_WORDS.idol_list:
+        bot.send_message(chat_id=update.message.chat_id,text='だれ？')
+        return
     else:
         return
-    
+
     try:
         bot.send_photo(chat_id=update.message.chat_id,photo=url)
+    except TimedOut:
+        bot.send_message(chat_id=update.message.chat_id,text='讀取中...')
     except:
         bot.send_message(chat_id=update.message.chat_id,text='這位偶像還沒有圖喔！')
 
@@ -323,15 +334,17 @@ def savepic(bot, update):
     reply_pair[update.message.from_user.id]=rpl
 
 def save_room_state(bot, update):
+    msg=bot.send_message(chat_id=chat_id,text='聊天室資訊更新中...')
     room_data={
         'room_id':update.message.chat_id,
         'room_name':update.message['chat']['title'],
-        'update_time':update.message.date,
+        'update_time':tk.utc8now_datetime(),
         'total_message':update.message.message_id,
         'members_count':update.message.chat.get_members_count()
         }
     MisaMongo.insert_data('room_state',room_data)
-    bot.send_message(chat_id=update.message.chat_id,text='Room state has been saved.')
+
+    bot.send_message(chat_id=chat_id,text="更新成功！")
 
 def addecho(bot, update, args):
     context=' '.join(args)
@@ -354,6 +367,7 @@ def addecho(bot, update, args):
 
 def testfunc(bot, update):
     """print something"""
+    print(MisaMongo.room_state_getter())
     pass
 ################################################
 #               not command                    #
@@ -490,20 +504,29 @@ def key_word_reaction(bot,update):
     ###################################
     #              picsave            #
     ###################################
-    cmd_word_save=update.message.text.replace("@db","")
-    if cmd_word_save in GLOBAL_WORDS.idol_list:
-        rmsg=update.message.reply_to_message
-        if url_valid(rmsg.text):
-            idol_db={
-                'name':cmd_word_save,
-                'url':rmsg.text,
-                'date':tk.utc8now(),
-                'saved_by':update.message.from_user.id
-            }
-            MisaMongo.insert_data('ml_idol_pic_colle',idol_db)
-            echo_word='画像が保存しました！'
-            bot.send_message(chat_id=update.message.chat_id,text=echo_word)
-            return
+    if update.message.text.find("@db")!=-1:
+        cmd_word_save=update.message.text.replace("@db","")
+        if cmd_word_save in GLOBAL_WORDS.idol_list:
+            rmsg=update.message.reply_to_message
+            try:
+                if url_valid(rmsg.text):
+                    idol_db={
+                        'name':cmd_word_save,
+                        'url':rmsg.text,
+                        'date':tk.utc8now(),
+                        'saved_by':update.message.from_user.id
+                    }
+                    MisaMongo.insert_data('ml_idol_pic_colle',idol_db)
+                    echo_word='画像が保存しました！'
+                    bot.send_message(chat_id=update.message.chat_id,text=echo_word)
+            except AttributeError:
+                bot.send_message(chat_id=update.message.chat_id,text="画像がない。保存失敗した。")
+        elif cmd_word_save=='':
+            bot.send_message(chat_id=update.message.chat_id,text="もう！こんな遊ばなってください！")
+        else:
+            bot.send_message(chat_id=update.message.chat_id,text="知らない人ですよ。")
+        # Exit region
+        return
     ###################################
     #          quote collector        #
     ###################################
@@ -565,7 +588,16 @@ def save_room_state(bot, job):
     #put in your group id#
     ######################
     chat_id=-1001290696540
-    msg=bot.send_message(chat_id=chat_id,text='Room state has been saved.')
+    last_data=MisaMongo.room_state_getter()
+
+    try:
+        msg=bot.send_message(chat_id=chat_id,text='聊天室資訊更新中！')
+    except TimedOut:
+        logger.error('ERROR(save_room_state):Update time out.')
+    except Unauthorized:
+        logger.error('ERROR(save_room_state):Bot is not in room.')
+    except BadRequest:
+        pass
     room_data={
         'room_id':msg.chat_id,
         'room_name':msg['chat']['title'],
@@ -574,6 +606,17 @@ def save_room_state(bot, job):
         'members_count':msg.chat.get_members_count()
         }
     MisaMongo.insert_data('room_state',room_data)
+
+    wt=room_data['total_message']-last_data['total_message']
+    mb=room_data['members_count']-last_data['members_count']
+    tm_temp=(room_data['update_time']-last_data['update_time'])
+    tm=tk.strfdelta(tm_temp, "{hours}小時{minutes}分鐘")
+    temp=Template("更新成功！\n在$time內，水量上漲了$water的高度，出現了$member個野生的P。")
+    text=temp.substitute(time=tm,water=wt,member=mb)
+    try:
+        bot.send_message(chat_id=chat_id,text=text)
+    except BadRequest:
+        pass
 
 def daily_reset(bot,job):
     MisaMongo.modify_many_data('config',pipeline={"day_quote":False},key='day_quote',update_value=True)
@@ -597,8 +640,12 @@ def menu_actions(bot, update):
     def menu_state():
         fin_text()
         temp=Template(GLOBAL_WORDS.word_state)
+        rn=query.message['chat']['title']
+        rid=query.message.chat_id
+        tm=query.message.message_id
+        dt=tk.utc8now()
         un=str(tk.room_member_num(bot,update=query))
-        text=temp.substitute(user_number=un)
+        text=temp.substitute(room_name=rn,room_id=rid,msg_num=tm,user_number=un,time=dt)
         bot.send_message(text=text,chat_id=query.message.chat_id)
     def menu_about():
         fin_text()
@@ -781,6 +828,7 @@ def initialization():
     # ---Record init time---
     global init_time
     init_time = datetime.now()
+    logger.info("Bot start.")
 ################################################
 #                   main                       #
 ################################################

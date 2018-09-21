@@ -4,12 +4,19 @@ from datetime import datetime,tzinfo,timedelta
 from datetime import time as stime#specific time
 import time
 import os
+import logging
 from random import randrange
 from string import Template
 from functools import wraps
-from urllib2 import urlopen
-
+from urllib.request import urlopen
 from telegram import Bot, Chat, Sticker, ReplyKeyboardMarkup
+from telegram.error import (TelegramError, Unauthorized, BadRequest,
+                            TimedOut, ChatMigrated, NetworkError)
+
+# ---error log setting
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # do once var
 do_once_value=True
@@ -33,14 +40,17 @@ def c_tz(datetime,tz):
 def is_admin(bot,update):
     """Dectect user if admin, return boolen value"""
     is_admin=False
-    if update.message.chat.type=='private':
-        return is_admin
-    else:
-        adminlist=update.message.chat.get_administrators()
-        for i in adminlist:
-            if update.message.from_user.id==i.user.id:
-                is_admin=True
-        return is_admin
+    try:
+        if update.message.chat.type=='private':
+            return is_admin
+        else:
+            adminlist=update.message.chat.get_administrators()
+            for i in adminlist:
+                if update.message.from_user.id==i.user.id:
+                    is_admin=True
+            return is_admin
+    except AttributeError:
+        logger.error('ERROR(is_admin):In a all admin chat')
 
 def bot_is_admin(bot,update):
     """Dectect bot if admin, return boolen value"""
@@ -194,3 +204,9 @@ def url_valid(url):
     if (code / 100 >= 4):
         return False
     return True
+
+def strfdelta(tdelta, fmt):
+    d = {"days": tdelta.days}
+    d["hours"], rem = divmod(tdelta.seconds, 3600)
+    d["minutes"], d["seconds"] = divmod(rem, 60)
+    return fmt.format(**d)
