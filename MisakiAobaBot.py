@@ -334,7 +334,7 @@ def savepic(bot, update):
     reply_pair[update.message.from_user.id]=rpl
 
 def forcesave(bot, update):
-    msg=bot.send_message(chat_id=chat_id,text='聊天室資訊更新中...')
+    msg=bot.send_message(chat_id=update.message.chat_id,text='聊天室資訊更新中...')
     room_data={
         'room_id':update.message.chat_id,
         'room_name':update.message['chat']['title'],
