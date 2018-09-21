@@ -97,7 +97,7 @@ Database:
     'kotoha',
     'arisa',
     'kana',
-    'emiri',
+    'emily',
     'umi',
     'minako',
     'noriko',

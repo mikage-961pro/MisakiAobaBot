@@ -7,6 +7,7 @@ import os
 from random import randrange
 from string import Template
 from functools import wraps
+from urllib2 import urlopen
 
 from telegram import Bot, Chat, Sticker, ReplyKeyboardMarkup
 
@@ -187,3 +188,9 @@ def formula(key,text,if_list=False,parameter_preword='-',sep_word=' '):
             finally:
                 pass
     return value
+
+def url_valid(url):
+    code = urlopen(url).code
+    if (code / 100 >= 4):
+        return False
+    return True
