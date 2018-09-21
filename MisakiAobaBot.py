@@ -484,12 +484,16 @@ def key_word_reaction(bot,update):
             bot.send_message(chat_id=update.message.chat_id,text=update.message.text)
         del reply_pair[update.message.from_user.id]
     ###################################
-    #               NAZO              #
+    #              picsave            #
     ###################################
     cmd_word_save=update.message.text
     for idol_name in GLOBAL_WORDS.idol_list:
-        if cmd_word_save.find(idol_name+'@db')!=-1:
-            rmsg=update.message.reply_to_message
+        if update.message.text == (idol_name+'@db'):
+            try:
+                rmsg=update.message.reply_to_message
+            except:
+                print("{} A save pic error.".format(utc8now))
+                return
             if rmsg.text.find('http')!=-1:
                 idol_db={
                 'name':idol_name,
