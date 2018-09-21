@@ -280,11 +280,14 @@ def quote(bot,update,args):
 @do_after_root
 def randPic(bot,update,args):
     idol_name=' '.join(args)
+    if idol_name=='':
+        url=MisaMongo.randget_idol('all')[0]['url']
+    elif idol_name in GLOBAL_WORDS.idol_list:
+        url=MisaMongo.randget_idol(idol_name)[0]['url']
+    else:
+        return
+    
     try:
-        if idol_name=='':
-            url=MisaMongo.randget_idol('all')[0]['url']
-        else:
-            url=MisaMongo.randget_idol(idol_name)[0]['url']
         bot.send_photo(chat_id=update.message.chat_id,photo=url)
     except:
         bot.send_message(chat_id=update.message.chat_id,text='這位偶像還沒有圖喔！')
@@ -487,21 +490,20 @@ def key_word_reaction(bot,update):
     ###################################
     #               NAZO              #
     ###################################
-    cmd_word_save=update.message.text
-    for idol_name in GLOBAL_WORDS.idol_list:
-        if cmd_word_save.find(idol_name+'@db')!=-1:
-            rmsg=update.message.reply_to_message
-            if url_valid(rmsg.text):
-                idol_db={
-                'name':idol_name,
+    cmd_word_save=update.message.text.replace("@db")
+    if cmd_word_save in GLOBAL_WORDS.idol_list:
+        rmsg=update.message.reply_to_message
+        if url_valid(rmsg.text):
+            idol_db={
+                'name':cmd_word_save,
                 'url':rmsg.text,
                 'date':tk.utc8now(),
                 'saved_by':update.message.from_user.id
-                }
-                MisaMongo.insert_data('ml_idol_pic_colle',idol_db)
-                echo_word='画像が保存しました！'
-                bot.send_message(chat_id=update.message.chat_id,text=echo_word)
-                return
+            }
+            MisaMongo.insert_data('ml_idol_pic_colle',idol_db)
+            echo_word='画像が保存しました！'
+            bot.send_message(chat_id=update.message.chat_id,text=echo_word)
+            return
     ###################################
     #          quote collector        #
     ###################################
