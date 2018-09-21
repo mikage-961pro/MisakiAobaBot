@@ -349,7 +349,7 @@ def forcesave(bot, update):
     room_data={
         'room_id':update.message.chat_id,
         'room_name':update.message['chat']['title'],
-        'update_time':tk.utc8now_datetime(),
+        'update_time':datetime.now(),
         'total_message':update.message.message_id,
         'members_count':update.message.chat.get_members_count()
         }
@@ -533,7 +533,7 @@ def key_word_reaction(bot,update):
                     idol_db={
                         'name':cmd_word_save,
                         'url':rmsg.text,
-                        'date':tk.utc8now(),
+                        'date':datetime.now(),
                         'saved_by':update.message.from_user.id
                     }
                     MisaMongo.insert_data('ml_idol_pic_colle',idol_db)
@@ -560,7 +560,7 @@ def key_word_reaction(bot,update):
                 'said': update.message.from_user.first_name,
                 'tag': '',
                 'said_id':update.message.from_user.id,
-                'date':tk.utc8now()
+                'date':datetime.now()
                 }
             MisaMongo.insert_data('quote_main',qdict)
             record=True
@@ -571,7 +571,7 @@ def key_word_reaction(bot,update):
                 'said': update.message.reply_to_message.from_user.first_name,
                 'tag': '',
                 'said_id':update.message.reply_to_message.from_user.id,
-                'date':tk.utc8now()
+                'date':datetime.now()
                 }
             MisaMongo.insert_data('quote_main',qdict)
 
@@ -622,7 +622,7 @@ def save_room_state(bot, job):
     room_data={
         'room_id':msg.chat_id,
         'room_name':msg['chat']['title'],
-        'update_time':tk.utc8now_datetime(),
+        'update_time':datetime.now(),
         'total_message':msg.message_id,
         'members_count':msg.chat.get_members_count()
         }
