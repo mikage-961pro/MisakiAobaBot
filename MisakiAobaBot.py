@@ -333,7 +333,7 @@ def savepic(bot, update):
     global reply_pair
     reply_pair[update.message.from_user.id]=rpl
 
-def save_room_state(bot, update):
+def forcesave(bot, update):
     msg=bot.send_message(chat_id=chat_id,text='聊天室資訊更新中...')
     room_data={
         'room_id':update.message.chat_id,
@@ -869,7 +869,7 @@ def main():
     dp.add_handler(CommandHandler("sticker",sticker_matome))
 
     # beta version function
-    dp.add_handler(CommandHandler("forcesave",save_room_state))
+    dp.add_handler(CommandHandler("forcesave",forcesave))
     dp.add_handler(CommandHandler("addecho", addecho, pass_args=True))
 
     # test function
