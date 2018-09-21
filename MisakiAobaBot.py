@@ -39,6 +39,7 @@ from postgre import dbDump,dbrandGet,dbGet
 from global_words import GLOBAL_WORDS
 from tk import do_once, del_cmd, do_after_root, admin_cmd
 from tk import init_time
+from tk import url_valid
 import MisaMongo,tk
 
 ################################################
@@ -490,7 +491,7 @@ def key_word_reaction(bot,update):
     for idol_name in GLOBAL_WORDS.idol_list:
         if cmd_word_save.find(idol_name+'@db')!=-1:
             rmsg=update.message.reply_to_message
-            if rmsg.text.find('http')!=-1:
+            if url_valid(rmsg.text):
                 idol_db={
                 'name':idol_name,
                 'url':rmsg.text,
