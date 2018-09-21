@@ -601,7 +601,7 @@ def save_room_state(bot, job):
     room_data={
         'room_id':msg.chat_id,
         'room_name':msg['chat']['title'],
-        'update_time':msg.date,
+        'update_time':tk.utc8now_datetime(),
         'total_message':msg.message_id,
         'members_count':msg.chat.get_members_count()
         }
