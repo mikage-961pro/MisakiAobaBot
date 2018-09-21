@@ -36,9 +36,9 @@ def randget_idol(idol,Collection='ml_idol_pic_colle',size=1):
         result.append(i)
     return result
 
-def room_state_getter(Collection='room_state'):
+def room_state_getter(Collection='room_state',room_id=-1001290696540):
     op_ins=db[Collection]
-    result=op_ins.find().sort('update_time',pymongo.DESCENDING).limit(1)[0]
+    result=op_ins.find({"room_id":room_id}).sort('update_time',pymongo.DESCENDING).limit(1)[0]
     return result
 
 def quote_finder(key,Collection='quote_main'):
