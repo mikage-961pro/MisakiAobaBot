@@ -488,7 +488,7 @@ def key_word_reaction(bot,update):
             bot.send_message(chat_id=update.message.chat_id,text=update.message.text)
         del reply_pair[update.message.from_user.id]
     ###################################
-    #               NAZO              #
+    #              picsave            #
     ###################################
     cmd_word_save=update.message.text.replace("@db","")
     if cmd_word_save in GLOBAL_WORDS.idol_list:

@@ -158,4 +158,5 @@ Database:
     idol_list_passion=[
     'yoshino'
     ]
-    idol_list=idol_list_pr+idol_list_fr+idol_list_ag+idol_list_al+zimuinn
+    idol_list=idol_list_pr+idol_list_fr+idol_list_ag+idol_list_al+zimuinn\
+                +idol_list_passion
