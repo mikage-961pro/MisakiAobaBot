@@ -4,7 +4,6 @@ from datetime import datetime,tzinfo,timedelta
 from datetime import time as stime#specific time
 import time
 import os
-import logging
 from random import randrange
 from string import Template
 from functools import wraps
@@ -14,6 +13,7 @@ from telegram.error import (TelegramError, Unauthorized, BadRequest,
                             TimedOut, ChatMigrated, NetworkError)
 
 # ---error log setting
+import logging
 logging.basicConfig(format='[%(asctime)s](%(levelname)s) %(name)s - %(message)s',
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -50,7 +50,7 @@ def is_admin(bot,update):
                     is_admin=True
             return is_admin
     except AttributeError:
-        logger.error('ERROR(is_admin):In a all admin chat')
+        logger.error('(is_admin):In a all admin chat')
 
 def bot_is_admin(bot,update):
     """Dectect bot if admin, return boolen value"""

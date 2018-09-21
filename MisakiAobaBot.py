@@ -338,6 +338,7 @@ def forcesave(bot, update):
 
     last_data=MisaMongo.room_state_getter(room_id=chat_id)
 
+
     try:
         msg=bot.send_message(chat_id=chat_id,text='聊天室資訊更新中！')
     except TimedOut:
@@ -355,16 +356,23 @@ def forcesave(bot, update):
         }
     MisaMongo.insert_data('room_state',room_data)
 
-    wt=room_data['total_message']-last_data['total_message']
-    mb=room_data['members_count']-last_data['members_count']
-    tm_temp=(room_data['update_time']-last_data['update_time'])
-    tm=tk.strfdelta(tm_temp, "{hours}小時{minutes}分鐘")
-    temp=Template("更新成功！\n在$time內，水量上漲了$water的高度，出現了$member個野生的P。")
-    text=temp.substitute(time=tm,water=wt,member=mb)
-    try:
-        bot.send_message(chat_id=chat_id,text=text)
-    except BadRequest:
-        pass
+    if last_data==None:
+        text="初次儲存。儲存成功。"
+        try:
+            bot.send_message(chat_id=chat_id,text=text)
+        except BadRequest:
+            pass
+    else:
+        wt=room_data['total_message']-last_data['total_message']
+        mb=room_data['members_count']-last_data['members_count']
+        tm_temp=(room_data['update_time']-last_data['update_time'])
+        tm=tk.strfdelta(tm_temp, "{hours}小時{minutes}分鐘")
+        temp=Template("更新成功！\n在$time內，水量上漲了$water的高度，出現了$member個野生的P。")
+        text=temp.substitute(time=tm,water=wt,member=mb)
+        try:
+            bot.send_message(chat_id=chat_id,text=text)
+        except BadRequest:
+            pass
 
 def addecho(bot, update, args):
     context=' '.join(args)
@@ -614,9 +622,9 @@ def save_room_state(bot, job):
     try:
         msg=bot.send_message(chat_id=chat_id,text='聊天室資訊更新中！')
     except TimedOut:
-        logger.error('ERROR(save_room_state):Update time out.')
+        logger.error('(save_room_state):Update time out.')
     except Unauthorized:
-        logger.error('ERROR(save_room_state):Bot is not in room.')
+        logger.error('(save_room_state):Bot is not in room.')
     except BadRequest:
         pass
     room_data={
@@ -849,7 +857,7 @@ def initialization():
     # ---Record init time---
     global init_time
     init_time = datetime.now()
-    logger.info("Bot start.")
+    logger.info("(initialization):Bot start.")
 ################################################
 #                   main                       #
 ################################################
