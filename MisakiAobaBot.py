@@ -490,7 +490,7 @@ def key_word_reaction(bot,update):
     ###################################
     #               NAZO              #
     ###################################
-    cmd_word_save=update.message.text.replace("@db")
+    cmd_word_save=update.message.text.replace("@db","")
     if cmd_word_save in GLOBAL_WORDS.idol_list:
         rmsg=update.message.reply_to_message
         if url_valid(rmsg.text):
