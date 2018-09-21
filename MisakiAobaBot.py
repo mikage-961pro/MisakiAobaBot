@@ -344,7 +344,7 @@ def forcesave(bot, update):
         }
     MisaMongo.insert_data('room_state',room_data)
 
-    bot.send_message(chat_id=chat_id,text="更新成功！")
+    bot.send_message(chat_id=update.message.chat_id,text="更新成功！")
 
 def addecho(bot, update, args):
     context=' '.join(args)
