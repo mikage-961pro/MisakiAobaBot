@@ -272,12 +272,8 @@ def quote(bot,update,args):
 
 @do_after_root
 def randPic(bot,update,args):
-<<<<<<< HEAD
-    idol_name=' '.join(args).lower()
-=======
     idol_name=' '.join(args)
     idol_name=idol_name.lower()
->>>>>>> 04e4efdb46ee939fd003b0d2dabad2e4fe34601a
     if idol_name=='':
         url=randget_idol('all')[0]['url']
     elif idol_name in GLOBAL_WORDS.idol_list:
@@ -843,14 +839,14 @@ def page_keyboard(list,page):
 ################################################
 def inline_handler(bot,update):
     query=update.inline_query.query
-    
+
     #rand pic
     def pic_url(name):
         result=MisaMongo.randget_idol(name)
         if result:
             return result[0]['url']
         return MisaMongo.randget_idol('all')[0]['url']
-    
+
     name=query.lower()
     rand_idol_pic=InlineQueryResultPhoto(
         id=str(datetime.now()),
@@ -858,13 +854,13 @@ def inline_handler(bot,update):
         photo_url=pic_url(name),
         thumb_url=None
     )
-    
+
     bot.answer_inline_query(inline_query_id=update.inline_query.id,
     results=[pic],
     cache_time=2,
     is_personal=True)
-    
-    
+
+
 # error logs
 def error(bot, update, error):
     """Log Errors caused by Updates."""
@@ -931,7 +927,7 @@ def main():
 
     # ---Inline function---
     dp.add_handler(InlineQueryHandler(inline_handler))
-    
+
     # ---Message answer---
     dp.add_handler(MessageHandler(Filters.text, key_word_reaction))
     dp.add_handler(MessageHandler(Filters.all, message_callback))
