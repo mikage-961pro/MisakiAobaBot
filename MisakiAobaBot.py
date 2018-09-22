@@ -280,6 +280,7 @@ def quote(bot,update,args):
 @do_after_root
 def randPic(bot,update,args):
     idol_name=' '.join(args)
+    idol_name=idol_name.lower()
     if idol_name=='':
         url=MisaMongo.randget_idol('all')[0]['url']
     elif idol_name in GLOBAL_WORDS.idol_list:
