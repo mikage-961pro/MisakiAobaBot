@@ -9,8 +9,7 @@ from string import Template
 from functools import wraps
 from urllib.request import urlopen
 from telegram import Bot, Chat, Sticker, ReplyKeyboardMarkup
-from telegram.error import (TelegramError, Unauthorized, BadRequest,
-                            TimedOut, ChatMigrated, NetworkError)
+from telegram.error import *
 
 # ---error log setting
 import logging
@@ -50,7 +49,7 @@ def is_admin(bot,update):
                     is_admin=True
             return is_admin
     except AttributeError:
-        logger.error('(is_admin):In a all admin chat')
+        logger.error('(%s):In a all admin chat','is_admin')
 
 def bot_is_admin(bot,update):
     """Dectect bot if admin, return boolen value"""

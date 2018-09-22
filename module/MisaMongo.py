@@ -48,7 +48,7 @@ def room_state_getter(Collection='room_state',room_id=-1001290696540):
     try:
         return result[0]
     except IndexError:
-        logger.warning("(room_state_getter):No result.")
+        logger.warning("(%s):No result."'room_state_getter')
         return None
 
 def quote_finder(key,Collection='quote_main'):
