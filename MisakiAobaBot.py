@@ -272,7 +272,7 @@ def quote(bot,update,args):
 
 @do_after_root
 def randPic(bot,update,args):
-    idol_name=' '.join(args)
+    idol_name=' '.join(args).lower()
     if idol_name=='':
         url=randget_idol('all')[0]['url']
     elif idol_name in GLOBAL_WORDS.idol_list:
@@ -520,7 +520,7 @@ def key_word_reaction(bot,update):
     #              picsave            #
     ###################################
     if update.message.text.find("@db")!=-1:
-        cmd_word_save=update.message.text.replace("@db","")
+        cmd_word_save=update.message.text.replace("@db","").lower()
         if cmd_word_save in GLOBAL_WORDS.idol_list:
             rmsg=update.message.reply_to_message
             try:
@@ -532,10 +532,10 @@ def key_word_reaction(bot,update):
                         'saved_by':update.message.from_user.id
                     }
                     insert_data('ml_idol_pic_colle',idol_db)
-                    echo_word='画像が保存しました！'
+                    echo_word='画像が保存されました！'
                     bot.send_message(chat_id=update.message.chat_id,text=echo_word)
             except AttributeError:
-                bot.send_message(chat_id=update.message.chat_id,text="画像がない。保存失敗した。")
+                bot.send_message(chat_id=update.message.chat_id,text="画像がない。保存失敗しました。")
         elif cmd_word_save=='':
             bot.send_message(chat_id=update.message.chat_id,text="もう！こんな遊ばなってください！")
         else:

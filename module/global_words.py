@@ -113,7 +113,7 @@ Database:
     idol_list_fr=[
     'julia',
     'tomoka',
-    'sizuka',
+    'shizuka',
     'subaru',
     'ayumu',
     'mizuki',
@@ -131,7 +131,7 @@ Database:
     'anna',
     'tamaki',
     'reika',
-    'erena',
+    'elena',
     'akane',
     'konomi',
     'tsubasa',
