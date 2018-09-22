@@ -842,10 +842,10 @@ def inline_handler(bot,update):
 
     #rand pic
     def pic_url(name):
-        result=MisaMongo.randget_idol(name)
+        result=randget_idol(name)
         if result:
             return result[0]['url']
-        return MisaMongo.randget_idol('all')[0]['url']
+        return randget_idol('all')[0]['url']
 
     name=query.lower()
     rand_idol_pic=InlineQueryResultPhoto(
