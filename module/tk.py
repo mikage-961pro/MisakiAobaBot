@@ -7,7 +7,7 @@ import os
 from random import randrange
 from string import Template
 from functools import wraps
-from urllib.request import urlopen
+from urllib import request
 from telegram import Bot, Chat, Sticker, ReplyKeyboardMarkup
 from telegram.error import *
 
