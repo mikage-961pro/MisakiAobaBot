@@ -7,12 +7,7 @@ import os
 from random import randrange
 from string import Template
 from functools import wraps
-<<<<<<< HEAD:tk.py
-from urllib import request
-
-=======
 from urllib.request import urlopen
->>>>>>> upstream/master:module/tk.py
 from telegram import Bot, Chat, Sticker, ReplyKeyboardMarkup
 from telegram.error import *
 
