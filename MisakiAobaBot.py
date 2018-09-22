@@ -21,7 +21,7 @@ from telegram import *
 from telegram.ext import *
 from telegram.ext.dispatcher import run_async
 from telegram.error import *
-# TelegramError, Unauthorized, BadRequest,TimedOut, ChatMigrated, NetworkError
+
 token = os.environ['TELEGRAM_TOKEN']
 updater = Updater(token,workers=16)
 
@@ -273,6 +273,7 @@ def quote(bot,update,args):
 @do_after_root
 def randPic(bot,update,args):
     idol_name=' '.join(args)
+    idol_name=idol_name.lower()
     if idol_name=='':
         url=randget_idol('all')[0]['url']
     elif idol_name in GLOBAL_WORDS.idol_list:
@@ -520,7 +521,7 @@ def key_word_reaction(bot,update):
     #              picsave            #
     ###################################
     if update.message.text.find("@db")!=-1:
-        cmd_word_save=update.message.text.replace("@db","")
+        cmd_word_save=update.message.text.replace("@db","").lower()
         if cmd_word_save in GLOBAL_WORDS.idol_list:
             rmsg=update.message.reply_to_message
             try:
@@ -542,6 +543,7 @@ def key_word_reaction(bot,update):
             bot.send_message(chat_id=update.message.chat_id,text="知らない人ですよ。")
         # Exit region
         return
+
     ###################################
     #          quote collector        #
     ###################################
@@ -832,6 +834,33 @@ def page_keyboard(list,page):
                     [InlineKeyboardButton(text='結束',callback_data='cmd_quote_search_exit')]]
     return InlineKeyboardMarkup(keyboard)
 
+################################################
+#                   inline                     #
+################################################
+def inline_handler(bot,update):
+    query=update.inline_query.query
+    
+    #rand pic
+    def pic_url(name):
+        result=MisaMongo.randget_idol(name)
+        if result:
+            return result[0]['url']
+        return MisaMongo.randget_idol('all')[0]['url']
+    
+    name=query.lower()
+    rand_idol_pic=InlineQueryResultPhoto(
+        id=str(datetime.now()),
+        title='RANDPIC',
+        photo_url=pic_url(name),
+        thumb_url=None
+    )
+    
+    bot.answer_inline_query(inline_query_id=update.inline_query.id,
+    results=[pic],
+    cache_time=2,
+    is_personal=True)
+    
+    
 # error logs
 def error(bot, update, error):
     """Log Errors caused by Updates."""
@@ -896,6 +925,9 @@ def main():
     # ---Menu function---
     dp.add_handler(CallbackQueryHandler(menu_actions))
 
+    # ---Inline function---
+    dp.add_handler(InlineQueryHandler(inline_handler))
+    
     # ---Message answer---
     dp.add_handler(MessageHandler(Filters.text, key_word_reaction))
     dp.add_handler(MessageHandler(Filters.all, message_callback))
