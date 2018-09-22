@@ -852,7 +852,7 @@ def inline_handler(bot,update):
         id=str(datetime.now()),
         title='RANDPIC',
         photo_url=pic_url(name),
-        thumb_url=None
+        thumb_url="https://i.imgur.com/kdAihxk.jpg"
     )
 
     bot.answer_inline_query(inline_query_id=update.inline_query.id,
