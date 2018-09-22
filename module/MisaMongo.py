@@ -6,6 +6,12 @@ import os
 import pymongo
 from pymongo import MongoClient
 
+# ---error log setting
+import logging
+logging.basicConfig(format='[%(asctime)s](%(levelname)s) %(name)s - %(message)s',
+                    level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 url = "mongodb://$dbuser:$dbpassword@ds149732.mlab.com:49732/heroku_jj2sv6sm"
 mongo_us = 'admin'
 mongo_ps = os.environ['MONGO_PSW']
@@ -35,6 +41,15 @@ def randget_idol(idol,Collection='ml_idol_pic_colle',size=1):
     for i in selected:
         result.append(i)
     return result
+
+def room_state_getter(Collection='room_state',room_id=-1001290696540):
+    op_ins=db[Collection]
+    result=op_ins.find({"room_id":room_id}).sort('update_time',pymongo.DESCENDING).limit(1)
+    try:
+        return result[0]
+    except IndexError:
+        logger.warning("(%s):No result."'room_state_getter')
+        return None
 
 def quote_finder(key,Collection='quote_main'):
     op_ins=db[Collection]

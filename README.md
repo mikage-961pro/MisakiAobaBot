@@ -33,8 +33,18 @@ This bot is specialized for our [im@s group](https://t.me/imas_zh)
 - **picture save and call:** 使用`idol@db`功能儲存你喜歡的偶像圖。
 
 ## Update Log
-New Version: Beta 1.5
-Update Date:2018/09/20
+New Version: Beta 1.5.2  
+Update Date:2018/09/22
+
+### Beta 1.5.2  
+1. Make code better
+
+### Beta 1.5.1  
+1. Fix randpic problem:ami/mami problem.
+2. Add quote number while searching.
+3. Fix room save problem:UTC+8 problem.
+4. Re add water notification.
+5. Other fix.
 
 ### Beta 1.5  
 1. Remove /randtsumugi and /randchihaya funcion.

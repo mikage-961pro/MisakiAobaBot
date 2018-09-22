@@ -71,12 +71,16 @@ class GLOBAL_WORDS:
     """
 
     word_state="""
+房間名稱：$room_name
+房間ID：$room_id
+訊息總數：$msg_num
 目前室內人數：$user_number
+狀態時間：$time
 """
     word_about="""
-Version:Beta 1.5
+Version:Beta 1.5.2
 Boot Time:$boot_time
-Last update:2018/09/20
+Last update:2018/09/22
 Developer:765技術部成員
     Dephilia（蝶芙）／TAKE（他Ｋ）
 Base Language:Python
