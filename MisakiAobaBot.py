@@ -856,7 +856,7 @@ def inline_handler(bot,update):
     )
 
     bot.answer_inline_query(inline_query_id=update.inline_query.id,
-    results=[pic],
+    results=[rand_idol_pic],
     cache_time=2,
     is_personal=True)
 
