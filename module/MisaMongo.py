@@ -83,6 +83,11 @@ def insert_data(Collection,dict):
     op_ins=db[Collection]
     op_ins.insert_one(dict)
 
+def display_alldata(Collection):
+    op_ins=db[Collection]
+    ins=op_ins.find()
+    return ins
+
 def display_data(Collection,pipeline,key):
     op_ins=db[Collection]
     ins=op_ins.find_one(pipeline)

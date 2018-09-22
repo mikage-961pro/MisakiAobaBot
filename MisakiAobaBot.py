@@ -1,7 +1,7 @@
 # coding=utf-8
 
 bot_name='@MisakiAobaBot'
-DEBUG=False
+DEBUG=True
 ################################################
 #              Global Setting                  #
 ################################################
@@ -9,10 +9,10 @@ DEBUG=False
 ### ---Module---
 
 # ---Python function
+import os
+import time
 from datetime import datetime,tzinfo,timedelta
 from datetime import time as stime#specific time
-import time
-import os
 from string import Template
 from random import randrange
 
@@ -24,9 +24,6 @@ from telegram.error import *
 
 token = os.environ['TELEGRAM_TOKEN']
 updater = Updater(token,workers=16)
-
-# ---postgresql
-from postgre import dbDump,dbrandGet,dbGet
 
 # ---My Module
 from module import *
@@ -295,10 +292,10 @@ def randPic(bot,update,args):
 
 @do_after_root
 def sticker_matome(bot,update):
-    link=dbGet('sticker',['setname','about'])
+    link=display_alldata('sticker')
     slink=''
     for i in link:
-        slink=slink+'<a href="https://telegram.me/addstickers/'+i[0]+'">'+i[1]+'</a>\n'
+        slink=slink+'<a href="https://telegram.me/addstickers/'+i['setname']+'">'+i['about']+'</a>\n'
     try:
         bot.send_message(chat_id=update.message.from_user.id,text=slink,parse_mode='HTML')
     except:
@@ -383,7 +380,7 @@ def addecho(bot, update, args):
 
 def testfunc(bot, update):
     """print something"""
-    print(room_state_getter())
+
     pass
 ################################################
 #               not command                    #
