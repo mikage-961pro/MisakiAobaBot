@@ -374,17 +374,17 @@ def addecho(bot, update, args):
         return
     if formula('h',context):
         text="""
-        /addecho -w=文字 -e=響應 -p=照片 -v=影像 -pr=機率 -els=機率外響應 -al=文字全對才發生 -eli=響應是否為多數
-        -w:可以是多個文字，像是-w=もちょ,ナンス,天ちゃん
-        ［以下三個請擇一輸入］
-        -e:會回應的文字。像是-e=(●･▽･●)
-        -p:回應的圖片。可以是imgur圖床網址。
-        -v:回應的影像。像是gif等，注意格式均為mp4。
+/addecho -w=文字 -e=響應 -p=照片 -v=影像 -pr=機率 -els=機率外響應 -al=文字全對才發生 -eli=響應是否為多數
+-w:可以是多個文字，像是-w=もちょ,ナンス,天ちゃん
+［以下三個請擇一輸入］
+-e:會回應的文字。像是-e=(●･▽･●)
+-p:回應的圖片。可以是imgur圖床網址。
+-v:回應的影像。像是gif等，注意格式均為mp4。
 
-        -pr:機率。若是落在此機率外則觸發els（可填入0~1000）
-        -els:若是在機率外就會觸發文字。只能填入一行。-els=(o・∇・o)
-        -al:要-w中的文字全對才會觸發(true/false)。
-        -eli:若此為true，則echo可以為多行（會隨機觸發）(true/false)。
+-pr:機率。若是落在此機率外則觸發els（可填入0~1000）
+-els:若是在機率外就會觸發文字。只能填入一行。-els=(o・∇・o)
+-al:要-w中的文字全對才會觸發(true/false)。
+-eli:若此為true，則echo可以為多行（會隨機觸發）(true/false)。
         """
         bot.send_message(chat_id=update.message.chat_id,text=text)
         return
@@ -399,13 +399,50 @@ def addecho(bot, update, args):
         'allco':formula('al',context),
         'echo_list':formula('eli',context)
         }
+
+    # check
     if data['echo']==False:data['echo']=None
     if data['photo']==False:data['photo']=None
     if data['video']==False:data['video']=None
-    if data['prob']==False:data['prob']=1000
     if data['els']==False:data['els']=None
     if data['echo_list']==False and data['echo']!=None:
         data['echo']=data['echo'][0]
+
+    if type(data['allco'])!='boolen':
+        data['allco']=False
+    if type(data['echo_list'])!='boolen':
+        data['echo_list']=False
+    if data['words']=='':
+        data['words']=None
+    if data['echo']=='':
+        data['echo']=None
+    if data['photo']=='':
+        data['photo']=None
+    if data['video']=='':
+        data['video']=None
+
+    if data['words'] is False:
+        bot.send_message(chat_id=update.message.chat_id,text='什麼都沒輸入欸ˊˋ')
+        return
+    if (data['echo']==None and data['photo']==None and data['video']==None):
+        bot.send_message(chat_id=update.message.chat_id,text='請輸入至少一個反饋文字。')
+        return
+    if (data['echo']!=None and data['photo']!=None):
+        bot.send_message(chat_id=update.message.chat_id,text='請不要輸入兩種反饋。')
+        return
+    if (data['video']!=None and data['photo']!=None):
+        bot.send_message(chat_id=update.message.chat_id,text='請不要輸入兩種反饋。')
+        return
+    if (data['echo']!=None and data['video']!=None):
+        bot.send_message(chat_id=update.message.chat_id,text='請不要輸入兩種反饋。')
+        return
+    if data['prob']>1000 or data['prob']<0:
+        bot.send_message(chat_id=update.message.chat_id,text='你這樣操作機率會抽不到SSR的！')
+        return
+    if data['prob']==0:
+        bot.send_message(chat_id=update.message.chat_id,text='這樣到了宇宙都不會發生欸...')
+        return
+
 
     insert_data('words_echo',data)
     logger.info("Insert echo data sucessful:%s",str(data))
