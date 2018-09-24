@@ -36,6 +36,9 @@ This bot is specialized for our [im@s group](https://t.me/imas_zh)
 New Version: Beta 1.5.2  
 Update Date:2018/09/22
 
+### Beta 1.5.3  
+1. Enable user to add echo
+
 ### Beta 1.5.2  
 1. Make code better
 

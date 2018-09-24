@@ -171,7 +171,7 @@ def quote(bot,update,args):
                     text="以下為【{}】的搜尋結果".format(search_para))
             except:
                 bot.send_message(chat_id=update.message.chat_id,
-                        text='<a href="https://telegram.me/MisakiAobaBot?start=sticker">請先在私訊START</a>',
+                        text=GLOBAL_WORDS.word_PM_notice,
                         parse_mode='HTML')
                 return
 
@@ -212,7 +212,7 @@ def quote(bot,update,args):
                     text="以下為【{}】的搜尋結果".format(search_para))
             except:
                 bot.send_message(chat_id=update.message.chat_id,
-                        text='<a href="https://telegram.me/MisakiAobaBot?start=sticker">請先在私訊START</a>',
+                        text=GLOBAL_WORDS.word_PM_notice,
                         parse_mode='HTML')
                 return
 
@@ -274,7 +274,15 @@ def randPic(bot,update,args):
     if idol_name=='':
         url=randget_idol('all')[0]['url']
     elif idol_name in GLOBAL_WORDS.idol_list:
-        url=randget_idol(idol_name)[0]['url']
+        try:
+            url=randget_idol(idol_name)[0]['url']
+        except IndexError:
+            bot.send_message(chat_id=update.message.chat_id,text='這位偶像還沒有圖喔！')
+            return
+        except:
+            bot.send_message(chat_id=update.message.chat_id,text='發生不明錯誤。')
+            return
+
     elif idol_name not in GLOBAL_WORDS.idol_list:
         bot.send_message(chat_id=update.message.chat_id,text='だれ？')
         return
@@ -299,7 +307,7 @@ def sticker_matome(bot,update):
     try:
         bot.send_message(chat_id=update.message.from_user.id,text=slink,parse_mode='HTML')
     except:
-        startme='<a href="https://telegram.me/MisakiAobaBot?start=sticker">請先在私訊START♪</a>'
+        startme=GLOBAL_WORDS.word_PM_notice
         bot.send_message(chat_id=update.message.chat_id,text=startme,parse_mode='HTML')
     else:
         bot.send_message(chat_id=update.message.chat_id,text='看私訊～～♪')
@@ -361,26 +369,49 @@ def forcesave(bot, update):
 
 def addecho(bot, update, args):
     context=' '.join(args)
-    """
-    words, echo=None, photo=None, video=None,prob=1000, els=None,allco=False, echo_list=False
-    words=['夏川','椎菜','ナンス'], echo='(*>△<)<ナーンナーンっ',els='https://imgur.com/AOfQWWS.mp4',prob=300
-    """
+    if context=="":
+        bot.send_message(chat_id=update.message.chat_id,text='請輸入資料！')
+        return
+    if formula('h',context):
+        text="""
+        /addecho -w=文字 -e=響應 -p=照片 -v=影像 -pr=機率 -els=機率外響應 -al=文字全對才發生 -eli=響應是否為多數
+        -w:可以是多個文字，像是-w=もちょ,ナンス,天ちゃん
+        ［以下三個請擇一輸入］
+        -e:會回應的文字。像是-e=(●･▽･●)
+        -p:回應的圖片。可以是imgur圖床網址。
+        -v:回應的影像。像是gif等，注意格式均為mp4。
+
+        -pr:機率。若是落在此機率外則觸發els（可填入0~1000）
+        -els:若是在機率外就會觸發文字。只能填入一行。-els=(o・∇・o)
+        -al:要-w中的文字全對才會觸發(true/false)。
+        -eli:若此為true，則echo可以為多行（會隨機觸發）(true/false)。
+        """
+        bot.send_message(chat_id=update.message.chat_id,text=text)
+        return
+
     data={
         'words':formula('w',context,if_list=True),
-        'echo':formula('e',context),
+        'echo':formula('e',context,if_list=True),
         'photo':formula('p',context),
         'video':formula('v',context),
-        'prob':formula('p',context),
+        'prob':int(formula('pr',context)),
         'els':formula('els',context),
         'allco':formula('al',context),
         'echo_list':formula('eli',context)
         }
-    print(data)
+    if data['echo']==False:data['echo']=None
+    if data['photo']==False:data['photo']=None
+    if data['video']==False:data['video']=None
+    if data['prob']==False:data['prob']=1000
+    if data['els']==False:data['els']=None
+
+    insert_data('words_echo',data)
+    logger.info("Insert echo data sucessful:%s",str(data))
+    bot.send_message(chat_id=update.message.chat_id,text='資料寫入成功！')
 
 
 def testfunc(bot, update):
     """print something"""
-
     pass
 ################################################
 #               not command                    #
@@ -449,59 +480,17 @@ def key_word_reaction(bot,update):
                     picSend(randList(photo))
                 else:
                     picSend(photo)
-
-
         return key_words_value
 
     # switch
     switch=display_data('config',{'id':update.message.from_user.id},'reply')
-
-    # long url
-    pic_ten=['https://i.imgur.com/XmWYqS1.mp4',
-    'https://imgur.com/LYBnOzo.mp4',
-    'https://i.imgur.com/denCUYX.mp4']
-    pic_trys=['https://img.gifmagazine.net/gifmagazine/images/2289135/original.mp4',
-    'https://i.imgur.com/b9s69iK.mp4',
-    'https://img.gifmagazine.net/gifmagazine/images/1333179/original.mp4']
-
-
+    echo_data=display_alldata('words_echo')
 
     # word_echo
     if switch == True:
-        find_word(words=['大老','dalao','ㄉㄚˋㄌㄠˇ','巨巨','Dalao','大 佬'],echo='你才大佬！你全家都大佬！', prob=200)
-        find_word(words=['依田','芳乃'], echo='ぶおおー')
-        find_word(words=['青羽','美咲'], echo='お疲れ様でした！')
-        find_word(words=['ころあず'], echo='ありがサンキュー！')
-        find_word(words=['この歌声が'], echo='MILLLLLIIIONNNNNN',els='UNIIIIIOOONNNNN',prob=500)
-        find_word(words=['天','ナンス','もちょ'],video=pic_trys,allco=True,echo_list=True)
-        find_word(words=['麻倉','もも','もちょ'], echo='(●･▽･●)',els='(o・∇・o)もちー！もちもちもちもちもちーーーもちぃ！',prob=900)
-        find_word(words=['夏川','椎菜','ナンス'], echo='(*>△<)<ナーンナーンっ',els='https://imgur.com/AOfQWWS.mp4',prob=300)
-        find_word(words=['雨宮','てん','天ちゃん'], video=pic_ten,echo_list=True)
-        find_word(words=['天'], prob=15, video=pic_ten,echo_list=True)
-        find_word(words=['終わり','結束','沒了','完結'], echo='終わりだよ(●･▽･●)')
-        find_word(words=['小鳥'], echo='もしかして〜♪ 音無先輩についてのお話ですか')
-        find_word(words=['誰一百'], echo='咖嘎雅哭')
-        find_word(words=['咖嘎雅哭'], echo='吼西米～那咧')
-        find_word(words=['vertex'], echo='IDOL!')
-        find_word(words=['高木','社長','順二朗'], echo='あぁ！社長のことを知りたい！')
-        find_word(words=['天海','春香'], echo='天海さんのクッキーはとっても美味しいですね〜')
-        find_word(words=['閣下'], echo='え！？もしかして春香ちゃん！？',els='恐れ、平れ伏し、崇め奉りなさいのヮの！',prob=900)
-        find_word(words=['如月','千早'], echo='如月さんの歌は素晴らしい！',els='静かな光は蒼の波紋 VERTEX BLUE!!!!',prob=720)
-        find_word(words=['72'],prob=10, echo='こんな言えば如月さんは怒ってしまうよ！')
-        find_word(words=['星井','美希'], echo='あの...星井さんはどこかで知っていますか？')
-        find_word(words=['高槻','やよい'], echo="ζ*'ヮ')ζ＜うっうー ")
-        find_word(words=['萩原','雪歩'], echo='あ、先のお茶は萩原さんからの')
-        find_word(words=['秋月','律子'], echo='律子さんは毎日仕事するで、大変ですよね〜')
-        find_word(words=['三浦','あずさ'], echo='え？あずささんは今北海道に！？')
-        find_word(words=['水瀬','伊織'], echo='このショコラは今朝水瀬さんからの、みな一緒に食べろう！')
-        find_word(words=['菊地','真'], echo='真さんは今、王子役の仕事をしていますよ。',
-            els='真さんは今、ヒーロー役の仕事をしていますよ～～激しい光は黒の衝撃 VERTEX BLACK!!!!',prob=700,allco=True)
-        find_word(words=['我那覇','響'], echo='ハム蔵はどこでしょうか？探していますね',els='弾ける光は浅葱の波濤 VERTEX LIGHTBLUE!!',prob=700,allco=True)
-        find_word(words=['四条','貴音'], echo='昨日〜貴音さんがわたしに色々な美味しい麺屋を紹介しました！',els='秘めたり光は臙脂の炎 VERTEX CARMINE〜〜',prob=700)
-        find_word(words=['亜美'], echo='亜美？あそこよ')
-        find_word(words=['真美'], echo='真美？いないよ')
-        find_word(words=['双海'], echo='亜美真美？先に外へ行きました')
-
+        for d in echo_data:
+            find_word(words=d['words'], echo=d['echo'], photo=d['photo'], video=d['video'],
+                prob=d['prob'], els=d['els'],allco=d['allco'], echo_list=d['echo_list'])
     ###################################
     #          reply_pair             #
     ###################################
@@ -910,8 +899,6 @@ def main():
     dp.add_handler(CommandHandler("randpic",randPic, pass_args=True))
     dp.add_handler(CommandHandler("sticker",sticker_matome))
     dp.add_handler(CommandHandler("forcesave",forcesave))
-
-    # beta version function
     dp.add_handler(CommandHandler("addecho", addecho, pass_args=True))
 
     # test function

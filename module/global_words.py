@@ -70,6 +70,8 @@ class GLOBAL_WORDS:
 明日もログインすると、きっといいことがあると思いますよぉ～。えへへぇ♪
     """
 
+    word_PM_notice="""<a href="https://telegram.me/MisakiAobaBot?start=sticker">請先在私訊START♪</a>"""
+
     word_state="""
 房間名稱：$room_name
 房間ID：$room_id
@@ -78,9 +80,9 @@ class GLOBAL_WORDS:
 狀態時間：$time
 """
     word_about="""
-Version:Beta 1.5.2
+Version:Beta 1.5.3
 Boot Time:$boot_time
-Last update:2018/09/22
+Last update:2018/09/24
 Developer:765技術部成員
     Dephilia（蝶芙）／TAKE（他Ｋ）
 Base Language:Python

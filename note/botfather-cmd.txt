@@ -10,4 +10,5 @@ nanto-なんとぉ！
 quote-每日一句
 randpic-召喚偶像（空格+偶像名字可以指定）
 sticker-召喚貼圖集
+addecho-調教美咲的回話
 """

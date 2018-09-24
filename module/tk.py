@@ -191,9 +191,10 @@ def formula(key,text,if_list=False,parameter_preword='-',sep_word=' '):
                         value=[]
                         for i in return_value.split(','):
                             value.append(i)
-
-                else:
+                elif text[start_point] == sep_word:
                     value=True
+                else:
+                    value=False
             finally:
                 pass
     return value
