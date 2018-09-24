@@ -464,7 +464,7 @@ def key_word_reaction(bot,update):
                     if echo_list:
                         msgSend(randList(echo))
                     else:
-                        msgSend(echo)
+                        msgSend(echo[0])
                 if num>=prob and els!=None:
                     if els.find('https://')!=-1:
                         videoSend(els)
