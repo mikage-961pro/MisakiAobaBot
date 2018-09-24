@@ -426,6 +426,9 @@ def addecho(bot, update, args):
     if data['words'] is False:
         bot.send_message(chat_id=update.message.chat_id,text='什麼都沒輸入欸ˊˋ')
         return
+    if len(data['words'])<2:
+        bot.send_message(chat_id=update.message.chat_id,text='請輸入至少兩個字。')
+        return
     if data['words']==None:
         bot.send_message(chat_id=update.message.chat_id,text='什麼都沒輸入欸ˊˋ')
         return
@@ -452,7 +455,6 @@ def addecho(bot, update, args):
     insert_data('words_echo',data)
     logger.info("Insert echo data sucessful:%s",str(data['words']))
     bot.send_message(chat_id=update.message.chat_id,text='資料寫入成功！')
-
 
 def testfunc(bot, update):
     """print something"""
@@ -740,7 +742,6 @@ def menu_actions(bot, update):
         room_config['room_name']=query.message['chat']['title']
         room_config['update_time']=query.message.date
 
-        print(room_config)
         bot.edit_message_text(chat_id=query.message.chat_id,
                 message_id=query.message.message_id,
                 text="更新完成。")
