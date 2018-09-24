@@ -404,6 +404,8 @@ def addecho(bot, update, args):
     if data['video']==False:data['video']=None
     if data['prob']==False:data['prob']=1000
     if data['els']==False:data['els']=None
+    if data['echo_list']==False and data['echo']!=None:
+        data['echo']=data['echo'][0]
 
     insert_data('words_echo',data)
     logger.info("Insert echo data sucessful:%s",str(data))
@@ -464,7 +466,7 @@ def key_word_reaction(bot,update):
                     if echo_list:
                         msgSend(randList(echo))
                     else:
-                        msgSend(echo[0])
+                        msgSend(echo)
                 if num>=prob and els!=None:
                     if els.find('https://')!=-1:
                         videoSend(els)
