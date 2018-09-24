@@ -399,7 +399,8 @@ def addecho(bot, update, args):
         'allco':formula('al',context),
         'echo_list':formula('eli',context)
         }
-
+    if formula('pr',context)==False:
+        data['prob']=1000
     # check
     if data['echo']==False:data['echo']=None
     if data['photo']==False:data['photo']=None
