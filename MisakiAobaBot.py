@@ -195,6 +195,7 @@ def quote(bot,update,args):
             except:
                 bot.send_message(chat_id=update.message.from_user.id,text="ぜ")
                 return
+                pass
             finally:
                 search_total_time=(datetime.now()-search_init_time).total_seconds()
                 t="結束搜尋。共有{}筆資料。\n共耗時{}秒。".format(result_length,search_total_time)
@@ -425,6 +426,9 @@ def addecho(bot, update, args):
     if data['words'] is False:
         bot.send_message(chat_id=update.message.chat_id,text='什麼都沒輸入欸ˊˋ')
         return
+    if data['words']==None:
+        bot.send_message(chat_id=update.message.chat_id,text='什麼都沒輸入欸ˊˋ')
+        return
     if (data['echo']==None and data['photo']==None and data['video']==None):
         bot.send_message(chat_id=update.message.chat_id,text='請輸入至少一個反饋文字。')
         return
@@ -446,7 +450,7 @@ def addecho(bot, update, args):
 
 
     insert_data('words_echo',data)
-    logger.info("Insert echo data sucessful:%s",str(data))
+    logger.info("Insert echo data sucessful:%s",str(data['words']))
     bot.send_message(chat_id=update.message.chat_id,text='資料寫入成功！')
 
 
@@ -485,18 +489,22 @@ def key_word_reaction(bot,update):
         key_words_value=False
 
         """check if all word correct will go"""
-        for check in words:
-            if allco == False:
-                "one word correct will go"
-                if key_words.find(check)!=-1:
-                    key_words_value=True
-            if allco == True:
-                "all word correct will go"
-                if key_words.find(check)!=-1:
-                    key_words_value=True
-                else:
-                    key_words_value=False
-                    break
+        try:
+            for check in words:
+                if allco == False:
+                    "one word correct will go"
+                    if key_words.find(check)!=-1:
+                        key_words_value=True
+                if allco == True:
+                    "all word correct will go"
+                    if key_words.find(check)!=-1:
+                        key_words_value=True
+                    else:
+                        key_words_value=False
+                        break
+        except TypeError:
+            logger.error("Words type wrong:%s",str(words))
+            return
 
         if key_words_value==True:
             if echo != None:
