@@ -466,6 +466,7 @@ def key_word_reaction(bot,update):
     ###################################
     #        key word reaction        #
     ###################################
+    pool=[]
     def find_word(words, echo=None, photo=None, video=None,
         prob=1000, els=None,allco=False, echo_list=False):
         """
@@ -512,24 +513,56 @@ def key_word_reaction(bot,update):
             if echo != None:
                 if num<prob:
                     if echo_list:
-                        msgSend(randList(echo))
+                        pars={'do':'msgSend',
+                            'words':randList(echo)
+                        }
+                        pool.append(pars)
+                        #msgSend(randList(echo))
                     else:
-                        msgSend(echo)
+                        pars={'do':'msgSend',
+                            'words':echo
+                        }
+                        pool.append(pars)
+                        #msgSend(echo)
                 if num>=prob and els!=None:
                     if els.find('https://')!=-1:
-                        videoSend(els)
+                        pars={'do':'videoSend',
+                            'vid':els
+                        }
+                        pool.append(pars)
+                        #videoSend(els)
                     else:
-                        msgSend(els)
+                        pars={'do':'msgSend',
+                            'words':els
+                        }
+                        pool.append(pars)
+                        #msgSend(els)
             elif video != None and num<prob:
                 if echo_list:
-                    videoSend(randList(video))
+                    pars={'do':'videoSend',
+                        'vid':randList(video)
+                    }
+                    pool.append(pars)
+                    #videoSend(randList(video))
                 else:
-                    videoSend(video)
+                    pars={'do':'videoSend',
+                        'vid':video
+                    }
+                    pool.append(pars)
+                    #videoSend(video)
             elif photo != None and num<prob:
                 if echo_list:
-                    picSend(randList(photo))
+                    pars={'do':'picSend',
+                        'pic':randList(photo)
+                    }
+                    pool.append(pars)
+                    #picSend(randList(photo))
                 else:
-                    picSend(photo)
+                    pars={'do':'picSend',
+                        'pic':photo
+                    }
+                    pool.append(pars)
+                    #picSend(photo)
         return key_words_value
 
     # switch
@@ -541,6 +574,15 @@ def key_word_reaction(bot,update):
         for d in echo_data:
             find_word(words=d['words'], echo=d['echo'], photo=d['photo'], video=d['video'],
                 prob=d['prob'], els=d['els'],allco=d['allco'], echo_list=d['echo_list'])
+        if pool:
+            to_do=randList(pool)
+            cid=update.message.chat_id
+            if to_do['do']=='msgSend':
+                bot.send_message(chat_id=cid,text=to_do['words'])
+            if to_do['do']=='videoSend':
+                bot.send_video(chat_id=cid, video=to_do['vid'])
+            if to_do['do']=='picSend':
+                bot.send_photo(chat_id=cid, photo=to_do['pic'])
     ###################################
     #          reply_pair             #
     ###################################
