@@ -423,12 +423,13 @@ def addecho(bot, update, args):
     if data['video']=='':
         data['video']=None
 
-    if data['words'] is False:
+    if not data['words']:
         bot.send_message(chat_id=update.message.chat_id,text='什麼都沒輸入欸ˊˋ')
         return
-    if len(data['words'])<2:
-        bot.send_message(chat_id=update.message.chat_id,text='請輸入至少兩個字。')
-        return
+    for i in data['words']:
+        if len(i)<2:
+            bot.send_message(chat_id=update.message.chat_id,text='請輸入至少兩個字。')
+            return
     if data['words']==None:
         bot.send_message(chat_id=update.message.chat_id,text='什麼都沒輸入欸ˊˋ')
         return
