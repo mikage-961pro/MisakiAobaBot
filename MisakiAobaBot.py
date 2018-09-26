@@ -464,6 +464,19 @@ def addecho(bot, update, args):
     logger.info("Insert echo data sucessful:%s",str(data['words']))
     bot.send_message(chat_id=update.message.chat_id,text='資料寫入成功！')
 
+def finduser(bot, update, args):
+    """used to find user data from user_id"""
+    context=' '.join(args)
+    data=context.split('#')
+    room_id=int(data[0])
+    user_id=int(data[1])
+    user_data=bot.get_chat_member(chat_id=room_id,user_id=user_id)
+    first_name=user_data.user.first_name
+    last_name=user_data.user.last_name
+    username=user_data.user.username
+    text="User {} in chat {} is {}{} with username:{}.".format(user_id,room_id,first_name,last_name,username)
+    bot.send_message(chat_id=update.message.chat_id,text=text)
+
 def testfunc(bot, update):
     """print something"""
     pass
@@ -920,7 +933,8 @@ def main_menu_keyboard():
     return InlineKeyboardMarkup(keyboard)
 
 def sub_menu_keyboard(state):
-    keyboard = [[InlineKeyboardButton(text='關閉回話' if state else '開啟回話',callback_data='cmd_resp_switch_off' if state else 'cmd_resp_switch_on')],
+    keyboard = [[InlineKeyboardButton(text='關閉回話' if state else '開啟回話',
+        callback_data='cmd_resp_switch_off' if state else 'cmd_resp_switch_on')],
                 [InlineKeyboardButton(text='取消',callback_data='main')]]
     return InlineKeyboardMarkup(keyboard)
 
@@ -1031,6 +1045,7 @@ def main():
 
     # test function
     if DEBUG:
+        dp.add_handler(CommandHandler("finduser", finduser, pass_args=True))
         dp.add_handler(CommandHandler("savepic",savepic, pass_job_queue=True))
         dp.add_handler(CommandHandler("testfunc",testfunc))
 
