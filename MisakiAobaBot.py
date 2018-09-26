@@ -536,7 +536,7 @@ def key_word_reaction(bot,update):
                         #msgSend(randList(echo))
                     else:
                         pars={'do':'msgSend',
-                            'words':echo
+                            'words':echo,
                             'echo_add_by':user,
                             'oid':oid
                         }
@@ -545,7 +545,7 @@ def key_word_reaction(bot,update):
                 if num>=prob and els!=None:
                     if els.find('https://')!=-1:
                         pars={'do':'videoSend',
-                            'vid':els
+                            'vid':els,
                             'echo_add_by':user,
                             'oid':oid
                         }
@@ -553,7 +553,7 @@ def key_word_reaction(bot,update):
                         #videoSend(els)
                     else:
                         pars={'do':'msgSend',
-                            'words':els
+                            'words':els,
                             'echo_add_by':user,
                             'oid':oid
                         }
@@ -562,7 +562,7 @@ def key_word_reaction(bot,update):
             elif video != None and num<prob:
                 if echo_list:
                     pars={'do':'videoSend',
-                        'vid':randList(video)
+                        'vid':randList(video),
                         'echo_add_by':user,
                         'oid':oid
                     }
@@ -570,7 +570,7 @@ def key_word_reaction(bot,update):
                     #videoSend(randList(video))
                 else:
                     pars={'do':'videoSend',
-                        'vid':video
+                        'vid':video,
                         'echo_add_by':user,
                         'oid':oid
                     }
@@ -579,7 +579,7 @@ def key_word_reaction(bot,update):
             elif photo != None and num<prob:
                 if echo_list:
                     pars={'do':'picSend',
-                        'pic':randList(photo)
+                        'pic':randList(photo),
                         'echo_add_by':user,
                         'oid':oid
                     }
@@ -587,7 +587,7 @@ def key_word_reaction(bot,update):
                     #picSend(randList(photo))
                 else:
                     pars={'do':'picSend',
-                        'pic':photo
+                        'pic':photo,
                         'echo_add_by':user,
                         'oid':oid
                     }
