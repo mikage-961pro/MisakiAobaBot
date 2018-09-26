@@ -398,7 +398,8 @@ def addecho(bot, update, args):
         'prob':int(formula('pr',context)),
         'els':formula('els',context),
         'allco':formula('al',context),
-        'echo_list':formula('eli',context)
+        'echo_list':formula('eli',context),
+        'add_by':update.message.chat_id
         }
     if formula('pr',context)==False:
         data['prob']=1000
@@ -468,8 +469,20 @@ def key_word_reaction(bot,update):
     #        key word reaction        #
     ###################################
     pool=[]
-    def find_word(words, echo=None, photo=None, video=None,
-        prob=1000, els=None,allco=False, echo_list=False):
+    def find_word(data):
+        words=data['words']
+        echo=data['echo']
+        photo=data['photo']
+        video=data['video']
+        prob=data['prob']
+        els=data['els']
+        allco=data['allco']
+        echo_list=data['echo_list']
+        try:
+            user=data['add_by']
+        except:
+            user=None
+        oid=data['_id']
         """
         words: words need to reaction, need to be a list.
         echo, photo, video: msg send after reaction
@@ -515,13 +528,17 @@ def key_word_reaction(bot,update):
                 if num<prob:
                     if echo_list:
                         pars={'do':'msgSend',
-                            'words':randList(echo)
+                            'words':randList(echo),
+                            'echo_add_by':user,
+                            'oid':oid
                         }
                         pool.append(pars)
                         #msgSend(randList(echo))
                     else:
                         pars={'do':'msgSend',
                             'words':echo
+                            'echo_add_by':user,
+                            'oid':oid
                         }
                         pool.append(pars)
                         #msgSend(echo)
@@ -529,12 +546,16 @@ def key_word_reaction(bot,update):
                     if els.find('https://')!=-1:
                         pars={'do':'videoSend',
                             'vid':els
+                            'echo_add_by':user,
+                            'oid':oid
                         }
                         pool.append(pars)
                         #videoSend(els)
                     else:
                         pars={'do':'msgSend',
                             'words':els
+                            'echo_add_by':user,
+                            'oid':oid
                         }
                         pool.append(pars)
                         #msgSend(els)
@@ -542,12 +563,16 @@ def key_word_reaction(bot,update):
                 if echo_list:
                     pars={'do':'videoSend',
                         'vid':randList(video)
+                        'echo_add_by':user,
+                        'oid':oid
                     }
                     pool.append(pars)
                     #videoSend(randList(video))
                 else:
                     pars={'do':'videoSend',
                         'vid':video
+                        'echo_add_by':user,
+                        'oid':oid
                     }
                     pool.append(pars)
                     #videoSend(video)
@@ -555,12 +580,16 @@ def key_word_reaction(bot,update):
                 if echo_list:
                     pars={'do':'picSend',
                         'pic':randList(photo)
+                        'echo_add_by':user,
+                        'oid':oid
                     }
                     pool.append(pars)
                     #picSend(randList(photo))
                 else:
                     pars={'do':'picSend',
                         'pic':photo
+                        'echo_add_by':user,
+                        'oid':oid
                     }
                     pool.append(pars)
                     #picSend(photo)
@@ -573,17 +602,19 @@ def key_word_reaction(bot,update):
     # word_echo
     if switch == True:
         for d in echo_data:
-            find_word(words=d['words'], echo=d['echo'], photo=d['photo'], video=d['video'],
-                prob=d['prob'], els=d['els'],allco=d['allco'], echo_list=d['echo_list'])
+            find_word(d)
         if pool:
             to_do=randList(pool)
             cid=update.message.chat_id
-            if to_do['do']=='msgSend':
-                bot.send_message(chat_id=cid,text=to_do['words'])
-            if to_do['do']=='videoSend':
-                bot.send_video(chat_id=cid, video=to_do['vid'])
-            if to_do['do']=='picSend':
-                bot.send_photo(chat_id=cid, photo=to_do['pic'])
+            try:
+                if to_do['do']=='msgSend':
+                    bot.send_message(chat_id=cid,text=to_do['words'])
+                if to_do['do']=='videoSend':
+                    bot.send_video(chat_id=cid, video=to_do['vid'])
+                if to_do['do']=='picSend':
+                    bot.send_photo(chat_id=cid, photo=to_do['pic'])
+            except:
+                logger.error("ECHO error.ECHO oid:%s, add by %s",str(to_do['oid']),str(to_do['echo_add_by']))
     ###################################
     #          reply_pair             #
     ###################################
