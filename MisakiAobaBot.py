@@ -452,16 +452,18 @@ def addecho(bot, update, args):
     if data['prob']==0:
         bot.send_message(chat_id=update.message.chat_id,text='這樣到了宇宙都不會發生欸...')
         return
-    if data['video'].find("http")==-1:
-        bot.send_message(chat_id=update.message.chat_id,text='請為影片輸入一個有效的網址！\n或許你應該用 -w 指令？')
-        return
-    if data['photo'].find("http")==-1:
-        bot.send_message(chat_id=update.message.chat_id,text='請為圖片輸入一個有效的網址！\n或許你應該用 -w 指令？')
-        return
+    if isinstance(data['video'], str):
+        if data['video'].find("http")==-1:
+            bot.send_message(chat_id=update.message.chat_id,text='請為影片輸入一個有效的網址！\n或許你應該用 -w 指令？')
+            return
+    if isinstance(data['photo'], str):
+        if data['photo'].find("http")==-1:
+            bot.send_message(chat_id=update.message.chat_id,text='請為圖片輸入一個有效的網址！\n或許你應該用 -w 指令？')
+            return
 
 
-    insert_data('words_echo',data)
-    logger.info("Insert echo data sucessful:%s",str(data['words']))
+    mongo_data=insert_data('words_echo',data)
+    logger.info("Insert echo data sucessful:%s ID=%s",str(data['words']),mongo_data.inserted_id)
     bot.send_message(chat_id=update.message.chat_id,text='資料寫入成功！')
 
 def finduser(bot, update, args):

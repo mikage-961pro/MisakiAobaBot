@@ -81,7 +81,7 @@ def quote_finder(key,Collection='quote_main'):
 '''
 def insert_data(Collection,dict):
     op_ins=db[Collection]
-    op_ins.insert_one(dict)
+    return op_ins.insert_one(dict)
 
 def display_alldata(Collection):
     op_ins=db[Collection]
