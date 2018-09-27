@@ -369,14 +369,16 @@ def forcesave(bot, update):
             pass
 
 def addecho(bot, update, args):
+    space_word="/_/"
+
     context=' '.join(args)
     if context=="":
         bot.send_message(chat_id=update.message.chat_id,text='請輸入資料！')
         return
     if formula('h',context):
         text="""
-/addecho -w=文字 -e=響應 -p=照片 -v=影像 -pr=機率 -els=機率外響應 -al=文字全對才發生 -eli=響應是否為多數
--w:可以是多個文字，像是-w=もちょ,ナンス,天ちゃん
+/addecho -w=abc,123 -e=test,test1 -els=300 -al -eli
+-w:可以是多個文字，像是-w=もちょ,ナンス,天ちゃん。空格請用/_/（左右斜線中間底線）替代
 ［以下三個請擇一輸入］
 -e:會回應的文字。像是-e=(●･▽･●)
 -p:回應的圖片。可以是imgur圖床網址。
@@ -384,15 +386,25 @@ def addecho(bot, update, args):
 
 -pr:機率。若是落在此機率外則觸發els（可填入0~1000）
 -els:若是在機率外就會觸發文字。只能填入一行。-els=(o・∇・o)
--al:要-w中的文字全對才會觸發(true/false)。
--eli:若此為true，則echo可以為多行（會隨機觸發）(true/false)。
+-al:要-w中的文字全對才會觸發
+-eli:若此為true，則echo可以為多行（會隨機觸發）
         """
         bot.send_message(chat_id=update.message.chat_id,text=text)
         return
+    # deal space
+    unspaced_word=formula('w',context,if_list=True)
+    spaced_word=[]
+    for word in unspaced_word:
+        spaced_word.append(word.replace(space_word,' '))
+    unspaced_echo=formula('e',context,if_list=True)
+    spaced_echo=[]
+    for echo in unspaced_echo:
+        spaced_echo.append(echo.replace(space_word,' '))
 
+    # input data
     data={
-        'words':formula('w',context,if_list=True),
-        'echo':formula('e',context,if_list=True),
+        'words':spaced_word,
+        'echo':spaced_echo,
         'photo':formula('p',context),
         'video':formula('v',context),
         'prob':int(formula('pr',context)),
@@ -401,6 +413,7 @@ def addecho(bot, update, args):
         'echo_list':formula('eli',context),
         'add_by':update.message.chat_id
         }
+
     if formula('pr',context)==False:
         data['prob']=1000
     # check
