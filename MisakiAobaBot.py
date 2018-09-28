@@ -135,9 +135,13 @@ def which(bot, update, args):
             bot.send_message(chat_id=update.message.chat_id, text=text)
         else:
             things=' '.join(args).split('#')
-            result=things[randrange(len(things))]
-            text="わたしは〜♬［$res］が良いと思うよ〜えへへ。".replace('$res',result)
-            bot.send_message(chat_id=update.message.chat_id, text=text)
+            if len(things)==1:
+                text="そんな$resたいなら、私と諮問することは必要じゃないでしょ？".replace('$res',result)
+                bot.send_message(chat_id=update.message.chat_id, text=text)
+            else:
+                result=things[randrange(len(things))]
+                text="わたしは〜♬［$res］が良いと思うよ〜えへへ。".replace('$res',result)
+                bot.send_message(chat_id=update.message.chat_id, text=text)
 
 @do_after_root
 @run_async
@@ -484,8 +488,13 @@ def finduser(bot, update, args):
     """used to find user data from user_id"""
     context=' '.join(args)
     data=context.split('#')
-    room_id=int(data[0])
-    user_id=int(data[1])
+    try:
+        room_id=int(data[0])
+        user_id=int(data[1])
+    except ValueError:
+        logger.warning("Lack of information while find user")
+        bot.send_message(chat_id=update.message.chat_id,text="請輸入正確的格式。")
+
     user_data=bot.get_chat_member(chat_id=room_id,user_id=user_id)
     first_name=user_data.user.first_name
     last_name=user_data.user.last_name
@@ -688,7 +697,6 @@ def key_word_reaction(bot,update):
             bot.send_message(chat_id=update.message.chat_id,text="知らない人ですよ。")
         # Exit region
         return
-
     ###################################
     #          quote collector        #
     ###################################
