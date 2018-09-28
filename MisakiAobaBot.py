@@ -129,13 +129,15 @@ def nanto(bot, update, args):
 @do_after_root
 def which(bot, update, args):
     """Send a message when the command /which is issued."""
+    split_symbol="#"
     if update.message.date > init_time:
         if not args:
-            text="請輸入要給我決定的事情♪\n記得用〔＃〕分開喔！"
+            text="請輸入要給我決定的事情♪\n記得用〔$symbol〕分開喔！",replace('$symbol',split_symbol)
             bot.send_message(chat_id=update.message.chat_id, text=text)
         else:
-            things=' '.join(args).split('#')
+            things=' '.join(args).split(split_symbol)
             if len(things)==1:
+                result=things[0]
                 text="そんな$resたいなら、私と諮問することは必要じゃないでしょ？".replace('$res',result)
                 bot.send_message(chat_id=update.message.chat_id, text=text)
             else:
