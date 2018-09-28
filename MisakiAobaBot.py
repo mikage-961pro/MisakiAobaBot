@@ -398,8 +398,9 @@ def addecho(bot, update, args):
         spaced_word.append(word.replace(space_word,' '))
     unspaced_echo=formula('e',context,if_list=True)
     spaced_echo=[]
-    for echo in unspaced_echo:
-        spaced_echo.append(echo.replace(space_word,' '))
+    if isinstance(unspaced_echo, list):
+        for echo in unspaced_echo:
+            spaced_echo.append(echo.replace(space_word,' '))
 
     # input data
     data={
@@ -424,9 +425,9 @@ def addecho(bot, update, args):
     if data['echo_list']==False and data['echo']!=None:
         data['echo']=data['echo'][0]
 
-    if type(data['allco'])!='boolen':
+    if not isinstance(data['allco'], bool):
         data['allco']=False
-    if type(data['echo_list'])!='boolen':
+    if not isinstance(data['echo_list'], bool):
         data['echo_list']=False
     if data['words']=='':
         data['words']=None
