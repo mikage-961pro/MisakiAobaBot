@@ -496,13 +496,19 @@ def finduser(bot, update, args):
     except ValueError:
         logger.warning("Lack of information while find user")
         bot.send_message(chat_id=update.message.chat_id,text="請輸入正確的格式。")
+        return
 
-    user_data=bot.get_chat_member(chat_id=room_id,user_id=user_id)
-    first_name=user_data.user.first_name
-    last_name=user_data.user.last_name
-    username=user_data.user.username
-    text="User {} in chat {} is {}{} with username:{}.".format(user_id,room_id,first_name,last_name,username)
-    bot.send_message(chat_id=update.message.chat_id,text=text)
+    try:
+        user_data=bot.get_chat_member(chat_id=room_id,user_id=user_id)
+        first_name=user_data.user.first_name
+        last_name=user_data.user.last_name
+        username=user_data.user.username
+        text="User {} in chat {} is {} {} with username:{}.".format(user_id,room_id,first_name,last_name,username)
+        bot.send_message(chat_id=update.message.chat_id,text=text)
+    except UnboundLocalError:
+        logger.warning("Wrong information while find user")
+        bot.send_message(chat_id=update.message.chat_id,text="請輸入正確的代號。")
+        return
 
 def testfunc(bot, update):
     """print something"""
