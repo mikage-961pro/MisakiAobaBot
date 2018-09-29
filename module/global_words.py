@@ -80,6 +80,7 @@ class GLOBAL_WORDS:
 狀態時間：$time
 """
     word_about="""
+貼心提醒：給予美咲管理員權限可以做更多事情。
 Version:Beta 1.6.0
 Boot Time:$boot_time
 Last update:2018/09/29
