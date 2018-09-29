@@ -31,10 +31,16 @@ This bot is specialized for our [im@s group](https://t.me/imas_zh)
 - **words reaction:** Bot will say something when user enter some specific words.
 - **group state record:** Record the member and message number every time.
 - **picture save and call:** 使用`idol@db`功能儲存你喜歡的偶像圖。
+- **rule setting:** 可以自訂不同的群規則。
 
 ## Update Log
-New Version: Beta 1.5.2  
-Update Date:2018/09/22
+New Version: Beta 1.6.0  
+Update Date:2018/09/29
+
+### Beta 1.6.0  
+1. Enable user to Edit own rule
+2. Echo bug fix.
+3. Some language fault fix
 
 ### Beta 1.5.3  
 1. Enable user to add echo

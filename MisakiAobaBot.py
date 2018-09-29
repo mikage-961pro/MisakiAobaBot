@@ -1,7 +1,7 @@
 # coding=utf-8
 
 bot_name='@MisakiAobaBot'
-DEBUG=True
+DEBUG=False
 ################################################
 #              Global Setting                  #
 ################################################
@@ -32,6 +32,7 @@ from module import *
 #                 Global var                   #
 ################################################
 quote_search={} # Use on /quote
+reply_pair={} # Use on catch reply
 ################################################
 #                   command                    #
 ################################################
@@ -64,10 +65,18 @@ def tbgame(bot, update):
 @del_cmd
 def rule(bot, update):
     """Send a message when the command /rule is issued."""
+    pipeline={'room_id':update.message.chat_id}
+    key='room_rule'
+    room_data=display_data('room_config',pipeline,key)
+    room_rule=""
+    if room_data is True:
+        room_rule="本群組尚未建立規則。"
+    else:
+        room_rule=room_data
     if randrange(1000)<30:
         bot.send_message(chat_id=update.message.chat_id, text="ぜ")
     else:
-        msg=bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_rule,
+        msg=bot.send_message(chat_id=update.message.chat_id, text=room_rule,
                         parse_mode=ParseMode.HTML)
         time.sleep(60)
         bot.delete_message(chat_id=update.message.chat_id, message_id=msg.message_id)
@@ -318,14 +327,14 @@ def sticker_matome(bot,update):
         bot.send_message(chat_id=update.message.chat_id,text=startme,parse_mode='HTML')
     else:
         bot.send_message(chat_id=update.message.chat_id,text='看私訊～～♪')
-reply_pair={}
+
 @do_after_root
 def savepic(bot, update):
     """Send a message when the command /savepic is issued."""
     """Send msg to ask user and save pic"""
     mention_url='tg://user?id={}'.format(update.message.from_user.id)
     first_name=update.message.from_user.first_name
-    m_ent=[MessageEntity('mention',offset=0, length=len(first_name),user=update.message.from_user)]
+    # m_ent=[MessageEntity('mention',offset=0, length=len(first_name),user=update.message.from_user)]
     text='<a href="{}">{}</a>さん、何がご用事ですか？'.format(mention_url,first_name)
     f=ForceReply(force_reply=True,selective=True)
     rpl=bot.send_message(chat_id=update.message.chat_id,
@@ -512,7 +521,7 @@ def finduser(bot, update, args):
 
 def testfunc(bot, update):
     """print something"""
-    pass
+    print(str(is_admin(bot, update)))
 ################################################
 #               not command                    #
 ################################################
@@ -676,9 +685,21 @@ def key_word_reaction(bot,update):
     except KeyError:
         pass
     else:
-        if update.message.reply_to_message==m:
-            bot.send_message(chat_id=update.message.chat_id,text=update.message.text)
-        del reply_pair[update.message.from_user.id]
+        """Main function"""
+        function_type=m[0]
+        if function_type=="RULE_EDIT":
+            """RULE_EDIT"""
+            if update.message.reply_to_message==m[1]:
+                room_data={
+                'room_id':update.message.chat_id,
+                'room_name':update.message['chat']['title'],
+                'update_time':update.message.date,
+                'room_rule':update.message.text
+                }
+
+                updata_data("room_config",{'room_id':update.message.chat_id},{"$set":room_data})
+                bot.send_message(chat_id=update.message.chat_id,text="更新成功！")
+            del reply_pair[update.message.from_user.id]
     ###################################
     #              picsave            #
     ###################################
@@ -861,25 +882,18 @@ def menu_actions(bot, update):
                     message_id=query.message.message_id,
                     text="只有管理員擁有此權限。")
             return
-        room_config={}
-        room_config['room_id']=query.message.chat_id
-        room_config['room_name']=query.message['chat']['title']
-        room_config['update_time']=query.message.date
-
-        bot.edit_message_text(chat_id=query.message.chat_id,
-                message_id=query.message.message_id,
-                text="更新完成。")
-        """
-        mention_url='tg://user?id={}'.format(update.message.from_user.id)
-        first_name=update.message.from_user.first_name
-        m_ent=[MessageEntity('mention',offset=0, length=len(first_name),user=update.message.from_user)]
-        text='<a href="{}">{}</a>さん、何がご用事ですか？'.format(mention_url,first_name)
+        mention_url='tg://user?id={}'.format(query.message.from_user.id)
+        first_name=query.message.from_user.first_name
+        text='請回覆群規文字。\n本功能支援HTML格式。'.format(mention_url,first_name)
         f=ForceReply(force_reply=True,selective=True)
-        rpl=bot.send_message(chat_id=update.message.chat_id,
-            text=text,reply_to_message=update.message,reply_markup=f,parse_mode='HTML')
+        bot.delete_message(chat_id=query.message.chat_id,
+                message_id=query.message.message_id)
+        rpl=bot.send_message(chat_id=query.message.chat_id,
+            text=text,reply_to_message=query.message,reply_markup=f,parse_mode='HTML')
         global reply_pair
-        reply_pair[update.message.from_user.id]=rpl
-        """
+        """[0]:Function [1]:Data"""
+        reply_pair[query.from_user.id]=["RULE_EDIT",rpl]
+
     def menu_turn_left(page):
         try:
             result=quote_search[query.from_user.id]
@@ -1075,10 +1089,13 @@ def main():
     dp.add_handler(CommandHandler("forcesave",forcesave))
     dp.add_handler(CommandHandler("addecho", addecho, pass_args=True))
 
+    # hidden funcgion
+    dp.add_handler(CommandHandler("finduser", finduser, pass_args=True))
+
     # test function
     if DEBUG:
-        dp.add_handler(CommandHandler("finduser", finduser, pass_args=True))
-        dp.add_handler(CommandHandler("savepic",savepic, pass_job_queue=True))
+
+        # dp.add_handler(CommandHandler("savepic",savepic))
         dp.add_handler(CommandHandler("testfunc",testfunc))
 
     # ---Menu function---

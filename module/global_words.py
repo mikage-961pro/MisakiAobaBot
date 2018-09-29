@@ -80,9 +80,9 @@ class GLOBAL_WORDS:
 狀態時間：$time
 """
     word_about="""
-Version:Beta 1.5.3
+Version:Beta 1.6.0
 Boot Time:$boot_time
-Last update:2018/09/24
+Last update:2018/09/29
 Developer:765技術部成員
     Dephilia（蝶芙）／TAKE（他Ｋ）
 Base Language:Python

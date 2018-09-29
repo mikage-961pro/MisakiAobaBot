@@ -40,16 +40,19 @@ def is_admin(bot,update):
     """Dectect user if admin, return boolen value"""
     is_admin=False
     try:
-        if update.message.chat.type=='private':
-            return is_admin
-        else:
-            adminlist=update.message.chat.get_administrators()
-            for i in adminlist:
-                if update.message.from_user.id==i.user.id:
-                    is_admin=True
-            return is_admin
+        adminlist=update.message.chat.get_administrators()
+        for i in adminlist:
+            if update.message.from_user.id==i.user.id:
+                is_admin=True
+        return is_admin
+    except TelegramError:
+        is_admin=True
+        logger.warning('(%s):Private chat','is_admin')
+        return is_admin
     except AttributeError:
-        logger.error('(%s):In a all admin chat','is_admin')
+        is_admin=True
+        logger.warning('(%s):In a all admin chat','is_admin')
+        return is_admin
 
 def bot_is_admin(bot,update):
     """Dectect bot if admin, return boolen value"""
