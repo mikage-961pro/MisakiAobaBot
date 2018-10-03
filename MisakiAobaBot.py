@@ -562,7 +562,7 @@ def key_word_reaction(bot,update):
         def picSend(pic):
             bot.send_photo(chat_id=cid, photo=pic)
         # a random number from 0 to 999
-        num = randrange(1000)
+
 
         key_words_value=False
 
@@ -573,13 +573,15 @@ def key_word_reaction(bot,update):
                     "one word correct will go"
                     if key_words.find(check)!=-1:
                         key_words_value=True
+                        return data
                 if allco == True:
                     "all word correct will go"
                     if key_words.find(check)!=-1:
                         key_words_value=True
+                        return data
                     else:
                         key_words_value=False
-                        break
+                        return
         except TypeError:
             logger.error("Words type wrong:%s",str(words))
             return
@@ -663,7 +665,8 @@ def key_word_reaction(bot,update):
     # word_echo
     if switch == True:
         for d in echo_data:
-            find_word(d)
+            if find_word(d):
+                pool.append(find_word(d))
         if pool:
             to_do=randList(pool)
             cid=update.message.chat_id
