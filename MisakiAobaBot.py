@@ -349,7 +349,7 @@ def forcesave(bot, update):
 
 
     try:
-        msg=bot.send_message(chat_id=chat_id,text='聊天室資訊更新中！')
+        msg=bot.send_message(chat_id=chat_id,text='聊天室資訊更新中...')
     except TimedOut:
         logger.error('(%s):Update time out.','forcesave')
     except Unauthorized:
@@ -791,7 +791,7 @@ def save_room_state(bot, job):
     last_data=room_state_getter()
 
     try:
-        msg=bot.send_message(chat_id=chat_id,text='聊天室資訊更新中！')
+        msg=bot.send_message(chat_id=chat_id,text='聊天室資訊更新中...')
     except TimedOut:
         logger.error('(%s):Update time out.','save_room_state')
     except Unauthorized:
