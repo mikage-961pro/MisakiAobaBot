@@ -532,13 +532,7 @@ def key_word_reaction(bot,update):
     pool=[]
     def find_word(data):
         words=data['words']
-        echo=data['echo']
-        photo=data['photo']
-        video=data['video']
-        prob=data['prob']
-        els=data['els']
-        allco=data['allco']
-        echo_list=data['echo_list']
+
         try:
             user=data['add_by']
         except:
@@ -554,15 +548,6 @@ def key_word_reaction(bot,update):
         passArg: if true, the function will never go; default is false
         """
         key_words=update.message.text
-        cid=update.message.chat_id
-        def msgSend(words):
-            bot.send_message(chat_id=cid,text=words)
-        def videoSend(vid):
-            bot.send_video(chat_id=cid, video=vid)
-        def picSend(pic):
-            bot.send_photo(chat_id=cid, photo=pic)
-        # a random number from 0 to 999
-
 
         key_words_value=False
 
@@ -586,78 +571,6 @@ def key_word_reaction(bot,update):
             logger.error("Words type wrong:%s",str(words))
             return
 
-        if key_words_value==True:
-            if echo != None:
-                if num<prob:
-                    if echo_list:
-                        pars={'do':'msgSend',
-                            'words':randList(echo),
-                            'echo_add_by':user,
-                            'oid':oid
-                        }
-                        pool.append(pars)
-                        #msgSend(randList(echo))
-                    else:
-                        pars={'do':'msgSend',
-                            'words':echo,
-                            'echo_add_by':user,
-                            'oid':oid
-                        }
-                        pool.append(pars)
-                        #msgSend(echo)
-                if num>=prob and els!=None:
-                    if els.find('https://')!=-1:
-                        pars={'do':'videoSend',
-                            'vid':els,
-                            'echo_add_by':user,
-                            'oid':oid
-                        }
-                        pool.append(pars)
-                        #videoSend(els)
-                    else:
-                        pars={'do':'msgSend',
-                            'words':els,
-                            'echo_add_by':user,
-                            'oid':oid
-                        }
-                        pool.append(pars)
-                        #msgSend(els)
-            elif video != None and num<prob:
-                if echo_list:
-                    pars={'do':'videoSend',
-                        'vid':randList(video),
-                        'echo_add_by':user,
-                        'oid':oid
-                    }
-                    pool.append(pars)
-                    #videoSend(randList(video))
-                else:
-                    pars={'do':'videoSend',
-                        'vid':video,
-                        'echo_add_by':user,
-                        'oid':oid
-                    }
-                    pool.append(pars)
-                    #videoSend(video)
-            elif photo != None and num<prob:
-                if echo_list:
-                    pars={'do':'picSend',
-                        'pic':randList(photo),
-                        'echo_add_by':user,
-                        'oid':oid
-                    }
-                    pool.append(pars)
-                    #picSend(randList(photo))
-                else:
-                    pars={'do':'picSend',
-                        'pic':photo,
-                        'echo_add_by':user,
-                        'oid':oid
-                    }
-                    pool.append(pars)
-                    #picSend(photo)
-        return key_words_value
-
     # switch
     switch=display_data('config',{'id':update.message.from_user.id},'reply')
     echo_data=display_alldata('words_echo')
@@ -670,15 +583,47 @@ def key_word_reaction(bot,update):
         if pool:
             to_do=randList(pool)
             cid=update.message.chat_id
+            num = randrange(1000)
+            echo=to_do['echo']
+            photo=to_do['photo']
+            video=to_do['video']
+            prob=to_do['prob']
+            els=to_do['els']
+            echo_list=to_do['echo_list']
+            cid=update.message.chat_id
+            def msgSend(words):
+                bot.send_message(chat_id=cid,text=words)
+            def videoSend(vid):
+                bot.send_video(chat_id=cid, video=vid)
+            def picSend(pic):
+                bot.send_photo(chat_id=cid, photo=pic)
+                
+            if echo != None:
+                if num<prob:
+                    if echo_list:
+                        msgSend(randList(echo))
+                    else:
+                        msgSend(echo)
+                if num>=prob and els!=None:
+                    if els.find('https://')!=-1:
+                        videoSend(els)
+                    else:
+                        msgSend(els)
+            elif video != None and num<prob:
+                if echo_list:
+                    videoSend(randList(video))
+                else:
+                    videoSend(video)
+            elif photo != None and num<prob:
+                if echo_list:
+                    picSend(randList(photo))
+                else:
+                    picSend(photo)
+                    '''
             try:
-                if to_do['do']=='msgSend':
-                    bot.send_message(chat_id=cid,text=to_do['words'])
-                if to_do['do']=='videoSend':
-                    bot.send_video(chat_id=cid, video=to_do['vid'])
-                if to_do['do']=='picSend':
-                    bot.send_photo(chat_id=cid, photo=to_do['pic'])
+
             except:
-                logger.error("ECHO error.ECHO oid:%s, add by %s",str(to_do['oid']),str(to_do['echo_add_by']))
+                logger.error("ECHO error.ECHO oid:%s, add by %s",str(to_do['oid']),str(to_do['echo_add_by']))'''
     ###################################
     #          reply_pair             #
     ###################################
