@@ -27,6 +27,8 @@ updater = Updater(token,workers=16)
 
 # ---My Module
 from module import *
+import word_echo
+import menu
 
 ################################################
 #                 Global var                   #
@@ -87,7 +89,7 @@ def config(bot, update):
     """Config is use to let user to turn on/off some function"""
     bot.send_message(chat_id=update.message.chat_id,
         text='何がご用事ですか？',
-        reply_markup=main_menu_keyboard())
+        reply_markup=menu.main_menu_keyboard())
 
 @run_async
 @do_after_root
@@ -141,7 +143,7 @@ def which(bot, update, args):
     split_symbol="#"
     if update.message.date > init_time:
         if not args:
-            text="請輸入要給我決定的事情♪\n記得用〔$symbol〕分開喔！",replace('$symbol',split_symbol)
+            text="請輸入要給我決定的事情♪\n記得用〔$symbol〕分開喔！".replace('$symbol',split_symbol)
             bot.send_message(chat_id=update.message.chat_id, text=text)
         else:
             things=' '.join(args).split(split_symbol)
@@ -384,116 +386,30 @@ def forcesave(bot, update):
             pass
 
 def addecho(bot, update, args):
-    space_word="/_/"
-
     context=' '.join(args)
     if context=="":
-        bot.send_message(chat_id=update.message.chat_id,text='請輸入資料！')
+        bot.send_message(chat_id=update.message.chat_id,
+            text='請輸入資料！\n輸入<pre>\\addecho -h</pre> 以尋求幫助。',
+            parse_mode='HTML')
         return
+
     if formula('h',context):
-        text="""
-/addecho -w=abc,123 -e=test,test1 -els=300 -al -eli
--w:可以是多個文字，像是-w=もちょ,ナンス,天ちゃん。空格請用/_/（左右斜線中間底線）替代
-［以下三個請擇一輸入］
--e:會回應的文字。像是-e=(●･▽･●)
--p:回應的圖片。可以是imgur圖床網址。
--v:回應的影像。像是gif等，注意格式均為mp4。
+        """help"""
+        addEcho_help(update,bot)
+        return
 
--pr:機率。若是落在此機率外則觸發els（可填入0~1000）
--els:若是在機率外就會觸發文字。只能填入一行。-els=(o・∇・o)
--al:要-w中的文字全對才會觸發
--eli:若此為true，則echo可以為多行（會隨機觸發）
-        """
-        bot.send_message(chat_id=update.message.chat_id,text=text)
-        return
-    # deal space
-    unspaced_word=formula('w',context,if_list=True)
-    spaced_word=[]
-    for word in unspaced_word:
-        spaced_word.append(word.replace(space_word,' '))
-    unspaced_echo=formula('e',context,if_list=True)
-    spaced_echo=[]
-    if isinstance(unspaced_echo, list):
-        for echo in unspaced_echo:
-            spaced_echo.append(echo.replace(space_word,' '))
+    try:
+        data=word_echo.addEcho_main(context,update=update,bot=bot)
+        if data:
+            mongo_data=insert_data('words_echo',data)
+            logger.info("Insert echo data sucessful:%s ID=%s",str(data['words']),mongo_data.inserted_id)
+            bot.send_message(chat_id=update.message.chat_id,text='資料寫入成功！')
+        else:
+            logger.info("Insert echo data failed.")
+            bot.send_message(chat_id=update.message.chat_id,text='資料寫入失敗！')
 
-    # input data
-    data={
-        'words':spaced_word,
-        'echo':spaced_echo,
-        'photo':formula('p',context),
-        'video':formula('v',context),
-        'prob':int(formula('pr',context)),
-        'els':formula('els',context),
-        'allco':formula('al',context),
-        'echo_list':formula('eli',context),
-        'add_by':update.message.chat_id
-        }
-
-    if formula('pr',context)==False:
-        data['prob']=1000
-    # check
-    if data['echo']==False:data['echo']=None
-    if data['photo']==False:data['photo']=None
-    if data['video']==False:data['video']=None
-    if data['els']==False:data['els']=None
-    if data['echo_list']==False and data['echo']!=None:
-        data['echo']=data['echo'][0]
-
-    if not isinstance(data['allco'], bool):
-        data['allco']=False
-    if not isinstance(data['echo_list'], bool):
-        data['echo_list']=False
-    if data['words']=='':
-        data['words']=None
-    if data['echo']=='':
-        data['echo']=None
-    if data['photo']=='':
-        data['photo']=None
-    if data['video']=='':
-        data['video']=None
-
-    if not data['words']:
-        bot.send_message(chat_id=update.message.chat_id,text='什麼都沒輸入欸ˊˋ')
-        return
-    for i in data['words']:
-        if len(i)<2:
-            bot.send_message(chat_id=update.message.chat_id,text='請輸入至少兩個字。')
-            return
-    if data['words']==None:
-        bot.send_message(chat_id=update.message.chat_id,text='什麼都沒輸入欸ˊˋ')
-        return
-    if (data['echo']==None and data['photo']==None and data['video']==None):
-        bot.send_message(chat_id=update.message.chat_id,text='請輸入至少一個反饋文字。')
-        return
-    if (data['echo']!=None and data['photo']!=None):
-        bot.send_message(chat_id=update.message.chat_id,text='請不要輸入兩種反饋。')
-        return
-    if (data['video']!=None and data['photo']!=None):
-        bot.send_message(chat_id=update.message.chat_id,text='請不要輸入兩種反饋。')
-        return
-    if (data['echo']!=None and data['video']!=None):
-        bot.send_message(chat_id=update.message.chat_id,text='請不要輸入兩種反饋。')
-        return
-    if data['prob']>1000 or data['prob']<0:
-        bot.send_message(chat_id=update.message.chat_id,text='你這樣操作機率會抽不到SSR的！')
-        return
-    if data['prob']==0:
-        bot.send_message(chat_id=update.message.chat_id,text='這樣到了宇宙都不會發生欸...')
-        return
-    if isinstance(data['video'], str):
-        if data['video'].find("http")==-1:
-            bot.send_message(chat_id=update.message.chat_id,text='請為影片輸入一個有效的網址！\n或許你應該用 -w 指令？')
-            return
-    if isinstance(data['photo'], str):
-        if data['photo'].find("http")==-1:
-            bot.send_message(chat_id=update.message.chat_id,text='請為圖片輸入一個有效的網址！\n或許你應該用 -w 指令？')
-            return
-
-
-    mongo_data=insert_data('words_echo',data)
-    logger.info("Insert echo data sucessful:%s ID=%s",str(data['words']),mongo_data.inserted_id)
-    bot.send_message(chat_id=update.message.chat_id,text='資料寫入成功！')
+    except TimedOut:
+        bot.send_message(chat_id=update.message.chat_id,text='Saving...')
 
 def finduser(bot, update, args):
     """used to find user data from user_id"""
@@ -526,104 +442,158 @@ def testfunc(bot, update):
 #               not command                    #
 ################################################
 def key_word_reaction(bot,update):
+    """Observe all msg from user."""
+    key_words=update.message.text #record
     ###################################
     #        key word reaction        #
     ###################################
-    pool=[]
-    def find_word(data):
-        words=data['words']
+    def wordEcho(user_switch,room_switch):
+        """Detect what user say and misaki will response."""
+        # --Step.1 Switch--
+        if user_switch==False or room_switch==False:
+            """Switch"""
+            return False
 
-        try:
-            user=data['add_by']
-        except:
-            user=None
-        oid=data['_id']
-        """
-        words: words need to reaction, need to be a list.
-        echo, photo, video: msg send after reaction
-            If echo is multiple, will show random averagely
-        prob: probability, if not, send els msg (1 for 0.1%)
-        els: if not in prob, show it
-        allco: words are all correct will go
-        passArg: if true, the function will never go; default is false
-        """
-        key_words=update.message.text
+        word_pool=[] #create a pool to save those have chance to send
+        def comparator(word,data):
+            """Input text, compare to data in database, return value and save in pool."""
+            # word is str, where data is a dict
+            if not isinstance(word, str):
+                raise TypeError
+            if not isinstance(data, dict):
+                raise TypeError
 
-        key_words_value=False
-
-        """check if all word correct will go"""
-        try:
-            for check in words:
-                if allco == False:
-                    "one word correct will go"
-                    if key_words.find(check)!=-1:
-                        key_words_value=True
-                        return data
-                if allco == True:
-                    "all word correct will go"
-                    if key_words.find(check)!=-1:
-                        key_words_value=True
-                        return data
-                    else:
-                        key_words_value=False
-                        return
-        except TypeError:
-            logger.error("Words type wrong:%s",str(words))
-            return
-
-    # switch
-    switch=display_data('config',{'id':update.message.from_user.id},'reply')
-    echo_data=display_alldata('words_echo')
-
-    # word_echo
-    if switch == True:
-        for d in echo_data:
-            if find_word(d):
-                pool.append(find_word(d))
-        if pool:
-            to_do=randList(pool)
-            cid=update.message.chat_id
-            num = randrange(1000)
-            echo=to_do['echo']
-            photo=to_do['photo']
-            video=to_do['video']
-            prob=to_do['prob']
-            els=to_do['els']
-            echo_list=to_do['echo_list']
-            cid=update.message.chat_id
-            def msgSend(words):
-                bot.send_message(chat_id=cid,text=words)
-            def videoSend(vid):
-                bot.send_video(chat_id=cid, video=vid)
-            def picSend(pic):
-                bot.send_photo(chat_id=cid, photo=pic)
-                
-            if echo != None:
-                if num<prob:
-                    if echo_list:
-                        msgSend(randList(echo))
-                    else:
-                        msgSend(echo)
-                if num>=prob and els!=None:
-                    if els.find('https://')!=-1:
-                        videoSend(els)
-                    else:
-                        msgSend(els)
-            elif video != None and num<prob:
-                if echo_list:
-                    videoSend(randList(video))
-                else:
-                    videoSend(video)
-            elif photo != None and num<prob:
-                if echo_list:
-                    picSend(randList(photo))
-                else:
-                    picSend(photo)
-                    '''
+            """check if all word correct will go"""
             try:
+                for check in data['words']:
+                    if data['allco'] == False:
+                        "one word correct will go"
+                        if word.find(check)!=-1:
+                            return data
+                    else:
+                        "all word correct will go"
+                        if word.find(check)!=-1:
+                            continue
+                        else:
+                            return False
+                        return data
+            except TypeError:
+                logger.error("Words type wrong:%s",str(words))
+            return False
+            # If nothing return false
 
+        # --Step.2 Compare data--
+        echo_data=display_alldata('words_echo') # Catch all data in db
+        for d in echo_data:
+            # Search data in db
+            data_value=comparator(key_words,d)
+            if data_value:
+                word_pool.append(data_value)
+                # If search engine has result, save it to pool
+
+        if not word_pool:
+            # If pool has nothing, return
+            return False
+
+        # --Step.3 Pick data from pool--
+        pool_rand=weighted_random()
+        type="" # Video / Photo / String
+        for i in word_pool:
+            """
+            Determine its type. Msg or Video or Photo? Pack it and send.
+            Note that echo may be video.
+            """
+            echo=i['echo']
+            photo=i['photo']
+            video=i['video']
+            prob=i['prob']
+            els=i['els']
+
+            if echo:
+                """ECHO case"""
+                if i['echo_list']:
+                    """If echo is a list"""
+                    each_prob=int(prob/len(echo))
+                    for each_echo in echo:
+                        rand_data={"Type":"STRING","Data":each_echo}
+                        pool_rand.add(rand_data,each_prob)
+                else:
+                    rand_data={"Type":"STRING","Data":echo}
+                    pool_rand.add(rand_data,prob)
+                if url_valid(els):
+                    rand_data={"Type":"VIDEO","Data":els}
+                    pool_rand.add(rand_data,1000-prob)
+                elif els==None:
+                    pool_rand.add_none(1000-prob)
+                else:
+                    rand_data={"Type":"STRING","Data":els}
+                    pool_rand.add(rand_data,1000-prob)
+            elif photo:
+                """PHOTO case"""
+                if i['echo_list']:
+                    """If echo is a list"""
+                    each_prob=int(prob/len(photo))
+                    for each_photo in photo:
+                        rand_data={"Type":"PHOTO","Data":each_photo}
+                        pool_rand.add(rand_data,each_prob)
+                else:
+                    rand_data={"Type":"PHOTO","Data":photo}
+                    pool_rand.add(rand_data,prob)
+
+                if els==None:
+                    pool_rand.add_none(1000-prob)
+                else:
+                    rand_data={"Type":"PHOTO","Data":els}
+                    pool_rand.add(rand_data,1000-prob)
+            elif video:
+                """VIDEO case"""
+                if i['echo_list']:
+                    """If echo is a list"""
+                    each_prob=int(prob/len(video))
+                    for each_video in video:
+                        rand_data={"Type":"VIDEO","Data":each_video}
+                        pool_rand.add(rand_data,each_prob)
+                else:
+                    rand_data={"Type":"VIDEO","Data":video}
+                    pool_rand.add(rand_data,prob)
+                if els==None:
+                    pool_rand.add_none(1000-prob)
+                else:
+                    rand_data={"Type":"VIDEO","Data":els}
+                    pool_rand.add(rand_data,1000-prob)
+
+
+
+
+        # --Step.4 Send--
+        cid=update.message.chat_id
+        def msgSend(words):
+            try:
+                bot.send_message(chat_id=cid,text=words)
             except:
-                logger.error("ECHO error.ECHO oid:%s, add by %s",str(to_do['oid']),str(to_do['echo_add_by']))'''
+                logger.error("Word echo failed while sending word %s.",words)
+        def videoSend(vid):
+            try:
+                bot.send_video(chat_id=cid, video=vid)
+            except:
+                logger.error("Word echo failed while sending video %s.",vid)
+        def picSend(pic):
+            try:
+                bot.send_photo(chat_id=cid, photo=pic)
+            except:
+                logger.error("Word echo failed while sending photo %s.",pic)
+
+        jump_from_pool=pool_rand.output_one()
+        if jump_from_pool==None:
+            return
+        pool_type=jump_from_pool['Type']
+        if pool_type=="STRING":
+            msgSend(jump_from_pool['Data'])
+        elif pool_type=="PHOTO":
+            photoSend(jump_from_pool['Data'])
+        elif pool_type=="VIDEO":
+            videoSend(jump_from_pool['Data'])
+
     ###################################
     #          reply_pair             #
     ###################################
@@ -702,6 +672,12 @@ def key_word_reaction(bot,update):
                 }
             insert_data('quote_main',qdict)
 
+    """RUN"""
+    # switch
+    user_reply_switch=display_data('config',{'id':update.message.from_user.id},'reply')
+
+    wordEcho(user_switch=user_reply_switch,room_switch=True)
+
 def message_callback(bot, update):
 
     ###################################
@@ -770,191 +746,6 @@ def daily_reset(bot,job):
     modify_many_data('config',pipeline={"day_quote":False},key='day_quote',update_value=True)
 
 
-################################################
-#              menu command                    #
-################################################
-def menu_actions(bot, update):
-    query = update.callback_query
-    query_text=query.data
-    def fin_text():
-        bot.edit_message_text(text="了解しました♪",
-                              chat_id=query.message.chat_id,
-                              message_id=query.message.message_id)
-    def menu_main():
-        bot.edit_message_text(chat_id=query.message.chat_id,
-            message_id=query.message.message_id,
-            text='何がご用事ですか？',
-            reply_markup=main_menu_keyboard())
-    def menu_state():
-        fin_text()
-        temp=Template(GLOBAL_WORDS.word_state)
-        rn=query.message['chat']['title']
-        rid=query.message.chat_id
-        tm=query.message.message_id
-        dt=utc8now()
-        un=str(room_member_num(bot,update=query))
-        text=temp.substitute(room_name=rn,room_id=rid,msg_num=tm,user_number=un,time=dt)
-        bot.send_message(text=text,chat_id=query.message.chat_id)
-    def menu_about():
-        fin_text()
-        temp=Template(GLOBAL_WORDS.word_about)
-        text=temp.substitute(boot_time=init_time)
-        bot.send_message(text=text,chat_id=query.message.chat_id,parse_mode=ParseMode.HTML)
-    def menu_resp_check():
-        data_value = display_data('config',{'id':query.from_user.id},'reply')
-        if data_value is None:
-            data_value=True#default open
-        text='{}P目前狀態：{}'.format(query.from_user.first_name,bool2text(data_value))
-        bot.edit_message_text(chat_id=query.message.chat_id,
-                message_id=query.message.message_id,
-                text=text,
-                reply_markup=sub_menu_keyboard(data_value))
-    def menu_crsoff():
-        modify_data('config',pipeline={'id':query.from_user.id},key='reply',update_value=False)
-        bot.edit_message_text(chat_id=query.message.chat_id,
-                message_id=query.message.message_id,
-                text="停止{}的回話功能。".format(query.from_user.first_name))
-    def menu_crson():
-        modify_data('config',pipeline={'id':query.from_user.id},key='reply',update_value=True)
-        bot.edit_message_text(chat_id=query.message.chat_id,
-                message_id=query.message.message_id,
-                text="開啟{}的回話功能。".format(query.from_user.first_name))
-    def menu_canceled():
-        bot.edit_message_text(chat_id=query.message.chat_id,
-                message_id=query.message.message_id,
-                text="まだね〜")
-    def menu_ruleSetting():
-        admin_access=is_admin(bot,update)
-        if admin_access == False:
-            bot.edit_message_text(chat_id=query.message.chat_id,
-                    message_id=query.message.message_id,
-                    text="只有管理員擁有此權限。")
-            return
-        mention_url='tg://user?id={}'.format(query.message.from_user.id)
-        first_name=query.message.from_user.first_name
-        text='請回覆群規文字。\n本功能支援HTML格式。'.format(mention_url,first_name)
-        f=ForceReply(force_reply=True,selective=True)
-        bot.delete_message(chat_id=query.message.chat_id,
-                message_id=query.message.message_id)
-        rpl=bot.send_message(chat_id=query.message.chat_id,
-            text=text,reply_to_message=query.message,reply_markup=f,parse_mode='HTML')
-        global reply_pair
-        """[0]:Function [1]:Data"""
-        reply_pair[query.from_user.id]=["RULE_EDIT",rpl]
-
-    def menu_turn_left(page):
-        try:
-            result=quote_search[query.from_user.id]
-        except KeyError:
-            # Some error flag
-            pass
-        new_page=page-1
-        bot.edit_message_text(chat_id=query.from_user.id,
-                message_id=query.message.message_id,
-                text=result[new_page-1],
-                reply_markup=page_keyboard(result,new_page),
-                parse_mode='HTML')
-    def menu_turn_right(page):
-        try:
-            result=quote_search[query.from_user.id]
-        except KeyError:
-            # Some error flag
-            pass
-        new_page=page+1
-        bot.edit_message_text(chat_id=query.from_user.id,
-                message_id=query.message.message_id,
-                text=result[new_page-1],
-                reply_markup=page_keyboard(result,new_page),
-                parse_mode='HTML')
-    def menu_quote_search_exit():
-        try:
-            global quote_search
-            del quote_search[query.from_user.id]
-        except:
-            pass
-        finally:
-            bot.delete_message(chat_id=query.message.chat_id,
-                    message_id=query.message.message_id)
-
-    # Switch
-    if query_text == "main":
-        """Main menu"""
-        menu_main()
-    elif query_text == "cmd_state":
-        """Show room state"""
-        menu_state()
-    elif query_text == "cmd_about":
-        """Show bot info"""
-        menu_about()
-    elif query_text == "cmd_resp_check":
-        """User resp setting"""
-        menu_resp_check()
-    elif query_text == "cmd_resp_switch_off":
-        menu_crsoff()
-    elif query_text == "cmd_resp_switch_on":
-        menu_crson()
-    elif query_text == "cmd_ruleSetting":
-        """set/edit room rule"""
-        """admin only"""
-        menu_ruleSetting()
-    elif query_text == "cmd_canceled":
-        """Cancel menu"""
-        menu_canceled()
-    elif query_text.find("cmd_turn_left")!=-1:
-        """Last page"""
-        page=query_text.replace('cmd_turn_left','')
-        if page!='':
-            menu_turn_left(int(page))
-    elif query_text.find("cmd_turn_right")!=-1:
-        """Right page"""
-        page=query_text.replace('cmd_turn_right','')
-        if page!='':
-         menu_turn_right(int(page))
-    elif query_text == "cmd_quote_search_exit":
-        """Clear template data"""
-        menu_quote_search_exit()
-    elif query_text == "None":
-        """No cmd, decoration"""
-        pass
-
-# Keyboards
-def main_menu_keyboard():
-    keyboard = [[InlineKeyboardButton(text='回話設定',callback_data='cmd_resp_check'),
-               InlineKeyboardButton(text='群龜設定',callback_data="cmd_ruleSetting")],
-              [InlineKeyboardButton(text='群組狀態',callback_data="cmd_state")
-              ,InlineKeyboardButton(text='關於美咲',callback_data="cmd_about")],
-              [InlineKeyboardButton(text='取消',callback_data="cmd_canceled")]]
-    return InlineKeyboardMarkup(keyboard)
-
-def sub_menu_keyboard(state):
-    keyboard = [[InlineKeyboardButton(text='關閉回話' if state else '開啟回話',
-        callback_data='cmd_resp_switch_off' if state else 'cmd_resp_switch_on')],
-                [InlineKeyboardButton(text='取消',callback_data='main')]]
-    return InlineKeyboardMarkup(keyboard)
-
-def page_keyboard(list,page):
-    total_page=len(list)
-    if total_page==1:
-        keyboard = [[InlineKeyboardButton(text='||',callback_data='None'),
-                     InlineKeyboardButton(text='P{}'.format(page),callback_data='None'),
-                     InlineKeyboardButton(text='||',callback_data='None')],
-                    [InlineKeyboardButton(text='結束',callback_data='cmd_quote_search_exit')]]
-    elif page==1:
-        keyboard = [[InlineKeyboardButton(text='||',callback_data='None'),
-                     InlineKeyboardButton(text='P{}'.format(page),callback_data='None'),
-                     InlineKeyboardButton(text='>>',callback_data='cmd_turn_right'+str(page))],
-                    [InlineKeyboardButton(text='結束',callback_data='cmd_quote_search_exit')]]
-    elif page==total_page:
-        keyboard = [[InlineKeyboardButton(text='<<',callback_data='cmd_turn_left'+str(page)),
-                     InlineKeyboardButton(text='P{}'.format(page),callback_data='None'),
-                     InlineKeyboardButton(text='||',callback_data='None')],
-                    [InlineKeyboardButton(text='結束',callback_data='cmd_quote_search_exit')]]
-    else:
-        keyboard = [[InlineKeyboardButton(text='<<',callback_data='cmd_turn_left'+str(page)),
-                     InlineKeyboardButton(text='P{}'.format(page),callback_data='None'),
-                     InlineKeyboardButton(text='>>',callback_data='cmd_turn_right'+str(page))],
-                    [InlineKeyboardButton(text='結束',callback_data='cmd_quote_search_exit')]]
-    return InlineKeyboardMarkup(keyboard)
 
 ################################################
 #                   inline                     #
@@ -1047,7 +838,7 @@ def main():
         dp.add_handler(CommandHandler("testfunc",testfunc))
 
     # ---Menu function---
-    dp.add_handler(CallbackQueryHandler(menu_actions))
+    dp.add_handler(CallbackQueryHandler(menu.menu_actions))
 
     # ---Inline function---
     dp.add_handler(InlineQueryHandler(inline_handler))
