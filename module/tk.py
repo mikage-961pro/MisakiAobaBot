@@ -8,7 +8,7 @@ from random import randrange
 from string import Template
 from functools import wraps
 from urllib import request
-from telegram import Bot, Chat, Sticker, ReplyKeyboardMarkup
+from telegram import Bot, Chat, Sticker, ReplyKeyboardMarkup, Message
 from telegram.error import *
 
 # ---error log setting
@@ -22,6 +22,8 @@ do_once_value=True
 
 # Record bot init time
 init_time = datetime.now()
+quote_search={} # Use on /quote
+reply_pair={} # Use on catch reply
 ################################################
 #                   tool kits                  #
 ################################################
@@ -36,23 +38,38 @@ def do_once(function):
 def c_tz(datetime,tz):
     t=datetime+timedelta(hours=tz)#轉換時區 tz為加減小時
 
-def is_admin(bot,update):
+def user_admin_value(t_msg):
     """Dectect user if admin, return boolen value"""
-    is_admin=False
+    if not isinstance(t_msg, Message):
+        raise TypeError("user_admin_value needs telegram.Message type.")
+        return
     try:
-        adminlist=update.message.chat.get_administrators()
+        adminlist=t_msg.chat.get_administrators()
         for i in adminlist:
-            if update.message.from_user.id==i.user.id:
-                is_admin=True
-        return is_admin
-    except TelegramError:
-        is_admin=True
-        logger.warning('(%s):Private chat','is_admin')
-        return is_admin
-    except AttributeError:
-        is_admin=True
-        logger.warning('(%s):In a all admin chat','is_admin')
-        return is_admin
+            if t_msg.from_user.id==i.user.id:
+                return True
+    except TelegramError as e:
+        if e=="There is no administrators in the private chat":
+            logger.info('(%s):%s','user_admin_value',e)
+        return True
+    except:
+        logger.warning('Unknown error in [user_admin_value] function.')
+        return False
+
+# decorator
+def wait_for_timeOut(func):
+    """Reply a msg for timeOut"""
+    @wraps(func)
+    def wrapped(bot, update, *args, **kwargs):
+        """Dectect bot if admin, if True, del cmd"""
+        try:
+            return func(bot, update, *args, **kwargs)
+        except TelegramError as e:
+            if e=="Timed out":
+                bot.send_message(chat_id=update.message.chat_id,
+                    text='請稍候')
+    return wrapped
+
 
 def bot_is_admin(bot,update):
     """Dectect bot if admin, return boolen value"""

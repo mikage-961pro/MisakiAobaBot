@@ -108,3 +108,154 @@ def addEcho_main(context,update,bot,space_word="/_/"):
             sdmsg('請為圖片輸入一個有效的網址！\n或許你應該用 -e 指令？')
             return
     return data
+
+
+###################################
+#        key word reaction        #
+###################################
+def wordEcho(bot,update,user_switch,room_switch,key_words):
+    """Detect what user say and misaki will response."""
+    # --Step.1 Switch--
+    if user_switch==False or room_switch==False:
+        """Switch"""
+        return False
+
+    word_pool=[] #create a pool to save those have chance to send
+    def comparator(word,data):
+        """Input text, compare to data in database, return value and save in pool."""
+        # word is str, where data is a dict
+        if not isinstance(word, str):
+            raise TypeError
+        if not isinstance(data, dict):
+            raise TypeError
+
+        """check if all word correct will go"""
+        try:
+            for check in data['words']:
+                if data['allco'] == False:
+                    "one word correct will go"
+                    if word.find(check)!=-1:
+                        return data
+                else:
+                    "all word correct will go"
+                    if word.find(check)!=-1:
+                        continue
+                    else:
+                        return False
+                    return data
+        except TypeError:
+            logger.error("Words type wrong:%s",str(words))
+        return False
+        # If nothing return false
+
+    # --Step.2 Compare data--
+    echo_data=display_alldata('words_echo') # Catch all data in db
+    for d in echo_data:
+        # Search data in db
+        data_value=comparator(key_words,d)
+        if data_value:
+            word_pool.append(data_value)
+            # If search engine has result, save it to pool
+
+    if not word_pool:
+        # If pool has nothing, return
+        return False
+
+    # --Step.3 Pick data from pool--
+    pool_rand=weighted_random()
+    type="" # Video / Photo / String
+    for i in word_pool:
+        """
+        Determine its type. Msg or Video or Photo? Pack it and send.
+        Note that echo may be video.
+        """
+        echo=i['echo']
+        photo=i['photo']
+        video=i['video']
+        prob=i['prob']
+        els=i['els']
+
+        if echo:
+            """ECHO case"""
+            if i['echo_list']:
+                """If echo is a list"""
+                each_prob=int(prob/len(echo))
+                for each_echo in echo:
+                    rand_data={"Type":"STRING","Data":each_echo}
+                    pool_rand.add(rand_data,each_prob)
+            else:
+                rand_data={"Type":"STRING","Data":echo}
+                pool_rand.add(rand_data,prob)
+            if url_valid(els):
+                rand_data={"Type":"VIDEO","Data":els}
+                pool_rand.add(rand_data,1000-prob)
+            elif els==None:
+                pool_rand.add_none(1000-prob)
+            else:
+                rand_data={"Type":"STRING","Data":els}
+                pool_rand.add(rand_data,1000-prob)
+        elif photo:
+            """PHOTO case"""
+            if i['echo_list']:
+                """If echo is a list"""
+                each_prob=int(prob/len(photo))
+                for each_photo in photo:
+                    rand_data={"Type":"PHOTO","Data":each_photo}
+                    pool_rand.add(rand_data,each_prob)
+            else:
+                rand_data={"Type":"PHOTO","Data":photo}
+                pool_rand.add(rand_data,prob)
+
+            if els==None:
+                pool_rand.add_none(1000-prob)
+            else:
+                rand_data={"Type":"PHOTO","Data":els}
+                pool_rand.add(rand_data,1000-prob)
+        elif video:
+            """VIDEO case"""
+            if i['echo_list']:
+                """If echo is a list"""
+                each_prob=int(prob/len(video))
+                for each_video in video:
+                    rand_data={"Type":"VIDEO","Data":each_video}
+                    pool_rand.add(rand_data,each_prob)
+            else:
+                rand_data={"Type":"VIDEO","Data":video}
+                pool_rand.add(rand_data,prob)
+            if els==None:
+                pool_rand.add_none(1000-prob)
+            else:
+                rand_data={"Type":"VIDEO","Data":els}
+                pool_rand.add(rand_data,1000-prob)
+
+
+
+
+    # --Step.4 Send--
+    cid=update.message.chat_id
+    def msgSend(words):
+        try:
+            bot.send_message(chat_id=cid,text=words)
+        except:
+            logger.error("Word echo failed while sending word %s.",words)
+    def videoSend(vid):
+        try:
+            bot.send_video(chat_id=cid, video=vid)
+        except:
+            logger.error("Word echo failed while sending video %s.",vid)
+    def picSend(pic):
+        try:
+            bot.send_photo(chat_id=cid, photo=pic)
+        except:
+            logger.error("Word echo failed while sending photo %s.",pic)
+
+    jump_from_pool=pool_rand.output_one()
+    if jump_from_pool==None:
+        return
+    pool_type=jump_from_pool['Type']
+    if pool_type=="STRING":
+        msgSend(jump_from_pool['Data'])
+    elif pool_type=="PHOTO":
+        photoSend(jump_from_pool['Data'])
+    elif pool_type=="VIDEO":
+        videoSend(jump_from_pool['Data'])

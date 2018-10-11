@@ -1,5 +1,7 @@
 from telegram import *
 from module import *
+from string import Template
+global quote_search
 
 ################################################
 #              menu command                    #
@@ -7,6 +9,8 @@ from module import *
 def menu_actions(bot, update):
     query = update.callback_query
     query_text=query.data
+    qcid=query.message.chat_id
+    qmid=query.message.message_id
     def fin_text():
         bot.edit_message_text(text="了解しました♪",
                               chat_id=query.message.chat_id,
@@ -55,8 +59,7 @@ def menu_actions(bot, update):
                 message_id=query.message.message_id,
                 text="まだね〜")
     def menu_ruleSetting():
-        admin_access=is_admin(bot,update)
-        if admin_access == False:
+        if user_admin_value(query.message) is not True:
             bot.edit_message_text(chat_id=query.message.chat_id,
                     message_id=query.message.message_id,
                     text="只有管理員擁有此權限。")
@@ -80,7 +83,7 @@ def menu_actions(bot, update):
             bot.edit_message_text(chat_id=query.from_user.id,
                     message_id=query.message.message_id,
                     text="搜尋逾時，請重新搜尋。")
-            pass
+            return
         new_page=page-1
         bot.edit_message_text(chat_id=query.from_user.id,
                 message_id=query.message.message_id,
@@ -94,7 +97,7 @@ def menu_actions(bot, update):
             bot.edit_message_text(chat_id=query.from_user.id,
                     message_id=query.message.message_id,
                     text="搜尋逾時，請重新搜尋。")
-            pass
+            return
         new_page=page+1
         bot.edit_message_text(chat_id=query.from_user.id,
                 message_id=query.message.message_id,
@@ -110,8 +113,66 @@ def menu_actions(bot, update):
         finally:
             bot.delete_message(chat_id=query.message.chat_id,
                     message_id=query.message.message_id)
+    def get_room_config():
+        echo_value=display_data2('room_config',{'room_id':qcid},'echo')
+        water_value=display_data2('room_config',{'room_id':qcid},'water')
+        pic_value=display_data2('room_config',{'room_id':qcid},'savepic')
+        quote_value=display_data2('room_config',{'room_id':qcid},'quote')
+        return [echo_value,water_value,pic_value,quote_value]
     def menu_room_switch():
-        pass
+        if user_admin_value(query.message) is not True:
+            bot.edit_message_text(chat_id=query.message.chat_id,
+                    message_id=query.message.message_id,
+                    text="只有管理員擁有此權限。")
+            return
+        bot.edit_message_text(chat_id=qcid,
+            message_id=qmid,
+            text='群組的各項設定開關：（僅限管理員使用）',
+            reply_markup=room_setting_switch_keyboard(get_room_config()))
+    def menu_room_switch_echo():
+        echo_value=display_data2('room_config',{'room_id':qcid},'echo')
+        if echo_value:
+            VALUE=False
+        else:
+            VALUE=True
+        updata_data("room_config",{'room_id':qcid},{"$set":{'echo':VALUE}})
+        bot.edit_message_text(chat_id=qcid,
+            message_id=qmid,
+            text='群組的各項設定開關：（僅限管理員使用）',
+            reply_markup=room_setting_switch_keyboard(get_room_config()))
+    def menu_room_switch_water():
+        water_value=display_data2('room_config',{'room_id':qcid},'water')
+        if water_value:
+            VALUE=False
+        else:
+            VALUE=True
+        updata_data("room_config",{'room_id':qcid},{"$set":{'water':VALUE}})
+        bot.edit_message_text(chat_id=qcid,
+            message_id=qmid,
+            text='群組的各項設定開關：（僅限管理員使用）',
+            reply_markup=room_setting_switch_keyboard(get_room_config()))
+    def menu_room_switch_quote():
+        quote_value=display_data2('room_config',{'room_id':qcid},'quote')
+        if quote_value:
+            VALUE=False
+        else:
+            VALUE=True
+        updata_data("room_config",{'room_id':qcid},{"$set":{'quote':VALUE}})
+        bot.edit_message_text(chat_id=qcid,
+            message_id=qmid,
+            text='群組的各項設定開關：（僅限管理員使用）',
+            reply_markup=room_setting_switch_keyboard(get_room_config()))
+    def menu_room_switch_savepic():
+        savepic_value=display_data2('room_config',{'room_id':qcid},'savepic')
+        if savepic_value:
+            VALUE=False
+        else:
+            VALUE=True
+        updata_data("room_config",{'room_id':qcid},{"$set":{'savepic':VALUE}})
+        bot.edit_message_text(chat_id=qcid,
+            message_id=qmid,
+            text='群組的各項設定開關：（僅限管理員使用）',
+            reply_markup=room_setting_switch_keyboard(get_room_config()))
 
     # Switch
     if query_text == "main":
@@ -153,6 +214,18 @@ def menu_actions(bot, update):
     elif query_text == "cmd_room_switch":
         """room setting for some switch"""
         menu_room_switch()
+    elif query_text == "cmd_room_switch_echo":
+        """room echo setting"""
+        menu_room_switch_echo()
+    elif query_text == "cmd_room_switch_quote":
+        """room switch setting"""
+        menu_room_switch_quote()
+    elif query_text == "cmd_room_switch_water":
+        """room water setting"""
+        menu_room_switch_water()
+    elif query_text == "cmd_room_switch_savepic":
+        """room savepic setting"""
+        menu_room_switch_savepic()
     elif query_text == "None":
         """No cmd, decoration"""
         pass
@@ -172,6 +245,15 @@ def user_echo_switch_keyboard(state):
     keyboard = [[InlineKeyboardButton(text='關閉回話' if state else '開啟回話',
         callback_data='cmd_resp_switch_off' if state else 'cmd_resp_switch_on')],
                 [InlineKeyboardButton(text='取消',callback_data='main')]]
+    return InlineKeyboardMarkup(keyboard)
+
+def room_setting_switch_keyboard(state):
+    """input is a list to call the state in each function"""
+    keyboard = [[InlineKeyboardButton(text='群組回話[{}]'.format(bool2text(state[0])),callback_data='cmd_room_switch_echo')],
+                [InlineKeyboardButton(text='水量計數[{}]'.format(bool2text(state[1])),callback_data='cmd_room_switch_water')],
+                [InlineKeyboardButton(text='圖片記錄[{}]'.format(bool2text(state[2])),callback_data='cmd_room_switch_savepic')],
+                [InlineKeyboardButton(text='名言紀錄[{}]'.format(bool2text(state[3])),callback_data='cmd_room_switch_quote')],
+                [InlineKeyboardButton(text='回主頁',callback_data="main")]]
     return InlineKeyboardMarkup(keyboard)
 
 def page_keyboard(list,page):

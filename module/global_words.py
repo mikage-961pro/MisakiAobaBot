@@ -1,6 +1,8 @@
 # coding=utf-8
 # global words_zh
 
+
+
 class GLOBAL_WORDS:
 
     word_start = """
@@ -83,10 +85,10 @@ class GLOBAL_WORDS:
 """
     word_about="""
 貼心提醒：給予美咲管理員權限可以做更多事情。
-Version:Beta 1.6.0
+Version:Beta 2.0.0
 Boot Time:$boot_time
 Last update:2018/09/29
-Developer:765技術部成員
+Developer:台灣765技術部
     Dephilia（蝶芙）／TAKE（他Ｋ）
 Base Language:Python
 Database:MongoDB

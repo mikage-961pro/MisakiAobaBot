@@ -1,7 +1,7 @@
 # coding=utf-8
 
 bot_name='@MisakiAobaBot'
-DEBUG=False
+DEBUG=True
 ################################################
 #              Global Setting                  #
 ################################################
@@ -29,12 +29,13 @@ updater = Updater(token,workers=16)
 from module import *
 import word_echo
 import menu
+import quote as quote_toolkit
 
 ################################################
 #                 Global var                   #
 ################################################
-quote_search={} # Use on /quote
-reply_pair={} # Use on catch reply
+global quote_search
+global reply_pair
 ################################################
 #                   command                    #
 ################################################
@@ -84,12 +85,19 @@ def rule(bot, update):
         bot.delete_message(chat_id=update.message.chat_id, message_id=msg.message_id)
 
 @do_after_root
+@wait_for_timeOut
 def config(bot, update):
     """Send a message when the command /config is issued."""
     """Config is use to let user to turn on/off some function"""
-    bot.send_message(chat_id=update.message.chat_id,
-        text='何がご用事ですか？',
-        reply_markup=menu.main_menu_keyboard())
+    try:
+        bot.send_message(chat_id=update.message.chat_id,
+            text='何がご用事ですか？',
+            reply_markup=menu.main_menu_keyboard())
+    except TelegramError as e:
+        if e=="Timed out":
+            bot.send_message(chat_id=update.message.chat_id,
+                text='請稍候')
+
 
 @run_async
 @do_after_root
@@ -160,117 +168,12 @@ def which(bot, update, args):
 @run_async
 def quote(bot,update,args):
     # search parameter
+    global quote_search
     search_para=formula('f',' '.join(args))
-    if search_para != False:
-        if search_para=="":
-            """Case 1: No words"""
-            bot.send_message(chat_id=update.message.chat_id,text="Please enter word.")
-            return
-        # Search initialization
-        find_result=quote_finder(search_para)
-        result_length=len(find_result)
-        search_init_time=datetime.now()
-        global quote_search
-
-        if result_length==0:
-            """Case 2: No search result"""
-            bot.send_message(chat_id=update.message.chat_id,text="No search result.")
-
-        elif result_length<10:
-            """Case 3: Result is less than 10"""
-            # Hint user that result is in PM
-            if if_int_negative(update.message.chat_id):
-                bot.send_message(chat_id=update.message.chat_id,text="結果將顯示於私人對話。")
-
-            # Test user has start bot
-            try:
-                bot.send_message(chat_id=update.message.from_user.id,
-                    text="以下為【{}】的搜尋結果".format(search_para))
-            except:
-                bot.send_message(chat_id=update.message.chat_id,
-                        text=GLOBAL_WORDS.word_PM_notice,
-                        parse_mode='HTML')
-                return
-
-            # Package result
-            result=[]
-            t=""
-            counter=1
-            for i in find_result:
-                t=t+str(counter)+'. '+'<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n'
-                counter+=1
-            result.append(t)
-
-            # Sending result
-            try:
-                quote_search[update.message.from_user.id]=result
-                # save to globle var
-                bot.send_message(chat_id=update.message.from_user.id,
-                    text=result[0],
-                    reply_markup=page_keyboard(result,1),
-                    parse_mode='HTML')
-            except:
-                bot.send_message(chat_id=update.message.from_user.id,text="ぜ")
-                return
-                pass
-            finally:
-                search_total_time=(datetime.now()-search_init_time).total_seconds()
-                t="結束搜尋。共有{}筆資料。\n共耗時{}秒。".format(result_length,search_total_time)
-                bot.send_message(chat_id=update.message.from_user.id,text=t,parse_mode='HTML')
-
-        else:
-            """Case 4: Result is more than 10"""
-            # Hint user that result is in PM
-            if if_int_negative(update.message.chat_id):
-                bot.send_message(chat_id=update.message.chat_id,text="結果將顯示於私人對話。")
-
-            # Test user has start bot
-            try:
-                bot.send_message(chat_id=update.message.from_user.id,
-                    text="以下為【{}】的搜尋結果".format(search_para))
-            except:
-                bot.send_message(chat_id=update.message.chat_id,
-                        text=GLOBAL_WORDS.word_PM_notice,
-                        parse_mode='HTML')
-                return
-
-            # Package result
-            result=[]
-            result_sub=[]
-            counter=1
-            for i in find_result:
-                result_sub.append(str(counter)+'. '+'<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n')
-                counter+=1
-                if len(result_sub) == 10:
-                    t=""
-                    for j in result_sub:
-                        t+=j
-                    result.append(t)
-                    result_sub=[]
-            # last message
-            if result_sub!=[]:
-                # Issue: for length is times of 10, will have more 1 page
-                t=""
-                for j in result_sub:
-                    t+=j
-                result.append(t)
-                result_sub=[]
-
-            try:
-                # Sending result
-                quote_search[update.message.from_user.id]=result # save to globle var
-                bot.send_message(chat_id=update.message.from_user.id,
-                    text=result[0],
-                    reply_markup=page_keyboard(result,1),
-                    parse_mode='HTML')
-            except:
-                bot.send_message(chat_id=update.message.from_user.id,text="ぜ")
-                return
-            finally:
-                search_total_time=(datetime.now()-search_init_time).total_seconds()
-                t="結束搜尋。共有{}筆資料共{}頁。\n共耗時{}秒。".format(result_length,int((result_length-1)/10)+1,search_total_time)
-                bot.send_message(chat_id=update.message.from_user.id,text=t,parse_mode='HTML')
-        return
+    if search_para!=False:
+        search_data=quote_toolkit.quote_finder(search_para,bot,update)
+        if not isinstance(search_data, bool):
+            quote_search.update(search_data)
 
     #daily quote
     if display_data('config',{'id':update.message.from_user.id},'day_quote')==False:
@@ -437,7 +340,7 @@ def finduser(bot, update, args):
 
 def testfunc(bot, update):
     """print something"""
-    print(str(is_admin(bot, update)))
+    print(str(user_admin_value(update.message)))
 ################################################
 #               not command                    #
 ################################################
@@ -445,159 +348,8 @@ def key_word_reaction(bot,update):
     """Observe all msg from user."""
     key_words=update.message.text #record
     ###################################
-    #        key word reaction        #
-    ###################################
-    def wordEcho(user_switch,room_switch):
-        """Detect what user say and misaki will response."""
-        # --Step.1 Switch--
-        if user_switch==False or room_switch==False:
-            """Switch"""
-            return False
-
-        word_pool=[] #create a pool to save those have chance to send
-        def comparator(word,data):
-            """Input text, compare to data in database, return value and save in pool."""
-            # word is str, where data is a dict
-            if not isinstance(word, str):
-                raise TypeError
-            if not isinstance(data, dict):
-                raise TypeError
-
-            """check if all word correct will go"""
-            try:
-                for check in data['words']:
-                    if data['allco'] == False:
-                        "one word correct will go"
-                        if word.find(check)!=-1:
-                            return data
-                    else:
-                        "all word correct will go"
-                        if word.find(check)!=-1:
-                            continue
-                        else:
-                            return False
-                        return data
-            except TypeError:
-                logger.error("Words type wrong:%s",str(words))
-            return False
-            # If nothing return false
-
-        # --Step.2 Compare data--
-        echo_data=display_alldata('words_echo') # Catch all data in db
-        for d in echo_data:
-            # Search data in db
-            data_value=comparator(key_words,d)
-            if data_value:
-                word_pool.append(data_value)
-                # If search engine has result, save it to pool
-
-        if not word_pool:
-            # If pool has nothing, return
-            return False
-
-        # --Step.3 Pick data from pool--
-        pool_rand=weighted_random()
-        type="" # Video / Photo / String
-        for i in word_pool:
-            """
-            Determine its type. Msg or Video or Photo? Pack it and send.
-            Note that echo may be video.
-            """
-            echo=i['echo']
-            photo=i['photo']
-            video=i['video']
-            prob=i['prob']
-            els=i['els']
-
-            if echo:
-                """ECHO case"""
-                if i['echo_list']:
-                    """If echo is a list"""
-                    each_prob=int(prob/len(echo))
-                    for each_echo in echo:
-                        rand_data={"Type":"STRING","Data":each_echo}
-                        pool_rand.add(rand_data,each_prob)
-                else:
-                    rand_data={"Type":"STRING","Data":echo}
-                    pool_rand.add(rand_data,prob)
-                if url_valid(els):
-                    rand_data={"Type":"VIDEO","Data":els}
-                    pool_rand.add(rand_data,1000-prob)
-                elif els==None:
-                    pool_rand.add_none(1000-prob)
-                else:
-                    rand_data={"Type":"STRING","Data":els}
-                    pool_rand.add(rand_data,1000-prob)
-            elif photo:
-                """PHOTO case"""
-                if i['echo_list']:
-                    """If echo is a list"""
-                    each_prob=int(prob/len(photo))
-                    for each_photo in photo:
-                        rand_data={"Type":"PHOTO","Data":each_photo}
-                        pool_rand.add(rand_data,each_prob)
-                else:
-                    rand_data={"Type":"PHOTO","Data":photo}
-                    pool_rand.add(rand_data,prob)
-
-                if els==None:
-                    pool_rand.add_none(1000-prob)
-                else:
-                    rand_data={"Type":"PHOTO","Data":els}
-                    pool_rand.add(rand_data,1000-prob)
-            elif video:
-                """VIDEO case"""
-                if i['echo_list']:
-                    """If echo is a list"""
-                    each_prob=int(prob/len(video))
-                    for each_video in video:
-                        rand_data={"Type":"VIDEO","Data":each_video}
-                        pool_rand.add(rand_data,each_prob)
-                else:
-                    rand_data={"Type":"VIDEO","Data":video}
-                    pool_rand.add(rand_data,prob)
-                if els==None:
-                    pool_rand.add_none(1000-prob)
-                else:
-                    rand_data={"Type":"VIDEO","Data":els}
-                    pool_rand.add(rand_data,1000-prob)
-
-
-
-
-        # --Step.4 Send--
-        cid=update.message.chat_id
-        def msgSend(words):
-            try:
-                bot.send_message(chat_id=cid,text=words)
-            except:
-                logger.error("Word echo failed while sending word %s.",words)
-        def videoSend(vid):
-            try:
-                bot.send_video(chat_id=cid, video=vid)
-            except:
-                logger.error("Word echo failed while sending video %s.",vid)
-        def picSend(pic):
-            try:
-                bot.send_photo(chat_id=cid, photo=pic)
-            except:
-                logger.error("Word echo failed while sending photo %s.",pic)
-
-        jump_from_pool=pool_rand.output_one()
-        if jump_from_pool==None:
-            return
-        pool_type=jump_from_pool['Type']
-        if pool_type=="STRING":
-            msgSend(jump_from_pool['Data'])
-        elif pool_type=="PHOTO":
-            photoSend(jump_from_pool['Data'])
-        elif pool_type=="VIDEO":
-            videoSend(jump_from_pool['Data'])
-
-    ###################################
     #          reply_pair             #
     ###################################
-    global reply_pair
     try:
         m=reply_pair[update.message.from_user.id]
     except KeyError:
@@ -643,6 +395,7 @@ def key_word_reaction(bot,update):
         else:
             bot.send_message(chat_id=update.message.chat_id,text="知らない人ですよ。")
         # Exit region
+        bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
         return
     ###################################
     #          quote collector        #
@@ -674,9 +427,10 @@ def key_word_reaction(bot,update):
 
     """RUN"""
     # switch
-    user_reply_switch=display_data('config',{'id':update.message.from_user.id},'reply')
+    user_echo_switch=display_data('config',{'id':update.message.from_user.id},'reply')
+    room_echo_switch=display_data('room_config',{'room_id':update.message.chat_id},'echo')
 
-    wordEcho(user_switch=user_reply_switch,room_switch=True)
+    word_echo.wordEcho(bot,update,user_switch=user_echo_switch,room_switch=room_echo_switch,key_words=key_words)
 
 def message_callback(bot, update):
 
