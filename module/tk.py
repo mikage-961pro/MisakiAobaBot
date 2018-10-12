@@ -46,8 +46,8 @@ def user_admin_value(t_msg):
     try:
         adminlist=t_msg.chat.get_administrators()
         print(t_msg.from_user.id)
-        print(adminlist)
         for i in adminlist:
+            print(i)
             if t_msg.from_user.id==i.user.id:
                 return True
     except TelegramError as e:
