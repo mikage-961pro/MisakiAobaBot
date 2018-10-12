@@ -1,7 +1,7 @@
 # coding=utf-8
 
 bot_name='@MisakiAobaBot'
-DEBUG=True
+DEBUG=False
 ################################################
 #              Global Setting                  #
 ################################################
