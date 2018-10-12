@@ -80,8 +80,8 @@ def rule(bot, update):
     if randrange(1000)<30:
         bot.send_message(chat_id=update.message.chat_id, text="ぜ")
     else:
-        if not htmlPharseTester(msg):
-            msg=msg.replace('<','＜')
+        if not htmlPharseTester(room_rule):
+            room_rule=room_rule.replace('<','＜')
         msg=bot.send_message(chat_id=update.message.chat_id, text=room_rule,
                         parse_mode=ParseMode.HTML)
         time.sleep(60)
