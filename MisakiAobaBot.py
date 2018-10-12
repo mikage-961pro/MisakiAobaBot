@@ -1,7 +1,7 @@
 # coding=utf-8
 
 bot_name='@MisakiAobaBot'
-DEBUG=True
+DEBUG=False
 ################################################
 #              Global Setting                  #
 ################################################
@@ -30,6 +30,7 @@ from module import *
 import word_echo
 import menu
 import quote as quote_toolkit
+import picsave
 
 ################################################
 #                 Global var                   #
@@ -79,6 +80,8 @@ def rule(bot, update):
     if randrange(1000)<30:
         bot.send_message(chat_id=update.message.chat_id, text="ぜ")
     else:
+        if not htmlPharseTester(room_rule):
+            room_rule=room_rule.replace('<','＜')
         msg=bot.send_message(chat_id=update.message.chat_id, text=room_rule,
                         parse_mode=ParseMode.HTML)
         time.sleep(60)
@@ -233,20 +236,6 @@ def sticker_matome(bot,update):
     else:
         bot.send_message(chat_id=update.message.chat_id,text='看私訊～～♪')
 
-@do_after_root
-def savepic(bot, update):
-    """Send a message when the command /savepic is issued."""
-    """Send msg to ask user and save pic"""
-    mention_url='tg://user?id={}'.format(update.message.from_user.id)
-    first_name=update.message.from_user.first_name
-    # m_ent=[MessageEntity('mention',offset=0, length=len(first_name),user=update.message.from_user)]
-    text='<a href="{}">{}</a>さん、何がご用事ですか？'.format(mention_url,first_name)
-    f=ForceReply(force_reply=True,selective=True)
-    rpl=bot.send_message(chat_id=update.message.chat_id,
-        text=text,reply_to_message=update.message,reply_markup=f,parse_mode='HTML')
-    global reply_pair
-    reply_pair[update.message.from_user.id]=rpl
-
 def forcesave(bot, update):
     chat_id=update.message.chat_id
 
@@ -340,7 +329,10 @@ def finduser(bot, update, args):
 
 def testfunc(bot, update):
     """print something"""
-    print(str(user_admin_value(update.message)))
+    print(htmlPharseTester('(*>△<)'))
+    bot.send_message(chat_id=update.message.from_user.id,
+        text='(*>△<)',
+        parse_mode='HTML')
 ################################################
 #               not command                    #
 ################################################
@@ -370,67 +362,18 @@ def key_word_reaction(bot,update):
                 updata_data("room_config",{'room_id':update.message.chat_id},{"$set":room_data})
                 bot.send_message(chat_id=update.message.chat_id,text="更新成功！")
             del reply_pair[update.message.from_user.id]
-    ###################################
-    #              picsave            #
-    ###################################
-    if update.message.text.find("@db")!=-1:
-        cmd_word_save=update.message.text.replace("@db","").lower()
-        if cmd_word_save in GLOBAL_WORDS.idol_list:
-            rmsg=update.message.reply_to_message
-            try:
-                if url_valid(rmsg.text):
-                    idol_db={
-                        'name':cmd_word_save,
-                        'url':rmsg.text,
-                        'date':datetime.now(),
-                        'saved_by':update.message.from_user.id
-                    }
-                    insert_data('ml_idol_pic_colle',idol_db)
-                    echo_word='画像が保存されました！'
-                    bot.send_message(chat_id=update.message.chat_id,text=echo_word)
-            except AttributeError:
-                bot.send_message(chat_id=update.message.chat_id,text="画像がない。保存失敗しました。")
-        elif cmd_word_save=='':
-            bot.send_message(chat_id=update.message.chat_id,text="もう！こんな遊ばなってください！")
-        else:
-            bot.send_message(chat_id=update.message.chat_id,text="知らない人ですよ。")
-        # Exit region
-        bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
-        return
-    ###################################
-    #          quote collector        #
-    ###################################
-    record=False
-    test=update.message.text
-    if test.find(' #名言')!=-1 or test.find('#名言 ')!=-1:
-        if update.message.reply_to_message==None and update.message.from_user.is_bot==False:
-            test=test.replace(' #名言','').replace('#名言 ','')
-            qdict={
-                'quote': test,
-                'said': update.message.from_user.first_name,
-                'tag': '',
-                'said_id':update.message.from_user.id,
-                'date':datetime.now()
-                }
-            insert_data('quote_main',qdict)
-            record=True
-    if test.find('#名言')!=-1 and record==False:
-        if update.message.reply_to_message is not None and update.message.reply_to_message.from_user.is_bot==False:
-            qdict={
-                'quote': update.message.reply_to_message.text,
-                'said': update.message.reply_to_message.from_user.first_name,
-                'tag': '',
-                'said_id':update.message.reply_to_message.from_user.id,
-                'date':datetime.now()
-                }
-            insert_data('quote_main',qdict)
+
 
     """RUN"""
     # switch
     user_echo_switch=display_data('config',{'id':update.message.from_user.id},'reply')
-    room_echo_switch=display_data('room_config',{'room_id':update.message.chat_id},'echo')
+    room_echo_switch=display_data2('room_config',{'room_id':update.message.chat_id},'echo')
+    room_savepic_switch=display_data2('room_config',{'room_id':update.message.chat_id},'savepic')
+    room_quote_switch=display_data2('room_config',{'room_id':update.message.chat_id},'quote')
 
     word_echo.wordEcho(bot,update,user_switch=user_echo_switch,room_switch=room_echo_switch,key_words=key_words)
+    picsave.picSave_main(bot, update, context=key_words, room_switch=room_savepic_switch)
+    quote_toolkit.quote_collecter(bot, update, context=key_words, room_switch=room_quote_switch)
 
 def message_callback(bot, update):
 
@@ -464,37 +407,45 @@ def save_room_state(bot, job):
     ######################
     #put in your group id#
     ######################
-    chat_id=-1001290696540
+    water_room_id=[]
+    for data in display_alldata('room_config'):
+        try:
+            if data['water']==True:
+                water_room_id.append(data['room_id'])
+        except KeyError:
+            pass
+    def save_room_state_main(chat_id):
+        last_data=room_state_getter()
 
-    last_data=room_state_getter()
+        try:
+            msg=bot.send_message(chat_id=chat_id,text='聊天室資訊更新中...')
+        except TimedOut:
+            logger.error('(%s):Update time out.','save_room_state')
+        except Unauthorized:
+            logger.error('(%s):Bot is not in room.','save_room_state')
+        except BadRequest:
+            pass
+        room_data={
+            'room_id':msg.chat_id,
+            'room_name':msg['chat']['title'],
+            'update_time':datetime.now(),
+            'total_message':msg.message_id,
+            'members_count':msg.chat.get_members_count()
+            }
+        insert_data('room_state',room_data)
 
-    try:
-        msg=bot.send_message(chat_id=chat_id,text='聊天室資訊更新中...')
-    except TimedOut:
-        logger.error('(%s):Update time out.','save_room_state')
-    except Unauthorized:
-        logger.error('(%s):Bot is not in room.','save_room_state')
-    except BadRequest:
-        pass
-    room_data={
-        'room_id':msg.chat_id,
-        'room_name':msg['chat']['title'],
-        'update_time':datetime.now(),
-        'total_message':msg.message_id,
-        'members_count':msg.chat.get_members_count()
-        }
-    insert_data('room_state',room_data)
-
-    wt=room_data['total_message']-last_data['total_message']
-    mb=room_data['members_count']-last_data['members_count']
-    tm_temp=(room_data['update_time']-last_data['update_time'])
-    tm=strfdelta(tm_temp, "{hours}小時{minutes}分鐘")
-    temp=Template("更新成功！\n在$time內，水量上漲了$water的高度，出現了$member個野生的P。")
-    text=temp.substitute(time=tm,water=wt,member=mb)
-    try:
-        bot.send_message(chat_id=chat_id,text=text)
-    except BadRequest:
-        pass
+        wt=room_data['total_message']-last_data['total_message']
+        mb=room_data['members_count']-last_data['members_count']
+        tm_temp=(room_data['update_time']-last_data['update_time'])
+        tm=strfdelta(tm_temp, "{hours}小時{minutes}分鐘")
+        temp=Template("更新成功！\n在$time內，水量上漲了$water的高度，出現了$member個野生的P。")
+        text=temp.substitute(time=tm,water=wt,member=mb)
+        try:
+            bot.send_message(chat_id=chat_id,text=text)
+        except BadRequest:
+            pass
+    for id in water_room_id:
+        save_room_state_main(id)
 
 def daily_reset(bot,job):
     modify_many_data('config',pipeline={"day_quote":False},key='day_quote',update_value=True)
