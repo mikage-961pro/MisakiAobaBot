@@ -120,15 +120,16 @@ def menu_actions(bot, update):
         quote_value=display_data2('room_config',{'room_id':qcid},'quote')
         return [echo_value,water_value,pic_value,quote_value]
     def menu_room_switch():
+        """
         if user_admin_value(query.message) is not True:
             bot.edit_message_text(chat_id=query.message.chat_id,
                     message_id=query.message.message_id,
                     text="只有管理員擁有此權限。")
-        else:
-            bot.edit_message_text(chat_id=qcid,
-                message_id=qmid,
-                text='群組的各項設定開關：（僅限管理員使用）',
-                reply_markup=room_setting_switch_keyboard(get_room_config()))
+        """
+        bot.edit_message_text(chat_id=qcid,
+            message_id=qmid,
+            text='群組的各項設定開關：（僅限管理員使用）',
+            reply_markup=room_setting_switch_keyboard(get_room_config()))
     def menu_room_switch_echo():
         echo_value=display_data2('room_config',{'room_id':qcid},'echo')
         if echo_value:
