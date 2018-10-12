@@ -40,13 +40,15 @@ def c_tz(datetime,tz):
 
 def user_admin_value(t_msg):
     """Dectect user if admin, return boolen value"""
-    if not isinstance(t_msg, Message):
+    uid=t_msg.from_user.id
+    print(uid)
+    if not isinstance(uid, int):
         raise TypeError("user_admin_value needs telegram.Message type.")
         return
     try:
-        adminlist=t_msg.chat.get_administrators()
+        adminlist=t_msg.message.chat.get_administrators()
         for i in adminlist:
-            if t_msg.from_user.id==i.user.id:
+            if uid==i.user.id:
                 return True
     except TelegramError as e:
         if e=="There is no administrators in the private chat":

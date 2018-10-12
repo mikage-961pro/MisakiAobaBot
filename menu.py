@@ -11,6 +11,7 @@ def menu_actions(bot, update):
     query_text=query.data
     qcid=query.message.chat_id
     qmid=query.message.message_id
+    quid=query.from_user.id
     def fin_text():
         bot.edit_message_text(text="了解しました♪",
                               chat_id=query.message.chat_id,
@@ -59,7 +60,7 @@ def menu_actions(bot, update):
                 message_id=query.message.message_id,
                 text="まだね〜")
     def menu_ruleSetting():
-        if user_admin_value(query.message) is not True:
+        if user_admin_value(query) is not True:
             bot.edit_message_text(chat_id=query.message.chat_id,
                     message_id=query.message.message_id,
                     text="只有管理員擁有此權限。")
@@ -120,7 +121,7 @@ def menu_actions(bot, update):
         quote_value=display_data2('room_config',{'room_id':qcid},'quote')
         return [echo_value,water_value,pic_value,quote_value]
     def menu_room_switch():
-        if user_admin_value(query.message) is not True:
+        if user_admin_value(query) is not True:
             bot.edit_message_text(chat_id=query.message.chat_id,
                     message_id=query.message.message_id,
                     text="只有管理員擁有此權限。")
