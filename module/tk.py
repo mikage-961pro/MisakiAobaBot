@@ -45,6 +45,8 @@ def user_admin_value(t_msg):
         return
     try:
         adminlist=t_msg.chat.get_administrators()
+        print(t_msg.from_user.id)
+        print(adminlist)
         for i in adminlist:
             if t_msg.from_user.id==i.user.id:
                 return True

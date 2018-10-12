@@ -120,7 +120,6 @@ def menu_actions(bot, update):
         quote_value=display_data2('room_config',{'room_id':qcid},'quote')
         return [echo_value,water_value,pic_value,quote_value]
     def menu_room_switch():
-        print(user_admin_value(query.message))
         if user_admin_value(query.message) is not True:
             bot.edit_message_text(chat_id=query.message.chat_id,
                     message_id=query.message.message_id,
