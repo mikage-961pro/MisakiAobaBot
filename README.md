@@ -34,8 +34,14 @@ This bot is specialized for our [im@s group](https://t.me/imas_zh)
 - **rule setting:** 可以自訂不同的群規則。
 
 ## Update Log
-New Version: Beta 1.6.0  
-Update Date:2018/09/29
+New Version: Beta 2.0.1  
+Last Update:2018/10/12
+
+### Beta 2.0.1
+1. You can now turn off echo/quote/picsave in each room.
+2. Water recorder can run in each room.
+3. Quote finder had some problem, but now its fine.
+4. Some other bug fixed.
 
 ### Beta 1.6.0  
 1. Enable user to Edit own rule

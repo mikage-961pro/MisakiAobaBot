@@ -51,7 +51,7 @@ def room_state_getter(Collection='room_state',room_id=-1001290696540):
         logger.warning("(%s):No result."'room_state_getter')
         return None
 
-def quote_finder(key,Collection='quote_main'):
+def db_quote_finder(key,Collection='quote_main'):
     op_ins=db[Collection]
     cmd_cursor=op_ins.find({})
     all_cont=[]
@@ -93,6 +93,7 @@ def display_alldata(Collection):
     return ins
 
 def display_data(Collection,pipeline,key):
+    """If no result, return true"""
     op_ins=db[Collection]
     ins=op_ins.find_one(pipeline)
     if ins is None:
@@ -101,6 +102,17 @@ def display_data(Collection,pipeline,key):
         return ins[key]
     except KeyError:
         return True
+
+def display_data2(Collection,pipeline,key):
+    """If no result, return None"""
+    op_ins=db[Collection]
+    ins=op_ins.find_one(pipeline)
+    if ins is None:
+        return None
+    try:
+        return ins[key]
+    except KeyError:
+        return None
 
 def modify_data(Collection,pipeline=None,key=None,update_value=None):
     op_ins=db[Collection]

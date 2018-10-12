@@ -1,6 +1,8 @@
 # coding=utf-8
 # global words_zh
 
+
+
 class GLOBAL_WORDS:
 
     word_start = """
@@ -11,14 +13,13 @@ class GLOBAL_WORDS:
     word_help = """
 /help - 由青羽小姐提供您幫助
 /rule - 本群規則瀏覽
-/config - 設定，情報
+/config - 設定，情報（群組各項功能預設關閉）
 /tbgame - 765プロゲーム部入口，進去跟大家玩桌遊吧
 /which - 想不到的事情就交由我決定！（用#井字號分隔 apple#banana）
 /nanto - なんとっ！+(名字#事件)
 /quote - 每日一句
 /sticker - Stickerまとめ
-/randtsumugi - 隨機紬貼圖
-/randchihaya - 隨機千早貼圖
+/randpic - 召喚偶像（空格+偶像名字可以指定）
 
 【みんなのリンク】
 <a href="https://t.me/joinchat/IFtWTxKu7x6vuSK8HsFgsQ">〔765技術部〕</a>：技術部開放對BOT的意見以及回饋
@@ -83,10 +84,10 @@ class GLOBAL_WORDS:
 """
     word_about="""
 貼心提醒：給予美咲管理員權限可以做更多事情。
-Version:Beta 1.6.0
+Version:Beta 2.0.1
 Boot Time:$boot_time
-Last update:2018/09/29
-Developer:765技術部成員
+Last update:2018/10/12
+Developer:台灣765技術部
     Dephilia（蝶芙）／TAKE（他Ｋ）
 Base Language:Python
 Database:MongoDB
