@@ -1,6 +1,10 @@
 from telegram import *
 from module import *
+from random import randrange
 
+#==================================#
+#          On time code
+#==================================#
 def addEcho_help(update,bot):
     """HELP"""
     text="""
@@ -29,6 +33,12 @@ def addEcho_main(context,update,bot,space_word="/_/"):
     if isinstance(unspaced_echo, list):
         for echo in unspaced_echo:
             spaced_echo.append(echo.replace(space_word,' '))
+    try:
+        prob_value=int(formula('pr',context))
+    except ValueError:
+        sdmsg('請為prob輸入有效數字。')
+        return
+
 
     # --input data
     data={
@@ -36,7 +46,7 @@ def addEcho_main(context,update,bot,space_word="/_/"):
         'echo':spaced_echo,
         'photo':formula('p',context),
         'video':formula('v',context),
-        'prob':int(formula('pr',context)),
+        'prob':prob_value,
         'els':formula('els',context),
         'allco':formula('al',context),
         'echo_list':formula('eli',context),
@@ -116,10 +126,167 @@ def addEcho_main(context,update,bot,space_word="/_/"):
 def wordEcho(bot,update,user_switch,room_switch,key_words):
     """Detect what user say and misaki will response."""
     # --Step.1 Switch--
-    if user_switch==False or room_switch==False:
+    if user_switch!=True or room_switch!=True:
         """Switch"""
         return False
 
+    ###################################
+    #        key word reaction        #
+    ###################################
+    pool=[]
+    def find_word(data):
+        words=data['words']
+        echo=data['echo']
+        photo=data['photo']
+        video=data['video']
+        prob=data['prob']
+        els=data['els']
+        allco=data['allco']
+        echo_list=data['echo_list']
+        try:
+            user=data['add_by']
+        except:
+            user=None
+        oid=data['_id']
+        """
+        words: words need to reaction, need to be a list.
+        echo, photo, video: msg send after reaction
+            If echo is multiple, will show random averagely
+        prob: probability, if not, send els msg (1 for 0.1%)
+        els: if not in prob, show it
+        allco: words are all correct will go
+        passArg: if true, the function will never go; default is false
+        """
+        cid=update.message.chat_id
+        def msgSend(words):
+            bot.send_message(chat_id=cid,text=words)
+        def videoSend(vid):
+            bot.send_video(chat_id=cid, video=vid)
+        def picSend(pic):
+            bot.send_photo(chat_id=cid, photo=pic)
+        # a random number from 0 to 999
+        num = randrange(1000)
+
+        key_words_value=False
+
+        """check if all word correct will go"""
+        try:
+            for check in words:
+                if allco == False:
+                    "one word correct will go"
+                    if key_words.find(check)!=-1:
+                        key_words_value=True
+                if allco == True:
+                    "all word correct will go"
+                    if key_words.find(check)!=-1:
+                        key_words_value=True
+                    else:
+                        key_words_value=False
+                        break
+        except TypeError:
+            logger.error("Words type wrong:%s",str(words))
+            return
+
+        if key_words_value==True:
+            if echo != None:
+                if num<prob:
+                    if echo_list:
+                        pars={'do':'msgSend',
+                            'words':randList(echo),
+                            'echo_add_by':user,
+                            'oid':oid
+                        }
+                        pool.append(pars)
+                        #msgSend(randList(echo))
+                    else:
+                        pars={'do':'msgSend',
+                            'words':echo,
+                            'echo_add_by':user,
+                            'oid':oid
+                        }
+                        pool.append(pars)
+                        #msgSend(echo)
+                if num>=prob and els!=None:
+                    if els.find('https://')!=-1:
+                        pars={'do':'videoSend',
+                            'vid':els,
+                            'echo_add_by':user,
+                            'oid':oid
+                        }
+                        pool.append(pars)
+                        #videoSend(els)
+                    else:
+                        pars={'do':'msgSend',
+                            'words':els,
+                            'echo_add_by':user,
+                            'oid':oid
+                        }
+                        pool.append(pars)
+                        #msgSend(els)
+            elif video != None and num<prob:
+                if echo_list:
+                    pars={'do':'videoSend',
+                        'vid':randList(video),
+                        'echo_add_by':user,
+                        'oid':oid
+                    }
+                    pool.append(pars)
+                    #videoSend(randList(video))
+                else:
+                    pars={'do':'videoSend',
+                        'vid':video,
+                        'echo_add_by':user,
+                        'oid':oid
+                    }
+                    pool.append(pars)
+                    #videoSend(video)
+            elif photo != None and num<prob:
+                if echo_list:
+                    pars={'do':'picSend',
+                        'pic':randList(photo),
+                        'echo_add_by':user,
+                        'oid':oid
+                    }
+                    pool.append(pars)
+                    #picSend(randList(photo))
+                else:
+                    pars={'do':'picSend',
+                        'pic':photo,
+                        'echo_add_by':user,
+                        'oid':oid
+                    }
+                    pool.append(pars)
+                    #picSend(photo)
+        return key_words_value
+
+    # switch
+    switch=display_data('config',{'id':update.message.from_user.id},'reply')
+    echo_data=display_alldata('words_echo')
+
+    # word_echo
+    if switch == True:
+        for d in echo_data:
+            find_word(d)
+        if pool:
+            to_do=randList(pool)
+            cid=update.message.chat_id
+            try:
+                if to_do['do']=='msgSend':
+                    bot.send_message(chat_id=cid,text=to_do['words'])
+                if to_do['do']=='videoSend':
+                    bot.send_video(chat_id=cid, video=to_do['vid'])
+                if to_do['do']=='picSend':
+                    bot.send_photo(chat_id=cid, photo=to_do['pic'])
+            except:
+                logger.error("ECHO error.ECHO oid:%s, add by %s",str(to_do['oid']),str(to_do['echo_add_by']))
+
+# this a test echo function
+def otherEchor(bot,update,user_switch,room_switch,key_words):
+    """Detect what user say and misaki will response."""
+    # --Step.1 Switch--
+    if user_switch==False or room_switch==False:
+        """Switch"""
+        return False
     word_pool=[] #create a pool to save those have chance to send
     def comparator(word,data):
         """Input text, compare to data in database, return value and save in pool."""
@@ -259,3 +426,16 @@ def wordEcho(bot,update,user_switch,room_switch,key_words):
         photoSend(jump_from_pool['Data'])
     elif pool_type=="VIDEO":
         videoSend(jump_from_pool['Data'])
+
+#==================================#
+#          Modern code
+#==================================#
+def echo_helper(update,bot):
+    """help for user"""
+    pass
+def echo_teacher(context,update,bot,space_word="/_/"):
+    """Add data into db"""
+    pass
+def echo_shower(bot,update,user_switch,room_switch,key_words):
+    """Get one data from db"""
+    pass

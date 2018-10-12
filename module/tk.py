@@ -231,3 +231,13 @@ def strfdelta(tdelta, fmt):
     d["hours"], rem = divmod(tdelta.seconds, 3600)
     d["minutes"], d["seconds"] = divmod(rem, 60)
     return fmt.format(**d)
+
+def htmlPharseTester(str):
+    """This function is to fix Can't parse entities problem like (*>△<)"""
+    right_mouth=False
+    for i in str:
+        if i=="<":
+            right_mouth=True
+        if i==">":
+            right_mouth=False
+    return not right_mouth
