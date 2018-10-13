@@ -1,11 +1,12 @@
 # MisakiAobaBot
-
-## Platform
-This bot is running on telegram.  
-ID: [@MisakiAobaBot](https://t.me/MisakiAobaBot)
-
-## About
-This bot is specialized for our [im@s group](https://t.me/imas_zh)
+<img src="https://i.imgur.com/oHK4EKk.jpg" alt="Misaki" height="80" width="80"> ノノ青羽美咲です！  
+![version](https://img.shields.io/badge/Version-Beta_2.0.1-brightgreen.svg?longCache=true&style=popout)
+[![package](https://img.shields.io/badge/Telegram.Bot-10.1.0-blue.svg?longCache=true&style=popout)](https://python-telegram-bot.org)
+[![telegram chat](https://img.shields.io/badge/Support_Chat-Telegram-blue.svg?style=popout)](https://t.me/MisakiAobaBot)
+[![Contribution](https://img.shields.io/badge/Contribution-welcome-yellow.svg?style=popout)](https://t.me/imas_techno)
+[![license](https://img.shields.io/github/license/TelegramBots/telegram.bot.svg?style=popout&maxAge=2592000&label=License)](LICENSE)  
+Misaki Aoba chat bot.  
+This chat bot is originally using to manage our im@s [chat room](https://t.me/imas_zh), but now it can use to manage other chat room.
 
 ## Command
 
@@ -29,7 +30,7 @@ This bot is specialized for our [im@s group](https://t.me/imas_zh)
 - **quote:** Record words that you interest, which will show when **/quote** command entered.  
 回覆他人並且鍵入`#名言`即可儲存。
 - **words reaction:** Bot will say something when user enter some specific words.
-- **group state record:** Record the member and message number every time.
+- **group state record:** Record the member and message number every time. Admin can turn on record daily function.
 - **picture save and call:** 使用`idol@db`功能儲存你喜歡的偶像圖。
 - **rule setting:** 可以自訂不同的群規則。
 
@@ -68,4 +69,4 @@ Last Update:2018/10/12
 ## Contributing
 
 Contributions are [Welcome!!](https://www.project-imas.com/wiki/Welcome!!)  
-Please join the [Telegram Group](https://t.me/joinchat/IFtWTxKu7x6vuSK8HsFgsQ) for more information.
+Please join the [Telegram Group](https://t.me/imas_techno) for more information.
