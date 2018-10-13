@@ -1,4 +1,16 @@
 # coding=utf-8
+################################################
+# This is MisakiAobaBot
+# CopyRight by Dephilia,TAKE
+################################################
+
+
+################################################
+# Remember
+# 1. Edit version at __init__
+# 2. Edit readme.md
+# 3. Edit about in GLOBAL_WORDS
+################################################
 
 bot_name='@MisakiAobaBot'
 DEBUG=False
@@ -404,13 +416,6 @@ def save_room_state(bot, job):
     ######################
     #put in your group id#
     ######################
-    water_room_id=[]
-    for data in display_alldata('room_config'):
-        try:
-            if data['water']==True:
-                water_room_id.append(data['room_id'])
-        except KeyError:
-            pass
     def save_room_state_main(chat_id):
         last_data=room_state_getter(room_id=chat_id)
 
@@ -430,16 +435,29 @@ def save_room_state(bot, job):
             'members_count':msg.chat.get_members_count()
             }
         insert_data('room_state',room_data)
-
-        wt=room_data['total_message']-last_data['total_message']
-        mb=room_data['members_count']-last_data['members_count']
-        tm_temp=(room_data['update_time']-last_data['update_time'])
-        tm=strfdelta(tm_temp, "{hours}小時{minutes}分鐘")
-        temp=Template("更新成功！\n在$time內，水量上漲了$water的高度，出現了$member個野生的P。")
-        text=temp.substitute(time=tm,water=wt,member=mb)
+        if last_data==None:
+            text="初次儲存。儲存成功。"
+            try:
+                bot.send_message(chat_id=chat_id,text=text)
+            except BadRequest:
+                pass
+        else:
+            wt=room_data['total_message']-last_data['total_message']
+            mb=room_data['members_count']-last_data['members_count']
+            tm_temp=(room_data['update_time']-last_data['update_time'])
+            tm=strfdelta(tm_temp, "{hours}小時{minutes}分鐘")
+            temp=Template("更新成功！\n在$time內，水量上漲了$water的高度，出現了$member個野生的P。")
+            text=temp.substitute(time=tm,water=wt,member=mb)
+            try:
+                bot.send_message(chat_id=chat_id,text=text)
+            except BadRequest:
+                pass
+    water_room_id=[]
+    for data in display_alldata('room_config'):
         try:
-            bot.send_message(chat_id=chat_id,text=text)
-        except BadRequest:
+            if data['water']==True:
+                water_room_id.append(data['room_id'])
+        except KeyError:
             pass
     for id in water_room_id:
         save_room_state_main(id)

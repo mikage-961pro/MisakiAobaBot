@@ -45,7 +45,7 @@ def menu_actions(bot, update):
         rn=query.message['chat']['title']
         rid=query.message.chat_id
         tm=query.message.message_id
-        dt=utc8now()
+        dt=timePrint()
         un=str(room_member_num(bot,update=query))
         text=temp.substitute(room_name=rn,room_id=rid,msg_num=tm,user_number=un,time=dt)
         bot.send_message(text=text,chat_id=query.message.chat_id)
@@ -166,6 +166,12 @@ def menu_actions(bot, update):
             reply_markup=room_setting_switch_keyboard(get_room_config()))
     def menu_room_switch_water():
         if not default_check(query):
+            return
+        if qcid>0:
+            """Stop this func in private chat."""
+            bot.edit_message_text(chat_id=q.message.chat_id,
+                    message_id=q.message.message_id,
+                    text="此功能無法在私人對話使用。")
             return
         water_value=display_data2('room_config',{'room_id':qcid},'water')
         if water_value:

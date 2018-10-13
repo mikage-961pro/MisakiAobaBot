@@ -172,6 +172,9 @@ def db_switch_one_value(data_tag):
             upsert=True)
         return True
 
+def timePrint():
+    return datetime.now().strftime("%y/%m/%d %H:%M:%S")
+
 def utc8now():
     return (datetime.now()+timedelta(hours=8)).strftime("%y/%m/%d %H:%M:%S")
 

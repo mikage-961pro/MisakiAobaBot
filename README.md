@@ -38,6 +38,11 @@ This chat bot is originally using to manage our im@s [chat room](https://t.me/im
 New Version: Beta 2.0.1  
 Last Update:2018/10/12
 
+### Beta 2.1.2
+1. Fix timezone problem
+2. Fix water recorder at first usage.
+3. Other bug.
+
 ### Beta 2.0.1
 1. You can now turn off echo/quote/picsave in each room.
 2. Water recorder can run in each room.
