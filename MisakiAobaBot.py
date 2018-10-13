@@ -1,4 +1,16 @@
 # coding=utf-8
+################################################
+# This is MisakiAobaBot
+# CopyRight by Dephilia,TAKE
+################################################
+
+
+################################################
+# Remember
+# 1. Edit version at __init__
+# 2. Edit readme.md
+# 3. Edit about in GLOBAL_WORDS
+################################################
 
 bot_name='@MisakiAobaBot'
 DEBUG=False

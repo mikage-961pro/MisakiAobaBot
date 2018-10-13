@@ -84,9 +84,9 @@ class GLOBAL_WORDS:
 """
     word_about="""
 貼心提醒：給予美咲管理員權限可以做更多事情。
-Version:Beta 2.0.1
+Version:Beta 2.1.2
 Boot Time:$boot_time
-Last update:2018/10/12
+Last update:2018/10/13
 Developer:台灣765技術部
     Dephilia（蝶芙）／TAKE（他Ｋ）
 Base Language:Python
