@@ -11,6 +11,25 @@ def menu_actions(bot, update):
     query_text=query.data
     qcid=query.message.chat_id
     qmid=query.message.message_id
+    quid=query.from_user.id
+
+    def updata_msg(text,reply_markup,html=False):
+        try:
+            if html:
+                bot.edit_message_text(chat_id=qcid,
+                    message_id=qmid,
+                    text=text,
+                    reply_markup=reply_markup,
+                    parse_mode='HTML')
+            else:
+                bot.edit_message_text(chat_id=qcid,
+                    message_id=qmid,
+                    text=text,
+                    reply_markup=reply_markup)
+        except TelegramError as e:
+            if e=="Message is not modified":
+                pass
+
     def fin_text():
         bot.edit_message_text(text="了解しました♪",
                               chat_id=query.message.chat_id,
@@ -59,7 +78,7 @@ def menu_actions(bot, update):
                 message_id=query.message.message_id,
                 text="まだね〜")
     def menu_ruleSetting():
-        if user_admin_value(query.message) is not True:
+        if user_admin_value(query) is not True:
             bot.edit_message_text(chat_id=query.message.chat_id,
                     message_id=query.message.message_id,
                     text="只有管理員擁有此權限。")
@@ -122,60 +141,62 @@ def menu_actions(bot, update):
         pic_value=display_data2('room_config',{'room_id':qcid},'savepic')
         quote_value=display_data2('room_config',{'room_id':qcid},'quote')
         return [echo_value,water_value,pic_value,quote_value]
-    def menu_room_switch():
-        """
-        if user_admin_value(query.message) is not True:
-            bot.edit_message_text(chat_id=query.message.chat_id,
-                    message_id=query.message.message_id,
+    def default_check(q):
+        if not user_admin_value(q):
+            bot.edit_message_text(chat_id=q.message.chat_id,
+                    message_id=q.message.message_id,
                     text="只有管理員擁有此權限。")
-        """
-        bot.edit_message_text(chat_id=qcid,
-            message_id=qmid,
-            text='群組的各項設定開關：（僅限管理員使用）',
+            return False
+        return True
+    def menu_room_switch():
+        if not default_check(query):
+            return
+        updata_msg(text='群組的各項設定開關：（僅限管理員使用）',
             reply_markup=room_setting_switch_keyboard(get_room_config()))
     def menu_room_switch_echo():
+        if not default_check(query):
+            return
         echo_value=display_data2('room_config',{'room_id':qcid},'echo')
         if echo_value:
             VALUE=False
         else:
             VALUE=True
         updata_data("room_config",{'room_id':qcid},{"$set":{'echo':VALUE}})
-        bot.edit_message_text(chat_id=qcid,
-            message_id=qmid,
-            text='群組的各項設定開關：（僅限管理員使用）',
+        updata_msg(text='群組的各項設定開關：（僅限管理員使用）',
             reply_markup=room_setting_switch_keyboard(get_room_config()))
     def menu_room_switch_water():
+        if not default_check(query):
+            return
         water_value=display_data2('room_config',{'room_id':qcid},'water')
         if water_value:
             VALUE=False
         else:
             VALUE=True
         updata_data("room_config",{'room_id':qcid},{"$set":{'water':VALUE}})
-        bot.edit_message_text(chat_id=qcid,
-            message_id=qmid,
-            text='群組的各項設定開關：（僅限管理員使用）',
+        updata_msg(text='群組的各項設定開關：（僅限管理員使用）',
             reply_markup=room_setting_switch_keyboard(get_room_config()))
     def menu_room_switch_quote():
+        if not default_check(query):
+            return
         quote_value=display_data2('room_config',{'room_id':qcid},'quote')
         if quote_value:
             VALUE=False
         else:
             VALUE=True
         updata_data("room_config",{'room_id':qcid},{"$set":{'quote':VALUE}})
-        bot.edit_message_text(chat_id=qcid,
-            message_id=qmid,
-            text='群組的各項設定開關：（僅限管理員使用）',
+        updata_msg(text='群組的各項設定開關：（僅限管理員使用）',
             reply_markup=room_setting_switch_keyboard(get_room_config()))
+
     def menu_room_switch_savepic():
+        if not default_check(query):
+            return
         savepic_value=display_data2('room_config',{'room_id':qcid},'savepic')
         if savepic_value:
             VALUE=False
         else:
             VALUE=True
         updata_data("room_config",{'room_id':qcid},{"$set":{'savepic':VALUE}})
-        bot.edit_message_text(chat_id=qcid,
-            message_id=qmid,
-            text='群組的各項設定開關：（僅限管理員使用）',
+        updata_msg(text='群組的各項設定開關：（僅限管理員使用）',
             reply_markup=room_setting_switch_keyboard(get_room_config()))
 
     # Switch
