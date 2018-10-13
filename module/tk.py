@@ -41,6 +41,7 @@ def c_tz(datetime,tz):
 def user_admin_value(t_msg):
     """Dectect user if admin, return boolen value"""
     uid=t_msg.from_user.id
+    print(str(t_msg.message.from_user.id)+'message')
     print(uid)
     if not isinstance(uid, int):
         raise TypeError("user_admin_value needs telegram.Message type.")
