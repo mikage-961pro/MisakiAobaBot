@@ -169,8 +169,8 @@ def menu_actions(bot, update):
             return
         if qcid>0:
             """Stop this func in private chat."""
-            bot.edit_message_text(chat_id=q.message.chat_id,
-                    message_id=q.message.message_id,
+            bot.edit_message_text(chat_id=query.message.chat_id,
+                    message_id=query.message.message_id,
                     text="此功能無法在私人對話使用。")
             return
         water_value=display_data2('room_config',{'room_id':qcid},'water')
