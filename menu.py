@@ -109,10 +109,13 @@ def menu_actions(bot, update):
             global quote_search
             del quote_search[query.from_user.id]
         except:
-            pass
+            pass # no search result
         finally:
-            bot.delete_message(chat_id=query.message.chat_id,
-                    message_id=query.message.message_id)
+            try:
+                bot.delete_message(chat_id=query.message.chat_id,
+                        message_id=query.message.message_id)
+            except:
+                pass #retry
     def get_room_config():
         echo_value=display_data2('room_config',{'room_id':qcid},'echo')
         water_value=display_data2('room_config',{'room_id':qcid},'water')
