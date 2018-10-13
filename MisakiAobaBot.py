@@ -1,7 +1,7 @@
 # coding=utf-8
 
 bot_name='@MisakiAobaBot'
-DEBUG=False
+DEBUG=True
 ################################################
 #              Global Setting                  #
 ################################################
@@ -329,9 +329,10 @@ def finduser(bot, update, args):
 
 def testfunc(bot, update):
     """print something"""
-    print(htmlPharseTester('(*>△<)'))
+    #print(htmlPharseTester('(*>△<)'))
+    text="81. --100一下子就沒了哦-- -- 波可\n82. 看來是要我去玩蘿莉吸血鬼 -- 喝冰水的切子職人\n83. 我最喜歡聖誕節掛襪子ㄌ -- 熱狗\n84. 我還有點餓 -- 喝冰水的切子職人\n85. 拉魯拉絲家族 從蘿莉到御姐一次滿足 -- 喝冰水的切子職人\n86. /dice 999 -- 喝冰水的切子職人\n87. #名言 -- 喝冰水的切子職人\n88. #名言 -- 喝冰水的切子職人\n89. #名言 -- 喝冰水的切子職人\n90. ru.4283aj3au -- 喝冰水的切子職人"
     bot.send_message(chat_id=update.message.from_user.id,
-        text='(*>△<)',
+        text=text,
         parse_mode='HTML')
 ################################################
 #               not command                    #
