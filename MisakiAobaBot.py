@@ -415,7 +415,7 @@ def save_room_state(bot, job):
         except KeyError:
             pass
     def save_room_state_main(chat_id):
-        last_data=room_state_getter()
+        last_data=room_state_getter(room_id=chat_id)
 
         try:
             msg=bot.send_message(chat_id=chat_id,text='聊天室資訊更新中...')
