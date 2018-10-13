@@ -266,7 +266,8 @@ def room_setting_switch_keyboard(state):
                 [InlineKeyboardButton(text='水量計數[{}]'.format(bool2text(state[1])),callback_data='cmd_room_switch_water')],
                 [InlineKeyboardButton(text='圖片記錄[{}]'.format(bool2text(state[2])),callback_data='cmd_room_switch_savepic')],
                 [InlineKeyboardButton(text='名言紀錄[{}]'.format(bool2text(state[3])),callback_data='cmd_room_switch_quote')],
-                [InlineKeyboardButton(text='回主頁',callback_data="main")]]
+                [InlineKeyboardButton(text='回主頁',callback_data="main"),
+                InlineKeyboardButton(text='結束',callback_data="cmd_canceled")]]
     return InlineKeyboardMarkup(keyboard)
 
 def page_keyboard(list,page):

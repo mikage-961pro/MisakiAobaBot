@@ -3,6 +3,37 @@ from module import *
 import menu
 from datetime import datetime
 
+def quote_collecter(bot, update, context, room_switch):
+    if room_switch!=True:
+        """Switch"""
+        return False
+    ###################################
+    #          quote collector        #
+    ###################################
+    record=False
+    if context.find(' #名言')!=-1 or context.find('#名言 ')!=-1:
+        if update.message.reply_to_message==None and update.message.from_user.is_bot==False:
+            context=context.replace(' #名言','').replace('#名言 ','')
+            qdict={
+                'quote': context,
+                'said': update.message.from_user.first_name,
+                'tag': '',
+                'said_id':update.message.from_user.id,
+                'date':datetime.now()
+                }
+            insert_data('quote_main',qdict)
+            record=True
+    if context.find('#名言')!=-1 and record==False:
+        if update.message.reply_to_message is not None and update.message.reply_to_message.from_user.is_bot==False:
+            qdict={
+                'quote': update.message.reply_to_message.text,
+                'said': update.message.reply_to_message.from_user.first_name,
+                'tag': '',
+                'said_id':update.message.reply_to_message.from_user.id,
+                'date':datetime.now()
+                }
+            insert_data('quote_main',qdict)
+
 def quote_finder(context,bot, update):
     quote_search={}
     if context=="":
@@ -25,7 +56,7 @@ def quote_finder(context,bot, update):
         if if_int_negative(update.message.chat_id):
             bot.send_message(chat_id=update.message.chat_id,text="結果將顯示於私人對話。")
 
-        # Test user has start bot
+        # context user has start bot
         try:
             bot.send_message(chat_id=update.message.from_user.id,
                 text="以下為【{}】的搜尋結果".format(context))
@@ -41,9 +72,15 @@ def quote_finder(context,bot, update):
         counter=1
         for i in find_result:
             try:
-                t=t+str(counter)+'. '+'<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n'
+                if not htmlPharseTester(i['quote']):
+                    t=t+str(counter)+'. '+'<pre>'+i['quote'].replace('<','＜')+'</pre>'+' -- '+i['said']+'\n'
+                if i['quote'].find('(*>△<)')!=-1:
+                    t=t+str(counter)+'. '+'<pre>'+i['quote'].replace('(*>△<)','(*＞△＜)')+'</pre>'+' -- '+i['said']+'\n'
+                else:
+                    t=t+str(counter)+'. '+'<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n'
             except TypeError:
-                logger.warning("Quote finder has problem on:%s,%s",str(i['quote']),str(i['said']))
+                logger.warning("Quote finder has problem on:%s,%s Oid=%s",
+                    str(i['quote']),str(i['said']),str(i['_id']))
             counter+=1
         result.append(t)
 
@@ -55,9 +92,9 @@ def quote_finder(context,bot, update):
                 text=result[0],
                 reply_markup=menu.page_keyboard(result,1),
                 parse_mode='HTML')
-        #except:
-            #bot.send_message(chat_id=update.message.from_user.id,text="ぜ")
-            #return False
+        except:
+            bot.send_message(chat_id=update.message.from_user.id,text="ぜ")
+            return False
         finally:
             search_total_time=(datetime.now()-search_init_time).total_seconds()
             t="結束搜尋。共有{}筆資料。\n共耗時{}秒。".format(result_length,search_total_time)
@@ -85,10 +122,16 @@ def quote_finder(context,bot, update):
         counter=1
         for i in find_result:
             try:
-                t=str(counter)+'. '+'<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n'
+                if not htmlPharseTester(i['quote']):
+                    t=str(counter)+'. '+'<pre>'+i['quote'].replace('<','＜')+'</pre>'+' -- '+i['said']+'\n'
+                if i['quote'].find('(*>△<)')!=-1:
+                    t=str(counter)+'. '+'<pre>'+i['quote'].replace('(*>△<)','(*＞△＜)')+'</pre>'+' -- '+i['said']+'\n'
+                else:
+                    t=str(counter)+'. '+'<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n'
                 result_sub.append(t)
             except TypeError:
-                logger.warning("Quote finder has problem on:%s,%s",str(i['quote']),str(i['said']))
+                logger.warning("Quote finder has problem on:%s,%s Oid=%s",
+                    str(i['quote']),str(i['said']),str(i['_id']))
             counter+=1
             if len(result_sub) == 10:
                 t=""
@@ -105,17 +148,16 @@ def quote_finder(context,bot, update):
             result.append(t)
             result_sub=[]
 
+        quote_search[update.message.from_user.id]=result # save to globle var
         try:
             # Sending result
-            quote_search[update.message.from_user.id]=result # save to globle var
             bot.send_message(chat_id=update.message.from_user.id,
                 text=result[0],
                 reply_markup=menu.page_keyboard(result,1),
                 parse_mode='HTML')
-
-        #except:
-            #bot.send_message(chat_id=update.message.from_user.id,text="ぜ")
-            #return False
+        except:
+            bot.send_message(chat_id=update.message.from_user.id,text="ぜ")
+            return False
         finally:
             search_total_time=(datetime.now()-search_init_time).total_seconds()
             t="結束搜尋。共有{}筆資料共{}頁。\n共耗時{}秒。".format(result_length,int((result_length-1)/10)+1,search_total_time)
