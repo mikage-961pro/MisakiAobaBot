@@ -8,7 +8,7 @@ from random import randrange
 def addEcho_help(update,bot):
     """HELP"""
     text="""
-<pre>/addecho -w=abc,123 -e=test,test1 -els=300 -al -eli<pre>
+<pre>/addecho -w=abc,123 -e=test,test1 -els=300 -al -eli</pre>
 -w:可以是多個文字，像是-w=もちょ,ナンス,天ちゃん。空格請用/_/（左右斜線中間底線）替代
 ［以下三個請擇一輸入］
 -e:會回應的文字。像是-e=(●･▽･●)

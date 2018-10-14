@@ -293,13 +293,13 @@ def addecho(bot, update, args):
     context=' '.join(args)
     if context=="":
         bot.send_message(chat_id=update.message.chat_id,
-            text='請輸入資料！\n輸入<pre>\\addecho -h</pre> 以尋求幫助。',
+            text='請輸入資料！\n輸入<pre>/addecho -h</pre> 以尋求幫助。',
             parse_mode='HTML')
         return
 
     if formula('h',context):
         """help"""
-        addEcho_help(update,bot)
+        word_echo.addEcho_help(update,bot)
         return
 
     try:
