@@ -53,6 +53,7 @@ global reply_pair
 #                   command                    #
 ################################################
 @do_after_root
+@wait_for_timeOut
 def start(bot, update):
     """Send a message when the command /start is issued."""
     bot.send_message(chat_id=update.message.chat_id,
@@ -61,6 +62,7 @@ def start(bot, update):
 
 @do_after_root
 @del_cmd
+@wait_for_timeOut
 def help(bot, update):
     """Send a message when the command /help is issued."""
     if randrange(1000)<30:
@@ -71,6 +73,7 @@ def help(bot, update):
 
 @do_after_root
 @del_cmd
+@wait_for_timeOut
 def tbgame(bot, update):
     """Send a message when the command /tbgame is issued."""
     bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_tbgame,
@@ -79,6 +82,7 @@ def tbgame(bot, update):
 @run_async
 @do_after_root
 @del_cmd
+@wait_for_timeOut
 def rule(bot, update):
     """Send a message when the command /rule is issued."""
     pipeline={'room_id':update.message.chat_id}
@@ -117,6 +121,7 @@ def config(bot, update):
 @run_async
 @do_after_root
 @del_cmd
+@wait_for_timeOut
 def nanto(bot, update, args):
     """Send a message when the command /nanto is issued."""
     if not args:
@@ -161,6 +166,7 @@ def nanto(bot, update, args):
             bot.delete_message(chat_id=update.message.chat_id, message_id=msg_1.message_id)
 
 @do_after_root
+@wait_for_timeOut
 def which(bot, update, args):
     """Send a message when the command /which is issued."""
     split_symbol="#"

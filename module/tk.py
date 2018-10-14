@@ -78,7 +78,10 @@ def wait_for_timeOut(func):
         except TelegramError as e:
             if e=="Timed out":
                 bot.send_message(chat_id=update.message.chat_id,
-                    text='請稍候')
+                    text='請稍候...')
+        except TimedOut:
+            bot.send_message(chat_id=update.message.chat_id,
+                text='請稍候...')
     return wrapped
 
 
