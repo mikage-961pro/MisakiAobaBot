@@ -419,14 +419,25 @@ def save_room_state(bot, job):
     def save_room_state_main(chat_id):
         last_data=room_state_getter(room_id=chat_id)
 
-        try:
-            msg=bot.send_message(chat_id=chat_id,text='聊天室資訊更新中...')
-        except TimedOut:
-            logger.error('(%s):Update time out.','save_room_state')
-        except Unauthorized:
-            logger.error('(%s):Bot is not in room.','save_room_state')
-        except BadRequest:
-            pass
+        counter=0
+        while True:
+            try:
+                if counter==0:
+                    msg=bot.send_message(chat_id=chat_id,text='聊天室資訊更新中...')
+                else:
+                    msg=bot.send_message(chat_id=chat_id,text='[{}]聊天室資訊更新中...'.format(counter))
+                break
+            except TimedOut:
+                logger.error('(%s):Update time out.','save_room_state')
+            except Unauthorized:
+                logger.error('(%s):Bot is not in room.','save_room_state')
+                updata_data("room_config",{'room_id':msg.chat_id},{"$set":{'echo':False}})
+            except BadRequest:
+                pass
+            if counter>2:
+                logger.error('(%s):Retry out time.','save_room_state')
+                return
+
         room_data={
             'room_id':msg.chat_id,
             'room_name':msg['chat']['title'],
@@ -453,12 +464,15 @@ def save_room_state(bot, job):
             except BadRequest:
                 pass
     water_room_id=[]
-    for data in display_alldata('room_config'):
-        try:
-            if data['water']==True:
-                water_room_id.append(data['room_id'])
-        except KeyError:
-            pass
+    if DEBUG:
+        water_room_id.append(-1001289458175)
+    else:
+        for data in display_alldata('room_config'):
+            try:
+                if data['water']==True:
+                    water_room_id.append(data['room_id'])
+            except KeyError:
+                pass
     for id in water_room_id:
         save_room_state_main(id)
 
