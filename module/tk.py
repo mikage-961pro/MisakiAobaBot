@@ -9,6 +9,7 @@ from string import Template
 from functools import wraps
 from urllib import request
 from telegram import Bot, Chat, Sticker, ReplyKeyboardMarkup, Message
+from telegram.callbackquery import CallbackQuery
 from telegram.error import *
 
 # ---error log setting
@@ -40,14 +41,21 @@ def c_tz(datetime,tz):
 
 def user_admin_value(t_msg):
     """Dectect user if admin, return boolen value"""
-    uid=t_msg.from_user.id
-    print(str(t_msg.message.from_user.id)+'message')
-    print(uid)
-    if not isinstance(uid, int):
-        raise TypeError("user_admin_value needs telegram.Message type.")
+    if isinstance(t_msg, Message):
+        var_type="Message"
+    elif isinstance(t_msg, CallbackQuery):
+        var_type="Query"
+    else:
+        raise TypeError("Var is not telegram.Message or telegram.callbackquery.CallbackQuery type.")
         return
+    uid=t_msg.from_user.id
+
+
     try:
-        adminlist=t_msg.message.chat.get_administrators()
+        if var_type=="Message":
+            adminlist=t_msg.chat.get_administrators()
+        elif var_type=="Query":
+            adminlist=t_msg.message.chat.get_administrators()
         for i in adminlist:
             if uid==i.user.id:
                 return True
@@ -163,6 +171,9 @@ def db_switch_one_value(data_tag):
             {'$set': {'value': True}},
             upsert=True)
         return True
+
+def timePrint():
+    return datetime.now().strftime("%y/%m/%d %H:%M:%S")
 
 def utc8now():
     return (datetime.now()+timedelta(hours=8)).strftime("%y/%m/%d %H:%M:%S")

@@ -72,10 +72,11 @@ def quote_finder(context,bot, update):
         counter=1
         for i in find_result:
             try:
-                if not htmlPharseTester(i['quote']):
-                    t=t+str(counter)+'. '+'<pre>'+i['quote'].replace('<','＜')+'</pre>'+' -- '+i['said']+'\n'
-                if i['quote'].find('(*>△<)')!=-1:
-                    t=t+str(counter)+'. '+'<pre>'+i['quote'].replace('(*>△<)','(*＞△＜)')+'</pre>'+' -- '+i['said']+'\n'
+                # Pharse Bug fix
+                if i['quote'].find('(*>△<)')!=-1 or i['said'].find('(*>△<)')!=-1:
+                    t=t+str(counter)+'. '+'<pre>'+i['quote'].replace('(*>△<)','(*＞△＜)')+'</pre>'+' -- '+i['said'].replace('(*>△<)','(*＞△＜)')+'\n'
+                elif not htmlPharseTester(i['quote']) or not htmlPharseTester(i['said']):
+                    t=t+str(counter)+'. '+'<pre>'+i['quote'].replace('<','＜')+'</pre>'+' -- '+i['said'].replace('<','＜')+'\n'
                 else:
                     t=t+str(counter)+'. '+'<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n'
             except TypeError:
@@ -122,10 +123,12 @@ def quote_finder(context,bot, update):
         counter=1
         for i in find_result:
             try:
-                if not htmlPharseTester(i['quote']):
-                    t=str(counter)+'. '+'<pre>'+i['quote'].replace('<','＜')+'</pre>'+' -- '+i['said']+'\n'
-                if i['quote'].find('(*>△<)')!=-1:
-                    t=str(counter)+'. '+'<pre>'+i['quote'].replace('(*>△<)','(*＞△＜)')+'</pre>'+' -- '+i['said']+'\n'
+                # Pharse Bug fix
+                if i['quote'].find('(*>△<)')!=-1 or i['said'].find('(*>△<)')!=-1:
+                    t=str(counter)+'. '+'<pre>'+i['quote'].replace('(*>△<)','(*＞△＜)')+'</pre>'+' -- '+i['said'].replace('(*>△<)','(*＞△＜)')+'\n'
+
+                elif not htmlPharseTester(i['quote']) or not htmlPharseTester(i['said']):
+                    t=str(counter)+'. '+'<pre>'+i['quote'].replace('<','＜')+'</pre>'+' -- '+i['said'].replace('<','＜')+'\n'
                 else:
                     t=str(counter)+'. '+'<pre>'+i['quote']+'</pre>'+' -- '+i['said']+'\n'
                 result_sub.append(t)
@@ -147,7 +150,6 @@ def quote_finder(context,bot, update):
                 t+=j
             result.append(t)
             result_sub=[]
-
         quote_search[update.message.from_user.id]=result # save to globle var
         try:
             # Sending result
