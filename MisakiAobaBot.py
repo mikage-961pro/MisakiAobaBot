@@ -538,14 +538,14 @@ def main():
 
     # ---repeating jobs---
     # mission_callback every 22:30 daily
-    dj.run_daily(misaki_changeday_alarm,stime(14,30))
+    dj.run_daily(misaki_changeday_alarm,stime(22,30))
     # mission_show record every 8 hours
     m_history=[stime(7,0,0),stime(15,0,0),stime(23,0,0)]
     for t in m_history:
         #plug in mission time with loop
         dj.run_daily(save_room_state,t)
     # mission refresh daily gasya
-    dj.run_daily(daily_reset,stime(14,59,59))
+    dj.run_daily(daily_reset,stime(23,59,59))
 
     # ---Command answer---
     # on different commands - answer in Telegram
