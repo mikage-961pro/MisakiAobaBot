@@ -2,9 +2,11 @@
 #operation involve mongodb will be placed here
 from string import Template
 import os
+import datetime
 # ---MongoDB
 import pymongo
 from pymongo import MongoClient
+from bson import ObjectId
 
 # ---error log setting
 import logging
@@ -30,6 +32,18 @@ def randget(Collection='quote_main',size=1):
 
     return result
 
+def randget_t(Collection='quote_main',size=1,after=None):
+    #where after is a datetime object ,in this case, it'll select data 'after' the date.
+    op_ins=db[Collection]
+    dummy_id=ObjectId.from_datetime(after)
+    pipeline=[{'$match': {"_id": {"$gt": dummy_id}}},{'$sample': {'size': size}}]
+    #result = collection.find({"_id": {"$gt": dummy_id}})
+    selected=op_ins.aggregate(pipeline)
+    result=[]
+    for i in selected:
+        result.append(i)
+    return result    
+    
 def randget_idol(idol,Collection='ml_idol_pic_colle',size=1):
     op_ins=db[Collection]
     if idol=='all':
