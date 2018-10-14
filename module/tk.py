@@ -98,7 +98,7 @@ def bot_is_admin(bot,update):
 def room_member_num(bot,update):
     # count member number
     total_count=bot.get_chat_members_count(update.message.chat.id)
-    bot_count=2
+    bot_count=0
     human_count=total_count-bot_count
     return human_count
 

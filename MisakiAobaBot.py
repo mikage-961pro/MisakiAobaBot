@@ -204,6 +204,7 @@ def quote(bot,update,args):
     msg=bot.send_message(chat_id=update.message.chat_id,text=text,parse_mode='HTML')
 
 @do_after_root
+@wait_for_timeOut
 def randPic(bot,update,args):
     idol_name=' '.join(args)
     idol_name=idol_name.lower()
