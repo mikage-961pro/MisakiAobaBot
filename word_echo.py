@@ -188,7 +188,7 @@ def wordEcho(bot,update,user_switch,room_switch,key_words):
             return
 
         if key_words_value==True:
-            if echo != None:
+            if echo != None and echo!=[]:
                 if num<prob:
                     if echo_list:
                         pars={'do':'msgSend',
