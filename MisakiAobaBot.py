@@ -425,6 +425,7 @@ def save_room_state(bot, job):
     ######################
     def save_room_state_main(chat_id):
         last_data=room_state_getter(room_id=chat_id)
+        retry=3
 
         counter=0
         while True:
@@ -432,7 +433,7 @@ def save_room_state(bot, job):
                 if counter==0:
                     msg=bot.send_message(chat_id=chat_id,text='聊天室資訊更新中...')
                 else:
-                    msg=bot.send_message(chat_id=chat_id,text='[{}]聊天室資訊更新中...'.format(counter))
+                    msg=bot.send_message(chat_id=chat_id,text='[{}]聊天室資訊更新中...'.format(str(counter)))
                 break
             except TimedOut:
                 logger.error('(%s):Update time out.','save_room_state')
@@ -441,8 +442,9 @@ def save_room_state(bot, job):
                 updata_data("room_config",{'room_id':msg.chat_id},{"$set":{'echo':False}})
             except BadRequest:
                 pass
-            if counter>2:
-                logger.error('(%s):Retry out time.','save_room_state')
+            counter+=1
+            if counter>(retry-1):
+                logger.error('(%s):Retry out of time.','save_room_state')
                 return
 
         room_data={
