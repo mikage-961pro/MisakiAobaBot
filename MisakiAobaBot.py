@@ -508,18 +508,22 @@ def inline_handler(bot,update):
         return randget_idol('all')[0]['url']
 
     name=query.lower()
-    rand_idol_pic=InlineQueryResultPhoto(
-        id=str(datetime.now()),
-        title='RANDPIC',
-        photo_url=pic_url(name),
-        thumb_url="https://i.imgur.com/kdAihxk.jpg"
-    )
 
-    bot.answer_inline_query(inline_query_id=update.inline_query.id,
-    results=[rand_idol_pic],
-    cache_time=2,
-    is_personal=True)
+    try:
+        rand_idol_pic=InlineQueryResultPhoto(
+            id=str(datetime.now()),
+            title='RANDPIC',
+            photo_url=pic_url(name),
+            thumb_url="https://i.imgur.com/kdAihxk.jpg"
+        )
 
+        bot.answer_inline_query(inline_query_id=update.inline_query.id,
+        results=[rand_idol_pic],
+        cache_time=2,
+        is_personal=True)
+    except TelegramError as e:
+        if e=="Message is not modified":
+            pass
 
 # error logs
 def error(bot, update, error):
