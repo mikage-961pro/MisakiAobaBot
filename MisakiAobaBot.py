@@ -225,11 +225,14 @@ def randPic(bot,update,args):
         except:
             bot.send_message(chat_id=update.message.chat_id,text='發生不明錯誤。')
             return
-
     elif idol_name not in GLOBAL_WORDS.idol_list:
         bot.send_message(chat_id=update.message.chat_id,text='だれ？')
         return
     else:
+        return
+
+    if not url_valid(url):
+        logger.info("Not valid url when send picture:%s",url)
         return
 
     try:
@@ -493,6 +496,7 @@ def daily_reset(bot,job):
 ################################################
 #                   inline                     #
 ################################################
+@wait_for_modify
 def inline_handler(bot,update):
     query=update.inline_query.query
 

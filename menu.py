@@ -52,7 +52,8 @@ def menu_actions(bot, update):
     def menu_about():
         fin_text()
         temp=Template(GLOBAL_WORDS.word_about)
-        text=temp.substitute(boot_time=init_time)
+        from __init__ import __version__
+        text=temp.substitute(boot_time=init_time,version=__version__)
         bot.send_message(text=text,chat_id=query.message.chat_id,parse_mode=ParseMode.HTML)
     def menu_resp_check():
         data_value = display_data('config',{'id':query.from_user.id},'reply')

@@ -35,8 +35,11 @@ This chat bot is originally using to manage our im@s [chat room](https://t.me/im
 - **rule setting:** 可以自訂不同的群規則。
 
 ## Update Log
-New Version: Beta 2.0.1  
-Last Update:2018/10/12
+New Version: Beta 2.1.3   
+Last Update:2018/10/21
+
+### Beta 2.1.3
+1. Fix some bug
 
 ### Beta 2.1.2
 1. Fix timezone problem

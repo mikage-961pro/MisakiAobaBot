@@ -84,6 +84,20 @@ def wait_for_timeOut(func):
                 text='請稍候...')
     return wrapped
 
+# decorator
+def wait_for_modify(func):
+    """Reply a msg for timeOut"""
+    @wraps(func)
+    def wrapped(bot, update, *args, **kwargs):
+        """Dectect bot if admin, if True, del cmd"""
+        try:
+            return func(bot, update, *args, **kwargs)
+        except TelegramError as e:
+            if e=="Message is not modified":
+                bot.send_message(chat_id=update.message.chat_id,
+                    text='請稍候...')
+    return wrapped
+
 
 def bot_is_admin(bot,update):
     """Dectect bot if admin, return boolen value"""
