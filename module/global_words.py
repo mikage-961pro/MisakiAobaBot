@@ -280,7 +280,7 @@ Database:MongoDB
 	'ranko',
 	'megumi_cg',
 	'shino',
-	'karen',
+	'karen_cg',
 	'kate',
 	'shori',
 	'honoka',
