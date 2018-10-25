@@ -126,8 +126,9 @@ def addEcho_main(context,update,bot,space_word="/_/"):
 def wordEcho(bot,update,user_switch,room_switch,key_words):
     """Detect what user say and misaki will response."""
     # --Step.1 Switch--
-    if user_switch!=True or room_switch!=True:
+    if user_switch!=True or room_switch!=True or url_valid(key_words):
         """Switch"""
+        # For a url, it shouldn't work
         return False
 
     ###################################
