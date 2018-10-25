@@ -164,6 +164,25 @@ Database:MongoDB
     'misaki',
     'kotori'
     ]
+    sc_idol=[
+    'mano',
+    'hiori',
+    'meguru',
+    'kogane',
+    'mamimi',
+    'sakuya',
+    'yuika',
+    'kiriko',
+    'chiyuki',
+    'amana',
+    'tenka',
+    'kaho',
+    'chiyoko',
+    'juri',
+    'rinze',
+    'natsuha',
+    'hazuki'
+    ]
     idol_list_passion=[
     'yoshino'
     ]
@@ -176,4 +195,4 @@ Database:MongoDB
     'dd'
     ]
     idol_list=idol_list_pr+idol_list_fr+idol_list_ag+idol_list_al+zimuinn\
-                +idol_list_passion+try_sail+daredemo
+                +idol_list_passion+try_sail+daredemo+sc_idol
