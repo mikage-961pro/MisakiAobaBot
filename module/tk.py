@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 # do once var
 do_once_value=True
-
+login=False
 # Record bot init time
 init_time = datetime.now()
 quote_search={} # Use on /quote
@@ -338,18 +338,20 @@ def pixivGet_img(illustId):
         return False
     
     
-@do_once
+
 def pixiv_login():
-    pixiv_id=os.environ['pid']
-    password=os.environ['psw']
-    base_url = 'https://accounts.pixiv.net/login?lang=zh&source=pc&view_type=page&ref=wwwtop_accounts_index'
-    login_url = 'https://accounts.pixiv.net/api/login?lang=zh'
-    post_key_html = se.get(base_url, headers=headers).text
-    post_key_soup = bs(post_key_html, 'lxml')
-    post_key = post_key_soup.find('input', {'name': 'post_key'})['value']
-    data = {
-        'pixiv_id': pixiv_id,
-        'password': password,
-        'post_key': post_key
-    }
-    se.post(login_url, data=data, headers=headers)
+    if not login:
+        pixiv_id=os.environ['pid']
+        password=os.environ['psw']
+        base_url = 'https://accounts.pixiv.net/login?lang=zh&source=pc&view_type=page&ref=wwwtop_accounts_index'
+        login_url = 'https://accounts.pixiv.net/api/login?lang=zh'
+        post_key_html = se.get(base_url, headers=headers).text
+        post_key_soup = bs(post_key_html, 'lxml')
+        post_key = post_key_soup.find('input', {'name': 'post_key'})['value']
+        data = {
+            'pixiv_id': pixiv_id,
+            'password': password,
+            'post_key': post_key
+        }
+        se.post(login_url, data=data, headers=headers)
+        login=True
