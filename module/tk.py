@@ -282,25 +282,20 @@ def picLinker(url):
     """Deal with twitter multi pic and pixiv header issue"""
     """case twitter"""
     if 'twitter' in url:
-        print(url)
         try:
             twi=requests.get(url)
         except:
-            print('not find')
             return url
         else:
             soap=bs(twi.content, "lxml")
             metalink=soap.find_all('meta',{'property':'og:image'})
             picLink=[]
             for i in metalink:
-                picLink.append(i.attrs['content'])
-            print(picLink)    
+                picLink.append(i.attrs['content']) 
             return randList(picLink)
             
     if 'pixiv' in url:
-        print(url)
         illustId_qs=url[url.find('illust_id='):]
-        print(illustId_qs)
         illustId=parse_qs(illustId_qs)['illust_id'][0]
         img=pixivGet_img(illustId)
         if img:
@@ -355,5 +350,4 @@ def pixiv_login():
             'post_key': post_key
         }
         se.post(login_url, data=data, headers=headers)
-        print(headers)
         login=True
