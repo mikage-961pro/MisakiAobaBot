@@ -320,6 +320,7 @@ headers = {
 
 def pixivGet_img(illustId):  
     #login
+    @do_once
     pixiv_login()
     
     img_url = 'https://www.pixiv.net/member_illust.php?mode=manga&illust_id='+illustId
