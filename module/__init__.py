@@ -27,5 +27,6 @@ __all__=[
 'insert_data','display_data','modify_data','modify_many_data','display_alldata',
 'display_data2',
 # other
-'weighted_random'
+'weighted_random',
+'picLinker'
 ]
