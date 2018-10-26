@@ -54,7 +54,6 @@ def randget_idol(idol,Collection='ml_idol_pic_colle',size=1):
     result=[]
     for i in selected:
         result.append(i)
-        print(i)
     return result
 
 def room_state_getter(Collection='room_state',room_id=-1001290696540):
