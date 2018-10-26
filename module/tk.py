@@ -287,7 +287,7 @@ def picLinker(url):
             print('not find')
             return url
         else:
-            soap=bs(twi.content, "lxml")
+            soap=bs(twi.content)
             metalink=soap.find_all('meta',{'property':'og:image'})
             picLink=[]
             for i in metalink:
