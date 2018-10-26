@@ -292,7 +292,7 @@ def picLinker(url):
             picLink=[]
             for i in metalink:
                 picLink.append(i.attrs['content'])
-                
+            print(picLink)    
             return randList(picLink)
             
     if 'pixiv' in url:
@@ -301,6 +301,7 @@ def picLinker(url):
         print(illustId_qs)
         illustId=parse_qs(illustId_qs)['illust_id'][0]
         img=pixivGet_img(illustId)
+        print(img)
         if img:
             return img
         else:
