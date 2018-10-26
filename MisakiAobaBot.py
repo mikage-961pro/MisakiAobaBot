@@ -240,8 +240,8 @@ def randPic(bot,update,args):
     except TimedOut:
         pass
         #bot.send_message(chat_id=update.message.chat_id,text='讀取中...')
-    except:
-        bot.send_message(chat_id=update.message.chat_id,text='這位偶像還沒有圖喔！')
+   ''' except:
+        bot.send_message(chat_id=update.message.chat_id,text='這位偶像還沒有圖喔！')'''
 
 
 
