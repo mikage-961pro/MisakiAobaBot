@@ -340,6 +340,7 @@ def pixivGet_img(illustId):
     
 
 def pixiv_login():
+    global login
     if not login:
         pixiv_id=os.environ['pid']
         password=os.environ['psw']
@@ -354,4 +355,5 @@ def pixiv_login():
             'post_key': post_key
         }
         se.post(login_url, data=data, headers=headers)
+        print(headers)
         login=True
