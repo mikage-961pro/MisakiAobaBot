@@ -14,6 +14,7 @@ This chat bot is originally using to manage our im@s [chat room](https://t.me/im
 - **help** - 由青羽小姐提供您幫助
 - **rule** - 本群規則瀏覽
 - **config** - 設定，情報
+設定個人情報。房間設定必須由房間管理員才有權限使用。
 - **tbgame** - 765プロゲーム部入口，進去跟大家玩桌遊吧
 - **nanto** - なんとぉ！  
 `/nanto who#thing` or `/nanto thing`
@@ -25,13 +26,22 @@ This chat bot is originally using to manage our im@s [chat room](https://t.me/im
 `/randpic idol_name`可以指定召喚
 - **sticker** - STICKERまとめ
 
+## Inline command
+- **Inline picture**  
+使用指令
+`@MisakiAobaBot`或是`@MisakiAobaBot [idol_name]`就可以在任意房間召喚偶像。
+
 ## Function
 
-- **quote:** Record words that you interest, which will show when **/quote** command entered.  
-回覆他人並且鍵入`#名言`即可儲存。
-- **words reaction:** Bot will say something when user enter some specific words.
-- **group state record:** Record the member and message number every time. Admin can turn on record daily function.
-- **picture save and call:** 使用`idol@db`功能儲存你喜歡的偶像圖。
+- **quote:** Record words that you interest, which will show when `/quote` command entered.  
+回覆他人並且鍵入`#名言`即可儲存。  
+房間預設關閉，必須去`/config`設定開啟。
+- **words reaction:** Bot will say something when user enter some specific words.  
+房間預設關閉，必須去`/config`設定開啟。
+- **group state record:** Record the member and message number every time. Admin can turn on record daily function.  
+房間預設關閉，必須去`/config`設定開啟。
+- **picture save and call:** 使用`idol@db`功能儲存你喜歡的偶像圖。  
+房間預設關閉，必須去`/config`設定開啟。
 - **rule setting:** 可以自訂不同的群規則。
 
 ## Update Log
