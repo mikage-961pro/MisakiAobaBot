@@ -4,6 +4,7 @@ from datetime import datetime,tzinfo,timedelta
 from datetime import time as stime#specific time
 import time
 import os
+import io
 from random import randrange
 from string import Template
 from functools import wraps
@@ -302,8 +303,8 @@ def picLinker(url):
         print(illustId_qs)
         illustId=parse_qs(illustId_qs)['illust_id'][0]
         img=pixivGet_img(illustId)
-        print(img)
         if img:
+            img=io.BytesIO(img)
             return img
         else:
             return url
