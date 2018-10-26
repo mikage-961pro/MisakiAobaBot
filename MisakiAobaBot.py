@@ -236,7 +236,7 @@ def randPic(bot,update,args):
         return
 
     try:
-        bot.send_photo(chat_id=update.message.chat_id,photo=url)
+        bot.send_photo(chat_id=update.message.chat_id,photo=picLinker(url))
     except TimedOut:
         pass
         #bot.send_message(chat_id=update.message.chat_id,text='讀取中...')
