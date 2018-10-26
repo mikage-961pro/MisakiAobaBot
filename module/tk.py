@@ -20,6 +20,7 @@ logging.basicConfig(format='[%(asctime)s](%(levelname)s) %(name)s - %(message)s'
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 # do once var
 do_once_value=True
 
@@ -311,7 +312,7 @@ headers = {
 
 def pixivGet_img(illustId):  
     #login
-    pixiv_login(pixiv_id,password)
+    pixiv_login()
     
     img_url = 'https://www.pixiv.net/member_illust.php?mode=manga&illust_id='+illustId
     get_url='https://www.pixiv.net/ajax/illust/'+illustId
@@ -329,7 +330,9 @@ def pixivGet_img(illustId):
     
     
     
-def pixiv_login(pixiv_id,password):
+def pixiv_login():
+    pixiv_id=os.environ['pid']
+    password=os.environ['psw']
     base_url = 'https://accounts.pixiv.net/login?lang=zh&source=pc&view_type=page&ref=wwwtop_accounts_index'
     login_url = 'https://accounts.pixiv.net/api/login?lang=zh'
     post_key_html = se.get(base_url, headers=headers).text
