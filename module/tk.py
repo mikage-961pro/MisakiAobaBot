@@ -342,7 +342,7 @@ def pixiv_login():
     base_url = 'https://accounts.pixiv.net/login?lang=zh&source=pc&view_type=page&ref=wwwtop_accounts_index'
     login_url = 'https://accounts.pixiv.net/api/login?lang=zh'
     post_key_html = se.get(base_url, headers=headers).text
-    post_key_soup = BeautifulSoup(post_key_html, 'lxml')
+    post_key_soup = bs(post_key_html, 'lxml')
     post_key = post_key_soup.find('input', {'name': 'post_key'})['value']
     data = {
         'pixiv_id': pixiv_id,
