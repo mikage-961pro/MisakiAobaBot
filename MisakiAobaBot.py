@@ -453,8 +453,8 @@ def save_room_state(bot, job):
             'total_message':msg.message_id,
             'members_count':msg.chat.get_members_count()
             }
-        insert_data('room_state',room_data)
         last_data=room_state_getter(room_id=chat_id)
+        insert_data('room_state',room_data)
         if last_data==None:
             text="初次儲存。儲存成功。"
             try:
