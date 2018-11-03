@@ -381,6 +381,5 @@ Database:MongoDB
     daredemo=[
     'dd'
     ]
-    test=['test']
     idol_list=idol_list_pr+idol_list_fr+idol_list_ag+idol_list_al+zimuinn\
-                +cg_idol+try_sail+daredemo+sc_idol+test
+                +cg_idol+try_sail+daredemo+sc_idol
