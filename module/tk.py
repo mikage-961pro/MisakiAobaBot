@@ -4,23 +4,28 @@ from datetime import datetime,tzinfo,timedelta
 from datetime import time as stime#specific time
 import time
 import os
+import io
 from random import randrange
 from string import Template
 from functools import wraps
 from urllib import request
+from urllib.parse import parse_qs
 from telegram import Bot, Chat, Sticker, ReplyKeyboardMarkup, Message
 from telegram.callbackquery import CallbackQuery
 from telegram.error import *
-
+from bs4 import BeautifulSoup as bs
+import requests
+import json
 # ---error log setting
 import logging
 logging.basicConfig(format='[%(asctime)s](%(levelname)s) %(name)s - %(message)s',
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 # do once var
 do_once_value=True
-
+login=False
 # Record bot init time
 init_time = datetime.now()
 quote_search={} # Use on /quote
@@ -272,3 +277,77 @@ def htmlPharseTester(str):
         if i==">":
             right_mouth=False
     return not right_mouth
+
+def picLinker(url):
+    """Deal with twitter multi pic and pixiv header issue"""
+    """case twitter"""
+    if 'twitter' in url:
+        try:
+            twi=requests.get(url)
+        except:
+            return url
+        else:
+            soap=bs(twi.content, "lxml")
+            metalink=soap.find_all('meta',{'property':'og:image'})
+            picLink=[]
+            for i in metalink:
+                picLink.append(i.attrs['content']) 
+            return randList(picLink)
+            
+    if 'pixiv' in url:
+        illustId_qs=url[url.find('illust_id='):]
+        illustId=parse_qs(illustId_qs)['illust_id'][0]
+        img=pixivGet_img(illustId)
+        if img:
+            img=io.BytesIO(img)
+            return img
+        else:
+            return url
+    return url
+
+################################pixiv
+        
+se = requests.session()
+headers = {
+    'Referer': 'https://accounts.pixiv.net/login?lang=zh&source=pc&view_type=page&ref=wwwtop_accounts_index',
+    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/62.0.3202.89 Chrome/62.0.3202.89 Safari/537.36'
+}
+
+def pixivGet_img(illustId):  
+    #login
+
+    pixiv_login()
+    
+    img_url = 'https://www.pixiv.net/member_illust.php?mode=manga&illust_id='+illustId
+    get_url='https://www.pixiv.net/ajax/illust/'+illustId
+    html = se.get(get_url, headers=headers, timeout=10)
+    img_info=json.loads(html.text)
+    img_src = img_info['body']['urls']['original']    
+    img_orig_src=img_src
+    src_headers = headers
+    src_headers['Referer'] = img_url
+    try:
+        img=se.get(img_orig_src, headers=src_headers).content
+        return img
+    except:
+        return False
+    
+    
+
+def pixiv_login():
+    global login
+    if not login:
+        pixiv_id=os.environ['pid']
+        password=os.environ['psw']
+        base_url = 'https://accounts.pixiv.net/login?lang=zh&source=pc&view_type=page&ref=wwwtop_accounts_index'
+        login_url = 'https://accounts.pixiv.net/api/login?lang=zh'
+        post_key_html = se.get(base_url, headers=headers).text
+        post_key_soup = bs(post_key_html, 'lxml')
+        post_key = post_key_soup.find('input', {'name': 'post_key'})['value']
+        data = {
+            'pixiv_id': pixiv_id,
+            'password': password,
+            'post_key': post_key
+        }
+        se.post(login_url, data=data, headers=headers)
+        login=True

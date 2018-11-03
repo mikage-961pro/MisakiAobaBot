@@ -234,14 +234,14 @@ def randPic(bot,update,args):
     if not url_valid(url):
         logger.info("Not valid url when send picture:%s",url)
         return
-
     try:
-        bot.send_photo(chat_id=update.message.chat_id,photo=url)
+        bot.send_photo(chat_id=update.message.chat_id,photo=picLinker(url))
     except TimedOut:
         pass
         #bot.send_message(chat_id=update.message.chat_id,text='讀取中...')
     except:
-        bot.send_message(chat_id=update.message.chat_id,text='這位偶像還沒有圖喔！')
+        #bot.send_message(chat_id=update.message.chat_id,text='這位偶像還沒有圖喔！')
+        logger.warning("Unexpect error while sending picture.")
 
 
 
@@ -428,28 +428,18 @@ def save_room_state(bot, job):
     #put in your group id#
     ######################
     def save_room_state_main(chat_id):
-        last_data=room_state_getter(room_id=chat_id)
-        retry=3
 
-        counter=0
-        while True:
-            try:
-                if counter==0:
-                    msg=bot.send_message(chat_id=chat_id,text='聊天室資訊更新中...')
-                else:
-                    msg=bot.send_message(chat_id=chat_id,text='[{}]聊天室資訊更新中...'.format(str(counter)))
-                break
-            except TimedOut:
-                logger.error('(%s):Update time out.','save_room_state')
-            except Unauthorized:
-                logger.error('(%s):Bot is not in room.','save_room_state')
-                updata_data("room_config",{'room_id':msg.chat_id},{"$set":{'echo':False}})
-            except BadRequest:
-                pass
-            counter+=1
-            if counter>(retry-1):
-                logger.error('(%s):Retry out of time.','save_room_state')
-                return
+        try:
+            msg=bot.send_message(chat_id=chat_id,text='聊天室資訊更新中...')
+        except TimedOut:
+            logger.error('(%s):Update time out.','save_room_state')
+            return
+        except Unauthorized:
+            logger.error('(%s):Bot is not in room.','save_room_state')
+            updata_data("room_config",{'room_id':msg.chat_id},{"$set":{'echo':False}})
+            return
+        except BadRequest:
+            return
 
         room_data={
             'room_id':msg.chat_id,
@@ -459,12 +449,13 @@ def save_room_state(bot, job):
             'members_count':msg.chat.get_members_count()
             }
         insert_data('room_state',room_data)
+        last_data=room_state_getter(room_id=chat_id)
         if last_data==None:
             text="初次儲存。儲存成功。"
             try:
                 bot.send_message(chat_id=chat_id,text=text)
             except BadRequest:
-                pass
+                return
         else:
             wt=room_data['total_message']-last_data['total_message']
             mb=room_data['members_count']-last_data['members_count']
@@ -475,7 +466,7 @@ def save_room_state(bot, job):
             try:
                 bot.send_message(chat_id=chat_id,text=text)
             except BadRequest:
-                pass
+                return
     water_room_id=[]
     if DEBUG:
         water_room_id.append(-1001289458175)

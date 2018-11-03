@@ -1,6 +1,6 @@
 # MisakiAobaBot
 <img src="https://i.imgur.com/oHK4EKk.jpg" alt="Misaki" height="80" width="80"> ノノ青羽美咲です！  
-![version](https://img.shields.io/badge/Version-Beta_2.0.1-brightgreen.svg?longCache=true&style=popout)
+![version](https://img.shields.io/badge/Version-Beta_2.1.4-brightgreen.svg?longCache=true&style=popout)
 [![package](https://img.shields.io/badge/Telegram.Bot-10.1.0-blue.svg?longCache=true&style=popout)](https://python-telegram-bot.org)
 [![telegram chat](https://img.shields.io/badge/Support_Chat-Telegram-blue.svg?style=popout)](https://t.me/MisakiAobaBot)
 [![Contribution](https://img.shields.io/badge/Contribution-welcome-yellow.svg?style=popout)](https://t.me/imas_techno)
@@ -45,8 +45,12 @@ This chat bot is originally using to manage our im@s [chat room](https://t.me/im
 - **rule setting:** 可以自訂不同的群規則。
 
 ## Update Log
-New Version: Beta 2.1.3   
-Last Update:2018/10/21
+New Version: Beta 2.1.4   
+Last Update:2018/11/03
+
+### Beta 2.1.4
+1. Fix some sendpic bugs
+2. Fix water recording bug
 
 ### Beta 2.1.3
 1. Fix some bug

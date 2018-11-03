@@ -86,7 +86,7 @@ class GLOBAL_WORDS:
 貼心提醒：給予美咲管理員權限可以做更多事情。
 Version:$version
 Boot Time:$boot_time
-Last update:2018/10/13
+Last update:2018/11/03
 Developer:台灣765技術部
     Dephilia（蝶芙）／TAKE（他Ｋ）
 Base Language:Python
@@ -381,5 +381,6 @@ Database:MongoDB
     daredemo=[
     'dd'
     ]
+    test=['test']
     idol_list=idol_list_pr+idol_list_fr+idol_list_ag+idol_list_al+zimuinn\
-                +cg_idol+try_sail+daredemo+sc_idol
+                +cg_idol+try_sail+daredemo+sc_idol+test

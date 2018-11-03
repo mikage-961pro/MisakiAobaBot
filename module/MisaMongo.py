@@ -42,9 +42,16 @@ def randget_t(Collection='quote_main',size=1,after=None):
     result=[]
     for i in selected:
         result.append(i)
-    return result    
-    
+    return result
+
 def randget_idol(idol,Collection='ml_idol_pic_colle',size=1):
+    def url_valid(url):
+        try:
+            from urllib import request
+            code = request.urlopen(url).code
+        except:
+            return False
+        return True
     op_ins=db[Collection]
     if idol=='all':
         pipeline=[{'$sample': {'size': size}}]
