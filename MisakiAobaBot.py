@@ -234,14 +234,15 @@ def randPic(bot,update,args):
     if not url_valid(url):
         logger.info("Not valid url when send picture:%s",url)
         return
-
     try:
         bot.send_photo(chat_id=update.message.chat_id,photo=picLinker(url))
     except TimedOut:
         pass
         #bot.send_message(chat_id=update.message.chat_id,text='讀取中...')
     except:
-        bot.send_message(chat_id=update.message.chat_id,text='這位偶像還沒有圖喔！')
+        #bot.send_message(chat_id=update.message.chat_id,text='這位偶像還沒有圖喔！')
+        logger.warning("Unexpect error while sending picture.")
+
 
 
 @do_after_root
