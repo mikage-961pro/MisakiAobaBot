@@ -235,7 +235,12 @@ def randPic(bot,update,args):
         logger.info("Not valid url when send picture:%s",url)
         return
     try:
-        bot.send_photo(chat_id=update.message.chat_id,photo=picLinker(url))
+        url_text="""<a href="$URL">〔原圖網址〕</a>""".replace('$URL',url)
+        bot.send_photo(chat_id=update.message.chat_id,
+            photo=picLinker(url),
+            caption=url_text,
+            parse_mode=ParseMode.HTML,
+            disable_notification=True)
     except TimedOut:
         pass
         #bot.send_message(chat_id=update.message.chat_id,text='讀取中...')
@@ -500,13 +505,16 @@ def inline_handler(bot,update):
         return randget_idol('all')[0]['url']
 
     name=query.lower()
-
+    url=pic_url(name)
+    url_text="""<a href="$URL">〔原圖網址〕</a>""".replace('$URL',url)
     try:
         rand_idol_pic=InlineQueryResultPhoto(
             id=str(datetime.now()),
             title='RANDPIC',
-            photo_url=pic_url(name),
-            thumb_url="https://i.imgur.com/kdAihxk.jpg"
+            photo_url=url,
+            thumb_url="https://i.imgur.com/kdAihxk.jpg",
+            caption=url_text,
+            parse_mode=ParseMode.HTML
         )
 
         bot.answer_inline_query(inline_query_id=update.inline_query.id,

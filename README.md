@@ -51,6 +51,7 @@ Last Update:2018/11/03
 ### Beta 2.1.4
 1. Fix some sendpic bugs
 2. Fix water recording bug
+3. While send rand pic, it shows origin url.
 
 ### Beta 2.1.3
 1. Fix some bug
