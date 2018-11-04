@@ -54,7 +54,10 @@ def menu_actions(bot, update):
         temp=Template(GLOBAL_WORDS.word_about)
         from __init__ import __version__
         text=temp.substitute(boot_time=init_time,version=__version__)
-        bot.send_message(text=text,chat_id=query.message.chat_id,parse_mode=ParseMode.HTML)
+        bot.send_message(text=text,
+            chat_id=query.message.chat_id,
+            parse_mode=ParseMode.HTML,
+            disable_web_page_preview=True)
     def menu_resp_check():
         data_value = display_data('config',{'id':query.from_user.id},'reply')
         if data_value is None:

@@ -1,4 +1,5 @@
 from .logger import logger
+from .RTER_api import exRate
 from .global_words import GLOBAL_WORDS
 from .tk import do_once,c_tz,bot_is_admin,room_member_num
 from .tk import del_cmd,del_cmd_func,randList,do_after_root,admin_cmd
@@ -12,6 +13,8 @@ from .MisaMongo import insert_data,display_data,display_alldata,modify_data,modi
 __all__=[
 # log
 'logger',
+# RTER_api
+'exRate',
 # words
 'GLOBAL_WORDS',
 # global var in tk

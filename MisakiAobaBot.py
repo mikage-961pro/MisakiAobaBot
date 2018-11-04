@@ -68,8 +68,10 @@ def help(bot, update):
     if randrange(1000)<30:
         bot.send_message(chat_id=update.message.chat_id, text="ぜ")
     else:
-        bot.send_message(chat_id=update.message.chat_id, text=GLOBAL_WORDS.word_help,
-                    parse_mode=ParseMode.HTML)
+        bot.send_message(chat_id=update.message.chat_id,
+                    text=GLOBAL_WORDS.word_help,
+                    parse_mode=ParseMode.HTML,
+                    disable_web_page_preview=True)
 
 @do_after_root
 @del_cmd
@@ -331,6 +333,47 @@ def addecho(bot, update, args):
     except TimedOut:
         bot.send_message(chat_id=update.message.chat_id,text='Saving...')
 
+def exrate(bot, update, args):
+    context=' '.join(args)
+    split_symbol=">"
+    country=context.split(split_symbol)
+    if len(country)!=2:
+        bot.send_message(chat_id=update.message.chat_id,text="格式錯誤喔～")
+        return
+    if country[0]==country[1]:
+        bot.send_message(chat_id=update.message.chat_id,text="我就知道你想這樣玩(●･▽･●)")
+        return
+    try:
+        output_data=exRate(country[0],country[1])
+    except IndexError:
+        error_msg="未知的貨幣代碼："+country[0]+" > "+country[1]
+        bot.send_message(chat_id=update.message.chat_id,text=error_msg)
+        return
+    text="以下顯示1"+country[1]+"等於多少"+country[0]+"\n"+\
+        "匯率: "+str(output_data['Exrate'])+"\n"+\
+        "牌價時間: "+output_data['UTC']+" (UTC Time)"+\
+        """
+此服務由<a href="https://tw.rter.info/howto_currencyapi.php">即匯站</a>所提供
+        """
+    bot.send_message(chat_id=update.message.chat_id,
+        text=text,
+        parse_mode='HTML',
+        disable_web_page_preview=True)
+
+def twd2jpy(bot, update):
+    country=["TWD","JPY"]
+    output_data=exRate(country[0],country[1])
+    text="以下顯示1"+country[1]+"等於多少"+country[0]+"\n"+\
+        "匯率: "+str(output_data['Exrate'])+"\n"+\
+        "牌價時間: "+output_data['UTC']+" (UTC Time)"+\
+        """
+此服務由<a href="https://tw.rter.info/howto_currencyapi.php">即匯站</a>所提供
+        """
+    bot.send_message(chat_id=update.message.chat_id,
+        text=text,
+        parse_mode='HTML',
+        disable_web_page_preview=True)
+
 def finduser(bot, update, args):
     """used to find user data from user_id"""
     context=' '.join(args)
@@ -575,11 +618,14 @@ def main():
     dp.add_handler(CommandHandler("which", which, pass_args=True))
     dp.add_handler(CommandHandler("quote",quote, pass_args=True))
     dp.add_handler(CommandHandler("randpic",randPic, pass_args=True))
-    dp.add_handler(CommandHandler("sticker",sticker_matome))
-    dp.add_handler(CommandHandler("forcesave",forcesave))
+    dp.add_handler(CommandHandler("sticker",sticker_matome))    
     dp.add_handler(CommandHandler("addecho", addecho, pass_args=True))
+    dp.add_handler(CommandHandler("exrate", exrate, pass_args=True))
+    dp.add_handler(CommandHandler("twd2jpy", twd2jpy))
 
-    # hidden funcgion
+
+    # hidden function
+    dp.add_handler(CommandHandler("forcesave",forcesave))
     dp.add_handler(CommandHandler("finduser", finduser, pass_args=True))
 
     # test function

@@ -20,6 +20,8 @@ class GLOBAL_WORDS:
 /quote - 每日一句
 /sticker - Stickerまとめ
 /randpic - 召喚偶像（空格+偶像名字可以指定）
+/exrate - 任意國家匯率 `TWD>JPY`
+/twd2jpy - 即時日幣匯率
 
 【みんなのリンク】
 <a href="https://t.me/joinchat/IFtWTxKu7x6vuSK8HsFgsQ">〔765技術部〕</a>：技術部開放對BOT的意見以及回饋
@@ -86,7 +88,7 @@ class GLOBAL_WORDS:
 貼心提醒：給予美咲管理員權限可以做更多事情。
 Version:$version
 Boot Time:$boot_time
-Last update:2018/11/03
+Last update:2018/11/04
 Developer:台灣765技術部
     Dephilia（蝶芙）／TAKE（他Ｋ）
 Base Language:Python

@@ -25,6 +25,9 @@ This chat bot is originally using to manage our im@s [chat room](https://t.me/im
 - **randpic** - 召喚隨機圖片  
 `/randpic idol_name`可以指定召喚
 - **sticker** - STICKERまとめ
+- **exrate** - 匯率轉換  
+`\exrate TWD>JPY`
+- **twd2jpy** - 台幣日幣匯率  
 
 ## Inline command
 - **Inline picture**  
@@ -46,12 +49,13 @@ This chat bot is originally using to manage our im@s [chat room](https://t.me/im
 
 ## Update Log
 New Version: Beta 2.1.4   
-Last Update:2018/11/03
+Last Update:2018/11/04
 
 ### Beta 2.1.4
 1. Fix some sendpic bugs
 2. Fix water recording bug
 3. While send rand pic, it shows origin url.
+4. Add currency exchanger
 
 ### Beta 2.1.3
 1. Fix some bug
