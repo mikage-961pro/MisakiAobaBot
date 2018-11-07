@@ -32,7 +32,8 @@ def picSave_main(bot, update, context, room_switch):
         elif cmd_word_save=='':
             bot.send_message(chat_id=update.message.chat_id,text="もう！こんな遊ばなってください！")
         else:
-            bot.send_message(chat_id=update.message.chat_id,text="知らない人ですよ。")
+            pass
+            #bot.send_message(chat_id=update.message.chat_id,text="知らない人ですよ。")
         # Exit region
     Enti=update.message.parse_entities()
     Enti_list=list(Enti.keys())
@@ -60,4 +61,5 @@ def picSave_main(bot, update, context, room_switch):
             elif cmd_word_save=='':
                 bot.send_message(chat_id=update.message.chat_id,text="もう！こんな遊ばなってください！")
             else:
-                bot.send_message(chat_id=update.message.chat_id,text="知らない人ですよ。")
+                pass
+                #bot.send_message(chat_id=update.message.chat_id,text="知らない人ですよ。")
