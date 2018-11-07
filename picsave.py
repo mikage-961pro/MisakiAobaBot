@@ -34,3 +34,5 @@ def picSave_main(bot, update, context, room_switch):
         else:
             bot.send_message(chat_id=update.message.chat_id,text="知らない人ですよ。")
         # Exit region
+    E=update.message.parse_entities()
+    print(E)
