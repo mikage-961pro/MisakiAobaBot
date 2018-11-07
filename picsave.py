@@ -36,3 +36,5 @@ def picSave_main(bot, update, context, room_switch):
         # Exit region
     E=update.message.parse_entities()
     print(E)
+    EE=E.get_keys()
+    print(EE[0].type)
