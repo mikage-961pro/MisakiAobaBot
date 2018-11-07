@@ -35,7 +35,7 @@ def picSave_main(bot, update, context, room_switch):
             bot.send_message(chat_id=update.message.chat_id,text="知らない人ですよ。")
         # Exit region
     Enti=update.message.parse_entities()
-    Enti_list=list(E.keys())
+    Enti_list=list(Enti.keys())
     for i in Enti_list:
         if i.type=='hashtag':
             cmd_word_save=Enti[i][1:].lower()
