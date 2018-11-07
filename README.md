@@ -1,6 +1,6 @@
 # MisakiAobaBot
 <img src="https://i.imgur.com/oHK4EKk.jpg" alt="Misaki" height="80" width="80"> ノノ青羽美咲です！  
-![version](https://img.shields.io/badge/Version-Beta_2.1.4-brightgreen.svg?longCache=true&style=popout)
+![version](https://img.shields.io/badge/Version-Beta_2.1.5-brightgreen.svg?longCache=true&style=popout)
 [![package](https://img.shields.io/badge/Telegram.Bot-10.1.0-blue.svg?longCache=true&style=popout)](https://python-telegram-bot.org)
 [![telegram chat](https://img.shields.io/badge/Support_Chat-Telegram-blue.svg?style=popout)](https://t.me/MisakiAobaBot)
 [![Contribution](https://img.shields.io/badge/Contribution-welcome-yellow.svg?style=popout)](https://t.me/imas_techno)
@@ -28,6 +28,7 @@ This chat bot is originally using to manage our im@s [chat room](https://t.me/im
 - **exrate** - 匯率轉換  
 `\exrate TWD>JPY`
 - **twd2jpy** - 台幣日幣匯率  
+本資料由台灣銀行提供
 
 ## Inline command
 - **Inline picture**  
@@ -43,13 +44,17 @@ This chat bot is originally using to manage our im@s [chat room](https://t.me/im
 房間預設關閉，必須去`/config`設定開啟。
 - **group state record:** Record the member and message number every time. Admin can turn on record daily function.  
 房間預設關閉，必須去`/config`設定開啟。
-- **picture save and call:** 使用`idol@db`功能儲存你喜歡的偶像圖。  
+- **picture save and call:** 使用`#idol`功能儲存你喜歡的偶像圖。  
 房間預設關閉，必須去`/config`設定開啟。
 - **rule setting:** 可以自訂不同的群規則。
 
 ## Update Log
-New Version: Beta 2.1.4   
-Last Update:2018/11/04
+New Version: Beta 2.1.5   
+Last Update:2018/11/07
+
+### Beta 2.1.5
+1. Change data source of `/twd2jpy`, which is using Taiwan Bank data.
+2. Change the way saving picture.
 
 ### Beta 2.1.4
 1. Fix some sendpic bugs
