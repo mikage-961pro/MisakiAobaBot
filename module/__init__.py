@@ -1,5 +1,5 @@
 from .logger import logger
-from .RTER_api import exRate
+from .RTER_api import exRate,exrate_twbank
 from .global_words import GLOBAL_WORDS
 from .tk import do_once,c_tz,bot_is_admin,room_member_num
 from .tk import del_cmd,del_cmd_func,randList,do_after_root,admin_cmd
@@ -14,7 +14,7 @@ __all__=[
 # log
 'logger',
 # RTER_api
-'exRate',
+'exRate','exrate_twbank',
 # words
 'GLOBAL_WORDS',
 # global var in tk
