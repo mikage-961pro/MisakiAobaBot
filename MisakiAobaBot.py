@@ -207,7 +207,7 @@ def quote(bot,update,args):
         modify_data('config',pipeline={'id':update.message.from_user.id},key='day_quote',update_value=False)
 
         del_cmd_func(bot,update)
-    quote=randget()[0]
+    quote=quote_toolkit.quote_get()
     text='<pre>'+quote['quote']+'</pre>\n'+'-----<b>'+quote['said']+'</b> より'
     msg=bot.send_message(chat_id=update.message.chat_id,text=text,parse_mode='HTML')
 

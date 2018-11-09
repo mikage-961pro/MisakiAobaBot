@@ -1,7 +1,10 @@
 from telegram import *
 from module import *
 import menu
-from datetime import datetime
+from datetime import datetime,timedelta
+
+import random
+quotes=[]
 
 def quote_collecter(bot, update, context, room_switch):
     if room_switch!=True:
@@ -165,3 +168,18 @@ def quote_finder(context,bot, update):
             t="結束搜尋。共有{}筆資料共{}頁。\n共耗時{}秒。".format(result_length,int((result_length-1)/10)+1,search_total_time)
             bot.send_message(chat_id=update.message.from_user.id,text=t,parse_mode='HTML')
     return quote_search
+
+def quote_get():
+    """Return an arranged quote"""
+    global quotes
+    if len(quotes)==0:
+        quote_shuffle()
+        return quotes.pop()
+    return quotes.pop()
+    
+def quote_shuffle():
+    global quotes
+    after=datetime.now()-timedelta(5,0,0)
+    quotes=randget(Collection='quote_main',size=5)+randget_t(Collection='quote_main',size=5,after=after)
+    random.shuffle(quotes)
+    
