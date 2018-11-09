@@ -1,7 +1,8 @@
 from telegram import *
 from module import *
 import menu
-from datetime import datetime
+from datetime import datetime,timedelta
+
 import random
 quotes=[]
 
@@ -178,7 +179,7 @@ def quote_get():
     
 def quote_shuffle():
     global quotes
-    after=datetime.datetime.now()-datetime.timedelta(5,0,0)
+    after=datetime.now()-timedelta(5,0,0)
     quotes=randget(Collection='quote_main',size=5)+randget_t(Collection='quote_main',size=5,after=after)
     random.shuffle(quotes)
     
