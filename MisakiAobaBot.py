@@ -207,7 +207,7 @@ def quote(bot,update,args):
         modify_data('config',pipeline={'id':update.message.from_user.id},key='day_quote',update_value=False)
 
         del_cmd_func(bot,update)
-    quote=randget()[0]
+    quote=quote_toolkit.quote_get()
     text='<pre>'+quote['quote']+'</pre>\n'+'-----<b>'+quote['said']+'</b> より'
     msg=bot.send_message(chat_id=update.message.chat_id,text=text,parse_mode='HTML')
 
@@ -361,13 +361,11 @@ def exrate(bot, update, args):
         disable_web_page_preview=True)
 
 def twd2jpy(bot, update):
-    country=["TWD","JPY"]
-    output_data=exRate(country[0],country[1])
-    text="以下顯示1"+country[1]+"等於多少"+country[0]+"\n"+\
-        "匯率: "+str(output_data['Exrate'])+"\n"+\
-        "牌價時間: "+output_data['UTC']+" (UTC Time)"+\
+    output_data=exrate_twbank("JPY")
+    text="以下顯示日圓匯率\n"+\
+        "匯率: "+str(output_data)+"\n"+\
         """
-此服務由<a href="https://tw.rter.info/howto_currencyapi.php">即匯站</a>所提供
+此服務為台灣銀行公告牌價
         """
     bot.send_message(chat_id=update.message.chat_id,
         text=text,
@@ -618,7 +616,7 @@ def main():
     dp.add_handler(CommandHandler("which", which, pass_args=True))
     dp.add_handler(CommandHandler("quote",quote, pass_args=True))
     dp.add_handler(CommandHandler("randpic",randPic, pass_args=True))
-    dp.add_handler(CommandHandler("sticker",sticker_matome))    
+    dp.add_handler(CommandHandler("sticker",sticker_matome))
     dp.add_handler(CommandHandler("addecho", addecho, pass_args=True))
     dp.add_handler(CommandHandler("exrate", exrate, pass_args=True))
     dp.add_handler(CommandHandler("twd2jpy", twd2jpy))

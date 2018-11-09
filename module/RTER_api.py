@@ -1,18 +1,65 @@
 # coding=utf-8
-"""
-此服務來源由
-https://tw.rter.info/howto_currencyapi.php
+
+def exrate_twbank(output_currency,input_currency='TWD',*arg,**kwarg):
+	__source__="""
+
+此服務由台灣銀行
+https://rate.bot.com.tw/
 所提供
+
 """
-__source__="""
+	from urllib import request
+	import requests
+	import csv
+	from decimal import Decimal
+	data={}
+	url = "https://rate.bot.com.tw/xrt/flcsv/0/day"
+
+	def csv_import(url):
+		import io
+		data={}
+		url_open = request.urlopen(url)
+		csvfile = csv.reader(io.TextIOWrapper(url_open, encoding = 'utf-8'), delimiter=',')
+		index=None
+		index_jump=True
+		length=None
+		for row in csvfile:
+
+			if index_jump:
+				index_jump=False
+				index=row
+				length=len(index)
+				continue
+			data[row[0]]={
+			'本行買入':{
+				'現金':row[2],
+				'即期':row[3]
+				},
+			'本行賣出':{
+				'現金':row[12],
+				'即期':row[13]
+				}
+
+			}
+
+
+
+		return data
+	exrate_data=csv_import(url)
+	aim_data=exrate_data[output_currency]
+	return aim_data['本行賣出']['即期']
+
+
+
+
+def exRate(input_currency,output_currency,*arg,**kwarg):
+	__source__="""
 
 此服務由即匯站
 https://tw.rter.info/howto_currencyapi.php
 所提供
 
 """
-
-def exRate(input_currency,output_currency,*arg,**kwarg):
 	import requests
 	from decimal import Decimal
 	data={}
@@ -33,13 +80,13 @@ def exRate(input_currency,output_currency,*arg,**kwarg):
 
 def main():
 	try:
-		data=exrate("TWD","JPY")
-		print("Exrate:\t",data['Exrate'])
-		print("Time:\t",data['UTC'])
+		data=exrate_twbank("JPY")
+		print(data)
+		#print("Exrate:\t",data['Exrate'])
+		#print("Time:\t",data['UTC'])
 	except IndexError as e:
 		print(e)
 
-	print(__source__)
 
 if __name__=="__main__":
 	main()
