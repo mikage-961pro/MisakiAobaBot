@@ -169,7 +169,7 @@ def quote_finder(context,bot, update):
     return quote_search
 
 def quote_get():
-"""Return an arranged quote"""
+    """Return an arranged quote"""
     global quotes
     if len(quotes)==0:
         quote_shuffle()
