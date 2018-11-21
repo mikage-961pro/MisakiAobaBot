@@ -377,9 +377,9 @@ def mltdrank(bot, update):
     bInfo="""
 [{0:>8}]
 [{1:>8}]
-   3:[{2:>8}]
- 100:[{3:>8}]
-2500:[{4:>8}]
+　　　３:[{2:>8}]
+　１００:[{3:>8}]
+２５００:[{4:>8}]
     """.format(border['name'],border[3]['summaryTime'],border[3]['score'],border[100]['score'],border[2500]['score'])
     bot.send_message(chat_id=update.message.chat_id,text=bInfo)
         
