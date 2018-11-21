@@ -5,13 +5,15 @@ import datetime
 
 END_POINT='https://api.matsurihi.me/mltd/v1/'
 
+    
 def event_score():
+    q="events/"
     q1="events/{}/rankings/logs/eventPoint/{}"
-    q2="events/{}".format('62')
-    event_name=requests.get(END_POINT+q2).json()['name']
-    border_info={'name':event_name}
+
+    event=requests.get(END_POINT+q).json()[-1]
+    border_info={'name':event['name']}
     def border(rank):
-        api=requests.get(END_POINT+q1.format('62',rank)).json()[0]['data']
+        api=requests.get(END_POINT+q1.format(event['id'],rank)).json()[0]['data']
         now=int(api[len(api)-1]['score'])
         summaryT=str(api[len(api)-1]['summaryTime'])
         summaryT= datetime.datetime.strptime(summaryT[:-7],'%Y-%m-%dT%H:%M:%S')-datetime.timedelta(hours=1)
