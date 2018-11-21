@@ -178,7 +178,10 @@ def which(bot, update, args):
             bot.send_message(chat_id=update.message.chat_id, text=text)
         else:
             things=' '.join(args).split(split_symbol)
-            if len(things)==1:
+            if '' in things:
+                text="なにを落とした、まだ検査しましょう。"
+                bot.send_message(chat_id=update.message.chat_id, text=text)
+            elif len(things)==1:
                 result=things[0]
                 text="そんな$resたいなら、私と諮問することは必要じゃないでしょ？".replace('$res',result)
                 bot.send_message(chat_id=update.message.chat_id, text=text)
