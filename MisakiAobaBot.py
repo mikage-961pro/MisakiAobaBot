@@ -375,11 +375,12 @@ def twd2jpy(bot, update):
 def mltdrank(bot, update):
     border=event_score()
     bInfo="""
+<pre>
 [{0:>8}]
 [{1:>8}]
    3:[{2:>8}]
  100:[{3:>8}]
-2500:[{4:>8}]
+2500:[{4:>8}]</pre>
     """.format(border['name'],border[3]['summaryTime'],border[3]['score'],border[100]['score'],border[2500]['score'])
     bot.send_message(chat_id=update.message.chat_id,text=bInfo,parse_mode=ParseMode.HTML)
         
