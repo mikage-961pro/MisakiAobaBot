@@ -14,12 +14,12 @@ def event_score():
     border_info={'name':event['name']}
     def border(rank):
         api=requests.get(END_POINT+q1.format(event['id'],rank)).json()[0]['data']
-        now=int(api[len(api)-1]['score'])
+        now=int(api[-1]['score'])
         summaryT=str(api[len(api)-1]['summaryTime'])
         summaryT= datetime.datetime.strptime(summaryT[:-7],'%Y-%m-%dT%H:%M:%S')-datetime.timedelta(hours=1)
         past_1='--'
         if len(api)>3:
-            past_1=int(api[len(api)-3]['score'])
+            past_1=int(api[-3]['score'])
         return {'rank':rank,'score':now,'past_1':past_1,'speed':now-past_1,'summaryTime':summaryT.strftime("%m-%d %H:%M")}
         
     border_info[3]=border(3)
