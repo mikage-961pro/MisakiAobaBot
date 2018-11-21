@@ -1,6 +1,6 @@
 # MisakiAobaBot
 <img src="https://i.imgur.com/oHK4EKk.jpg" alt="Misaki" height="80" width="80"> ノノ青羽美咲です！  
-![version](https://img.shields.io/badge/Version-Beta_2.1.5-brightgreen.svg?longCache=true&style=popout)
+![version](https://img.shields.io/badge/Version-v1.0.0-brightgreen.svg?longCache=true&style=popout)
 [![package](https://img.shields.io/badge/Telegram.Bot-10.1.0-blue.svg?longCache=true&style=popout)](https://python-telegram-bot.org)
 [![telegram chat](https://img.shields.io/badge/Support_Chat-Telegram-blue.svg?style=popout)](https://t.me/MisakiAobaBot)
 [![Contribution](https://img.shields.io/badge/Contribution-welcome-yellow.svg?style=popout)](https://t.me/imas_techno)
@@ -29,6 +29,8 @@ This chat bot is originally using to manage our im@s [chat room](https://t.me/im
 `\exrate TWD>JPY`
 - **twd2jpy** - 台幣日幣匯率  
 本資料由台灣銀行提供
+- **mltdrank** - MLTD簡易即時排名資訊  
+本資料由[matsurihi.me](https://api.matsurihi.me)提供
 
 ## Inline command
 - **Inline picture**  
@@ -49,54 +51,14 @@ This chat bot is originally using to manage our im@s [chat room](https://t.me/im
 - **rule setting:** 可以自訂不同的群規則。
 
 ## Update Log
-New Version: Beta 2.1.5   
-Last Update:2018/11/07
+New Version: v1.0.0  
+Last Update:2018/11/22
 
-### Beta 2.1.5
-1. Change data source of `/twd2jpy`, which is using Taiwan Bank data.
-2. Change the way saving picture.
+### Stable v1.0.0
+**Everything is on the right way.**  
 
-### Beta 2.1.4
-1. Fix some sendpic bugs
-2. Fix water recording bug
-3. While send rand pic, it shows origin url.
-4. Add currency exchanger
+1. Add MLTD rank showbox.
 
-### Beta 2.1.3
-1. Fix some bug
-
-### Beta 2.1.2
-1. Fix timezone problem
-2. Fix water recorder at first usage.
-3. Other bug.
-
-### Beta 2.0.1
-1. You can now turn off echo/quote/picsave in each room.
-2. Water recorder can run in each room.
-3. Quote finder had some problem, but now its fine.
-4. Some other bug fixed.
-
-### Beta 1.6.0  
-1. Enable user to Edit own rule
-2. Echo bug fix.
-3. Some language fault fix
-
-### Beta 1.5.3  
-1. Enable user to add echo
-
-### Beta 1.5.2  
-1. Make code better
-
-### Beta 1.5.1  
-1. Fix randpic problem:ami/mami problem.
-2. Add quote number while searching.
-3. Fix room save problem:UTC+8 problem.
-4. Re add water notification.
-5. Other fix.
-
-### Beta 1.5  
-1. Remove /randtsumugi and /randchihaya funcion.
-2. Add /randpic, which has more function
 
 ## Contributing
 
