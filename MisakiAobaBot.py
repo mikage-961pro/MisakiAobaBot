@@ -372,6 +372,17 @@ def twd2jpy(bot, update):
         parse_mode='HTML',
         disable_web_page_preview=True)
 
+def mltdrank(bot, update):
+    border=event_score()
+    bInfo="""
+[{0:>8}]
+[{1:>8}]
+   3:[{2:>8}]
+ 100:[{3:>8}]
+2500:[{4:>8}]
+    """.format(border['name'],border[3]['summaryTime'],border[3]['score'],border[100]['score'],border[2500]['score'])
+    bot.send_message(chat_id=update.message.chat_id,text=bInfo)
+        
 def finduser(bot, update, args):
     """used to find user data from user_id"""
     context=' '.join(args)
@@ -620,6 +631,7 @@ def main():
     dp.add_handler(CommandHandler("addecho", addecho, pass_args=True))
     dp.add_handler(CommandHandler("exrate", exrate, pass_args=True))
     dp.add_handler(CommandHandler("twd2jpy", twd2jpy))
+    dp.add_handler(CommandHandler("mltdrank", mltdrank))
 
 
     # hidden function
