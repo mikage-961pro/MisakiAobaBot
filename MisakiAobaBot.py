@@ -375,6 +375,20 @@ def twd2jpy(bot, update):
         parse_mode='HTML',
         disable_web_page_preview=True)
 
+def mltdrank(bot, update):
+    k=bot.send_message(chat_id=update.message.chat_id,text='我看一下喔')
+    border=event_score()
+    bInfo="""
+<pre>
+[{0:>8}]
+[{1:>8}]
+   3:[{2:>8}] +{5:>6} pts/hr
+ 100:[{3:>8}] +{6:>6} pts/hr
+2500:[{4:>8}] +{7:>6} pts/hr</pre>
+    """.format(border['name'],border[3]['summaryTime'],border[3]['score'],border[100]['score'],border[2500]['score'],border[3]['speed'],border[100]['speed'],border[2500]['speed'])
+    bot.edit_message_text(text=bInfo,message_id=k.message_id,chat_id=update.message.chat_id,parse_mode=ParseMode.HTML)
+    bot.send_message(chat_id=update.message.chat_id,text='要不要買ジュリア8400個R??')
+        
 def finduser(bot, update, args):
     """used to find user data from user_id"""
     context=' '.join(args)
@@ -623,6 +637,7 @@ def main():
     dp.add_handler(CommandHandler("addecho", addecho, pass_args=True))
     dp.add_handler(CommandHandler("exrate", exrate, pass_args=True))
     dp.add_handler(CommandHandler("twd2jpy", twd2jpy))
+    dp.add_handler(CommandHandler("mltdrank", mltdrank))
 
 
     # hidden function
