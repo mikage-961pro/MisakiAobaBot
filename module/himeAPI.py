@@ -16,8 +16,8 @@ def event_score():
         summaryT=str(api[len(api)-1]['summaryTime'])
         summaryT= datetime.datetime.strptime(summaryT[:-7],'%Y-%m-%dT%H:%M:%S')-datetime.timedelta(hours=1)
         past_1='--'
-        if len(api)>2:
-            past_1=int(api[len(api)-2]['score'])
+        if len(api)>3:
+            past_1=int(api[len(api)-3]['score'])
         return {'rank':rank,'score':now,'past_1':past_1,'speed':now-past_1,'summaryTime':summaryT.strftime("%m-%d %H:%M")}
         
     border_info[3]=border(3)
