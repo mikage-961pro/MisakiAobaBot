@@ -373,6 +373,7 @@ def twd2jpy(bot, update):
         disable_web_page_preview=True)
 
 def mltdrank(bot, update):
+    k=bot.send_message(chat_id=update.message.chat_id,text='我看一下喔')
     border=event_score()
     bInfo="""
 <pre>
@@ -382,7 +383,8 @@ def mltdrank(bot, update):
  100:[{3:>8}]
 2500:[{4:>8}]</pre>
     """.format(border['name'],border[3]['summaryTime'],border[3]['score'],border[100]['score'],border[2500]['score'])
-    bot.send_message(chat_id=update.message.chat_id,text=bInfo,parse_mode=ParseMode.HTML)
+    bot.edit_message_text(text=bInfo,message_id=k.id,parse_mode=ParseMode.HTML)
+    bot.send_message(chat_id=update.message.chat_id,text='要不要買julia石R??')
         
 def finduser(bot, update, args):
     """used to find user data from user_id"""
