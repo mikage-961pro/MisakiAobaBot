@@ -15,10 +15,10 @@ def event_score():
         now=int(api[len(api)-1]['score'])
         summaryT=str(api[len(api)-1]['summaryTime'])
         summaryT= datetime.datetime.strptime(summaryT[:-7],'%Y-%m-%dT%H:%M:%S')-datetime.timedelta(hours=1)
-        past_2='--'
+        past_1='--'
         if len(api)>2:
-            past_2=int(api[len(api)-4]['score'])
-        return {'rank':rank,'score':now,'past_2':past_2,'summaryTime':summaryT.strftime("%m-%d %H:%M")}
+            past_1=int(api[len(api)-2]['score'])
+        return {'rank':rank,'score':now,'past_1':past_1,'summaryTime':summaryT.strftime("%m-%d %H:%M")}
         
     border_info[3]=border(3)
     border_info[100]=border(100)

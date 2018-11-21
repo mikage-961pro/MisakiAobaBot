@@ -379,10 +379,11 @@ def mltdrank(bot, update):
 <pre>
 [{0:>8}]
 [{1:>8}]
-   3:[{2:>8}]
- 100:[{3:>8}]
-2500:[{4:>8}]</pre>
-    """.format(border['name'],border[3]['summaryTime'],border[3]['score'],border[100]['score'],border[2500]['score'])
+   3:[{2:>8}] +[{6:>6} pts/hr
+ 100:[{3:>8}] +[{7:>6} pts/hr
+2500:[{4:>8}] +[{8:>6} pts/hr</pre>
+    """.format(border['name'],border[3]['summaryTime'],border[3]['score'],border[100]['score'],border[2500]['score'],
+    border[3]['past_1'],border[100]['past_1'],border[2500]['past_1'])
     bot.edit_message_text(text=bInfo,message_id=k.message_id,chat_id=update.message.chat_id,parse_mode=ParseMode.HTML)
     bot.send_message(chat_id=update.message.chat_id,text='要不要買ジュリア8400個R??')
         
