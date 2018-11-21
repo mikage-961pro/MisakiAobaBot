@@ -22,6 +22,7 @@ class GLOBAL_WORDS:
 /randpic - 召喚偶像（空格+偶像名字可以指定）
 /exrate - 任意國家匯率 `TWD>JPY`
 /twd2jpy - 即時日幣匯率
+/mltdrank - 要買一單ジュリア嗎?
 
 【みんなのリンク】
 <a href="https://t.me/joinchat/IFtWTxKu7x6vuSK8HsFgsQ">〔765技術部〕</a>：技術部開放對BOT的意見以及回饋

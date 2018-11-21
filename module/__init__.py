@@ -10,6 +10,7 @@ from .tk import picLinker
 from .weightRandom import weighted_random
 from .MisaMongo import randget,randget_idol,room_state_getter,db_quote_finder,display_data2,randget_t
 from .MisaMongo import insert_data,display_data,display_alldata,modify_data,modify_many_data,updata_data
+from .himeAPI import event_score
 __all__=[
 # log
 'logger',
@@ -29,6 +30,8 @@ __all__=[
 'randget','randget_idol','room_state_getter','db_quote_finder','updata_data','randget_t',
 'insert_data','display_data','modify_data','modify_many_data','display_alldata',
 'display_data2',
+#himeAPI
+'event_score',
 # other
 'weighted_random',
 'picLinker'
