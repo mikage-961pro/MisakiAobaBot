@@ -17,7 +17,7 @@ def event_score():
         if len(api)>2:
             past_2=int(api[len(api)-4]['score'])
         return {'rank':rank,'score':now,'past_2':past_2,'summaryTime':summaryT}
-    border_info[3]=border(100)
+    border_info[3]=border(3)
     border_info[100]=border(100)
     border_info[2500]=border(2500)
     border_info[5000]=border(5000)
