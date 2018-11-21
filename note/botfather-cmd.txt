@@ -1,4 +1,4 @@
-# BotFather-commend setting
+﻿# BotFather-commend setting
 """
 start-我是765事務所的事務員，青羽美咲
 help-由青羽小姐提供您幫助
@@ -13,4 +13,5 @@ sticker-召喚貼圖集
 addecho-調教美咲的回話
 exrate-任意國家匯率（ex.TWD>JPY）
 twd2jpy-即時日幣匯率
+mltdrank-要買一單ジュリア嗎?
 """
