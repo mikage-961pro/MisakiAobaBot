@@ -384,7 +384,7 @@ def mltdrank(bot, update):
 2500:[{4:>8}]</pre>
     """.format(border['name'],border[3]['summaryTime'],border[3]['score'],border[100]['score'],border[2500]['score'])
     bot.edit_message_text(text=bInfo,message_id=k.message_id,chat_id=update.message.chat_id,parse_mode=ParseMode.HTML)
-    bot.send_message(chat_id=update.message.chat_id,text='要不要買julia石R??')
+    bot.send_message(chat_id=update.message.chat_id,text='要不要買ジュリア8400個R??')
         
 def finduser(bot, update, args):
     """used to find user data from user_id"""

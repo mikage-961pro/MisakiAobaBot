@@ -18,7 +18,7 @@ def event_score():
         past_2='--'
         if len(api)>2:
             past_2=int(api[len(api)-4]['score'])
-        return {'rank':rank,'score':now,'past_2':past_2,'summaryTime':summaryT.strftime("%Y-%m %H:%M")}
+        return {'rank':rank,'score':now,'past_2':past_2,'summaryTime':summaryT.strftime("%m-%d %H:%M")}
         
     border_info[3]=border(3)
     border_info[100]=border(100)
