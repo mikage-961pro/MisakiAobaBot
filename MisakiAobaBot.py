@@ -178,7 +178,10 @@ def which(bot, update, args):
             bot.send_message(chat_id=update.message.chat_id, text=text)
         else:
             things=' '.join(args).split(split_symbol)
-            if len(things)==1:
+            if '' in things:
+                text="なにを落とした、まだ検査しましょう。"
+                bot.send_message(chat_id=update.message.chat_id, text=text)
+            elif len(things)==1:
                 result=things[0]
                 text="そんな$resたいなら、私と諮問することは必要じゃないでしょ？".replace('$res',result)
                 bot.send_message(chat_id=update.message.chat_id, text=text)
@@ -372,6 +375,9 @@ def twd2jpy(bot, update):
         parse_mode='HTML',
         disable_web_page_preview=True)
 
+@run_async
+@del_cmd
+@wait_for_timeOut
 def mltdrank(bot, update):
     k=bot.send_message(chat_id=update.message.chat_id,text='我看一下喔')
     border=event_score()
@@ -384,7 +390,10 @@ def mltdrank(bot, update):
 2500:[{4:>8}] +{7:>6} pts/hr</pre>
     """.format(border['name'],border[3]['summaryTime'],border[3]['score'],border[100]['score'],border[2500]['score'],border[3]['speed'],border[100]['speed'],border[2500]['speed'])
     bot.edit_message_text(text=bInfo,message_id=k.message_id,chat_id=update.message.chat_id,parse_mode=ParseMode.HTML)
-    bot.send_message(chat_id=update.message.chat_id,text='要不要買ジュリア8400個R??')
+    msg=bot.send_message(chat_id=update.message.chat_id,text='要不要買ジュリア8400個R??')
+    time.sleep(60)
+    bot.delete_message(chat_id=update.message.chat_id, message_id=k.message_id)
+    bot.delete_message(chat_id=update.message.chat_id, message_id=msg.message_id)
         
 def finduser(bot, update, args):
     """used to find user data from user_id"""
