@@ -1,4 +1,10 @@
 # -*- coding: UTF-8 -*-
+#=========================================#
+# A Roulette wheel algorithm program
+# Written by Dephilia
+# Copyright 2018
+#=========================================#
+
 from random import randrange
 
 def call_random(num,*arg,**karg):
@@ -20,7 +26,9 @@ class weighted_random():
 			return
 		if value==0:
 			return
-		pool_data={'Data':data,'Value':value}
+
+		import copy
+		pool_data={'Data':[data],'Value':value}
 		self.__pool.append(pool_data)
 
 	def add_none(self,value,*arg,**kwarg):
@@ -41,12 +49,12 @@ class weighted_random():
 		counter=0
 		try:
 			for i in self.__pool:
-				if data==i['Data']:
-					break
+				if data==i['Data'][0]:
+					del self.__pool[counter]
 				counter+=1
-			del self.__pool[counter]
 		except:
 			raise IndexError("No data can delete.")
+
 
 	@property
 	def pool(self):
@@ -70,17 +78,48 @@ class weighted_random():
 				break
 		return result
 	def clear(self,*arg,**kwarg):
-		self.__pool={}
+		del self.__pool
+		self.__pool=[]
+
+	def output(self,num=1,*arg,**kwarg):
+		if num>len(self.__pool):
+			raise ValueError("Output number can't over input.")
+
+		counter=num
+
+		def isin(ref,l):
+			for ele in l:
+				if ele is ref:
+					return True
+			return False
+
+		temp=[]
+		final=[]
+		while counter>0:
+			result=weighted_random.output_one(self)
+			if isin(result,temp):
+				continue
+			temp.append(result)
+			counter-=1
+		# dispatcher
+		for t in temp:
+			final.append(t[0])
+		del temp
+		return final
 
 def main():
 	rand=weighted_random()
 	rand.add("apple",12)
+	rand.add("apple",12)
 	rand.add("banana",10)
 	rand.add("cat",15)
 	rand.add("dog",20)
-	rand.add_none(20)
-	rand.delete("cat")
-	print(rand.output_one())
+	rand.add("elephant",20)
+	rand.add("fox",18)
+	rand.add("lion",100)
+	rand.delete("lion")
+
+	print(rand.output(2))
 
 
 if __name__=="__main__":
