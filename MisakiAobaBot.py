@@ -551,7 +551,7 @@ def save_room_state(bot, job):
     for id in water_room_id:
         save_room_state_main(id)
 
-def daily_reset(bot,job):
+def reset_quote_quota(bot,job):
     modify_many_data('config',pipeline={"day_quote":False},key='day_quote',update_value=True)
 
 
@@ -628,7 +628,8 @@ def main():
         #plug in mission time with loop
         dj.run_daily(save_room_state,t)
     # mission refresh daily gasya
-    dj.run_daily(daily_reset,stime(23,59,59))
+    dj.run_repeating(reset_quote_quota,300)
+    #dj.run_daily(reset_quote_quota,stime(23,59,59))
 
     # ---Command answer---
     # on different commands - answer in Telegram
