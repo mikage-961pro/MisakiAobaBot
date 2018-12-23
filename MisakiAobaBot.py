@@ -201,7 +201,7 @@ def quote(bot,update,args):
         if not isinstance(search_data, bool):
             quote_search.update(search_data)
 
-    #daily quote
+    #daily quote reset
     if display_data('config',{'id':update.message.from_user.id},'day_quote')==False:
         del_cmd_func(bot,update)
         return
@@ -210,7 +210,9 @@ def quote(bot,update,args):
         modify_data('config',pipeline={'id':update.message.from_user.id},key='day_quote',update_value=False)
 
         del_cmd_func(bot,update)
-    quote=quote_toolkit.quote_get()
+
+    quote=quote_toolkit.quote_get(update.message.chat_id)
+    if quote==None:return
     text='<pre>'+quote['quote']+'</pre>\n'+'-----<b>'+quote['said']+'</b> より'
     msg=bot.send_message(chat_id=update.message.chat_id,text=text,parse_mode='HTML')
 
@@ -394,7 +396,7 @@ def mltdrank(bot, update):
     time.sleep(60)
     bot.delete_message(chat_id=update.message.chat_id, message_id=k.message_id)
     bot.delete_message(chat_id=update.message.chat_id, message_id=msg.message_id)
-        
+
 def finduser(bot, update, args):
     """used to find user data from user_id"""
     context=' '.join(args)

@@ -41,6 +41,7 @@ This chat bot is originally using to manage our im@s [chat room](https://t.me/im
 
 - **quote:** Record words that you interest, which will show when `/quote` command entered.  
 回覆他人並且鍵入`#名言`即可儲存。  
+本功能每個房間皆為獨立。  
 房間預設關閉，必須去`/config`設定開啟。
 - **words reaction:** Bot will say something when user enter some specific words.  
 房間預設關閉，必須去`/config`設定開啟。
@@ -51,8 +52,11 @@ This chat bot is originally using to manage our im@s [chat room](https://t.me/im
 - **rule setting:** 可以自訂不同的群規則。
 
 ## Update Log
-New Version: v1.0.0  
-Last Update:2018/11/22
+New Version: v1.0.1  
+Last Update:2018/12/23
+
+### v1.0.1
+1. Seperate quote by room.
 
 ### Stable v1.0.0
 **Everything is on the right way.**  

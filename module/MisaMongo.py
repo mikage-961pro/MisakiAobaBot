@@ -22,9 +22,9 @@ mongo_url=temp.substitute(dbuser=mongo_us,dbpassword=mongo_ps)
 client = MongoClient(mongo_url)
 db = client['heroku_jj2sv6sm']
 
-def randget(Collection='quote_main',size=1):
+def randget(room_id,Collection='quote_main',size=1):
     op_ins=db[Collection]
-    pipeline=[{'$sample': {'size': size}}]
+    pipeline=[{'$match': { 'room_id':room_id }},{'$sample': {'size': size}}]
     selected=op_ins.aggregate(pipeline)
     result=[]
     for i in selected:
@@ -32,11 +32,11 @@ def randget(Collection='quote_main',size=1):
 
     return result
 
-def randget_t(Collection='quote_main',size=1,after=None):
+def randget_t(room_id,Collection='quote_main',size=1,after=None):
     #where after is a datetime object ,in this case, it'll select data 'after' the date.
     op_ins=db[Collection]
     dummy_id=ObjectId.from_datetime(after)
-    pipeline=[{'$match': {"_id": {"$gt": dummy_id}}},{'$sample': {'size': size}}]
+    pipeline=[{'$match': {"_id": {"$gt": dummy_id},'room_id':room_id}},{'$sample': {'size': size}}]
     #result = collection.find({"_id": {"$gt": dummy_id}})
     selected=op_ins.aggregate(pipeline)
     result=[]
@@ -72,9 +72,9 @@ def room_state_getter(Collection='room_state',room_id=-1001290696540):
         logger.warning("(%s):No result."'room_state_getter')
         return None
 
-def db_quote_finder(key,Collection='quote_main'):
+def db_quote_finder(key,rid,Collection='quote_main'):
     op_ins=db[Collection]
-    cmd_cursor=op_ins.find({})
+    cmd_cursor=op_ins.find({'room_id':rid})
     all_cont=[]
     result=[]
     for i in cmd_cursor:
@@ -108,9 +108,9 @@ def updata_data(Collection,dict,newdict):
     op_ins=db[Collection]
     return op_ins.update_one(dict,newdict,upsert=True)
 
-def display_alldata(Collection):
+def display_alldata(Collection,index={}):
     op_ins=db[Collection]
-    ins=op_ins.find()
+    ins=op_ins.find(index)
     return ins
 
 def display_data(Collection,pipeline,key):

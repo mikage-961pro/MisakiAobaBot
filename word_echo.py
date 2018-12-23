@@ -50,7 +50,8 @@ def addEcho_main(context,update,bot,space_word="/_/"):
         'els':formula('els',context),
         'allco':formula('al',context),
         'echo_list':formula('eli',context),
-        'add_by':update.message.chat_id
+        'add_by':update.message.from_user.id,
+        'room_id':update.message.chat_id
         }
 
     if formula('pr',context)==False:

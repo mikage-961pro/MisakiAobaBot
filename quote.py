@@ -22,7 +22,8 @@ def quote_collecter(bot, update, context, room_switch):
                 'said': update.message.from_user.first_name,
                 'tag': '',
                 'said_id':update.message.from_user.id,
-                'date':datetime.now()
+                'date':datetime.now(),
+                'room_id':update.message.chat_id
                 }
             insert_data('quote_main',qdict)
             record=True
@@ -33,7 +34,8 @@ def quote_collecter(bot, update, context, room_switch):
                 'said': update.message.reply_to_message.from_user.first_name,
                 'tag': '',
                 'said_id':update.message.reply_to_message.from_user.id,
-                'date':datetime.now()
+                'date':datetime.now(),
+                'room_id':update.message.chat_id
                 }
             insert_data('quote_main',qdict)
 
@@ -44,7 +46,7 @@ def quote_finder(context,bot, update):
         bot.send_message(chat_id=update.message.chat_id,text="Please enter word.")
         return False
     # Search initialization
-    find_result=db_quote_finder(context)
+    find_result=db_quote_finder(context,update.message.chat_id)
     result_length=len(find_result)
     search_init_time=datetime.now()
 
@@ -169,17 +171,18 @@ def quote_finder(context,bot, update):
             bot.send_message(chat_id=update.message.from_user.id,text=t,parse_mode='HTML')
     return quote_search
 
-def quote_get():
+def quote_get(rid):
     """Return an arranged quote"""
     global quotes
     if len(quotes)==0:
-        quote_shuffle()
+        quote_shuffle(rid)
+    if not quotes:
+        return None
+    else:
         return quotes.pop()
-    return quotes.pop()
-    
-def quote_shuffle():
+
+def quote_shuffle(rid):
     global quotes
     after=datetime.now()-timedelta(5,0,0)
-    quotes=randget(Collection='quote_main',size=5)+randget_t(Collection='quote_main',size=5,after=after)
+    quotes=randget(rid,Collection='quote_main',size=5)+randget_t(rid,Collection='quote_main',size=5,after=after)
     random.shuffle(quotes)
-    
