@@ -6,7 +6,7 @@
 [![Contribution](https://img.shields.io/badge/Contribution-welcome-yellow.svg?style=popout)](https://t.me/imas_techno)
 [![license](https://img.shields.io/github/license/TelegramBots/telegram.bot.svg?style=popout&maxAge=2592000&label=License)](LICENSE)  
 Misaki Aoba chat bot.  
-This chat bot is originally using to manage our im@s [chat room](https://t.me/imas_zh), but now it can use to manage other chat room.
+This chat bot is originally used to manage our im@s [chat room](https://t.me/imas_zh), but now it can use to manage other chat room.
 
 ## Command
 
