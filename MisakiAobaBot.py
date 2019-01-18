@@ -381,32 +381,24 @@ def twd2jpy(bot, update):
 def mltdrank(bot, update):
     k=bot.send_message(chat_id=update.message.chat_id,text='我看一下喔')
     border=event_score()
-    if border['rank_able']:
-        bInfo="""
+    if not border['rank_able']:
+        bot.edit_message_text(text='此活動不適用排名喔，你累了嗎？',message_id=k.message_id,chat_id=update.message.chat_id)
+        time.sleep(60)
+        bot.delete_message(chat_id=update.message.chat_id, message_id=k.message_id)
+        return
+    bInfo="""
 <pre>
 [{0:>8}]
 [{1:>8}]
    3:[{2:>8}] +{5:>6} pts/hr
  100:[{3:>8}] +{6:>6} pts/hr
 2500:[{4:>8}] +{7:>6} pts/hr</pre>
-"""
-        bInfo=bInfo.format(border['name'],border[3]['summaryTime'],border[3]['score'],border[100]['score'],border[2500]['score'],border[3]['speed'],border[100]['speed'],border[2500]['speed'])
-        bot.edit_message_text(text=bInfo,message_id=k.message_id,chat_id=update.message.chat_id,parse_mode=ParseMode.HTML)
-        msg=bot.send_message(chat_id=update.message.chat_id,text='要不要買ジュリア8400個R??')
-        time.sleep(60)
-        bot.delete_message(chat_id=update.message.chat_id, message_id=k.message_id)
-        bot.delete_message(chat_id=update.message.chat_id, message_id=msg.message_id)
-    else:
-        bInfo="""
-<pre>
-[{0:>8}]
-
-此活動不適用排名，問這個製作人你累了嗎？
-"""
-        bInfo=bInfo.format(border['name'])
-        bot.edit_message_text(text=bInfo,message_id=k.message_id,chat_id=update.message.chat_id,parse_mode=ParseMode.HTML)
-        time.sleep(60)
-        bot.delete_message(chat_id=update.message.chat_id, message_id=k.message_id)
+    """.format(border['name'],border[3]['summaryTime'],border[3]['score'],border[100]['score'],border[2500]['score'],border[3]['speed'],border[100]['speed'],border[2500]['speed'])
+    bot.edit_message_text(text=bInfo,message_id=k.message_id,chat_id=update.message.chat_id,parse_mode=ParseMode.HTML)
+    msg=bot.send_message(chat_id=update.message.chat_id,text='要不要買ジュリア8400個R??')
+    time.sleep(60)
+    bot.delete_message(chat_id=update.message.chat_id, message_id=k.message_id)
+    bot.delete_message(chat_id=update.message.chat_id, message_id=msg.message_id)
         
 def finduser(bot, update, args):
     """used to find user data from user_id"""
