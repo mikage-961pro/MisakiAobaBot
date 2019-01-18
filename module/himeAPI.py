@@ -11,6 +11,8 @@ def event_score():
     q1="events/{}/rankings/logs/eventPoint/{}"
 
     event=requests.get(END_POINT+q).json()[-1]
+    if (event==1 or event==2 or event==6):
+        return {'name':event['name'],3:'不適用',100:'不適用',2500:'不適用',5000:'不適用',10000:'不適用',25000:'不適用'}
     border_info={'name':event['name']}
     def border(rank):
         api=requests.get(END_POINT+q1.format(event['id'],rank)).json()[0]['data']
