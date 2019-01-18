@@ -383,6 +383,11 @@ def twd2jpy(bot, update):
 def mltdrank(bot, update):
     k=bot.send_message(chat_id=update.message.chat_id,text='我看一下喔')
     border=event_score()
+    if not border['rank_able']:
+        bot.edit_message_text(text='{}\n...呃此活動不適用排名喔，製作人先生你累了嗎？'.format(border['name']),message_id=k.message_id,chat_id=update.message.chat_id)
+        time.sleep(60)
+        bot.delete_message(chat_id=update.message.chat_id, message_id=k.message_id)
+        return
     bInfo="""
 <pre>
 [{0:>8}]

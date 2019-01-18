@@ -11,7 +11,9 @@ def event_score():
     q1="events/{}/rankings/logs/eventPoint/{}"
 
     event=requests.get(END_POINT+q).json()[-1]
-    border_info={'name':event['name']}
+    if (event['type']==1 or event['type']==2 or event['type']==6):
+        return {'name':event['name'],'rank_able':False}
+    border_info={'name':event['name'],'rank_able':True}
     def border(rank):
         api=requests.get(END_POINT+q1.format(event['id'],rank)).json()[0]['data']
         now=int(api[-1]['score'])
