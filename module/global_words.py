@@ -185,9 +185,9 @@ Database:MongoDB
     'rinze',
     'natsuha',
     'hazuki',
-    `asahi`,
-    `fuyuko`,
-    `mei`
+    'asahi',
+    'fuyuko',
+    'mei'
     ]
     cg_idol=[
 	'uzuki',
