@@ -184,7 +184,10 @@ Database:MongoDB
     'juri',
     'rinze',
     'natsuha',
-    'hazuki'
+    'hazuki',
+    `asahi`,
+    `fuyuko`,
+    `mei`
     ]
     cg_idol=[
 	'uzuki',
